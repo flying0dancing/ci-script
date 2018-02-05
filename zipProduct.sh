@@ -22,7 +22,8 @@ DelFile()
     fi
 }
 
-selfPath=`pwd $(dirname $0)`
+#selfPath=`pwd $(dirname $0)`
+selfPath=`dirname $(readlink -f "$0")`
 selfName=`basename $0`
 logFullName=${selfPath}/${selfName%.*}.log
 if [ -f "${logFullName}" ];then
@@ -58,9 +59,9 @@ if [ "$#" = "4" ];then
                 if [ -f "${zipFullName}" ];then
                     logger "${logFullName}" "[info] zip file is packaged."
                     signJar=`awk -F '=' /^ocelot.config.sign.jar.linux[^.]/'{print $2}' "${properties}"`
-                    if [ -f "${signJar}" ];then
+                    if [ -f "${selfPath}/../${signJar}" ];then
                         logger "${logFullName}" "[info] package lrm file [${lrmFullName}]..."
-                        java -jar "${signJar}" "${zipFullName}"
+                        java -jar "${selfPath}/../${signJar}" "${zipFullName}"
                         mv "${zipFullPath}/${abcName}_sign.lrm" "${abcName}.lrm"
                         if [ -f "${lrmFullName}" ];then
                             logger "${logFullName}" "[info] package is packaged successfully."
@@ -69,7 +70,7 @@ if [ "$#" = "4" ];then
                             logger "${logFullName}" "[error] cannot find packaged file [${lrmFullName}]"
                         fi
                     else
-                        logger "${logFullName}" "[error] cannot find jar for sign [${signJar}]"
+                        logger "${logFullName}" "[error] cannot find jar for sign [${selfPath}/../${signJar}]"
                     fi
                 else
                     logger "${logFullName}" "[error] package failure."

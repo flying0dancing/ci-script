@@ -5,7 +5,7 @@ REM ===========================================================================
 rem set selfPath=%~dp0
 rem set selfName=%~0
 rem set logFullName=%selfPath%%selfName:.bat=.log%
-set logFullName=%~dpn0%.log
+set logFullName=%~dpn0.log
 
 IF "%~1"=="" GOTO HELP
 IF "%~1"=="/?" GOTO HELP
@@ -86,9 +86,9 @@ GOTO :EOF
 	    call :LOGGER "%logFullName%"  "[info] zip file is packaged."
         for /f "eol=# tokens=2 delims==" %%i in ('findstr /i "ocelot.config.sign.jar.windows" "%properties%"') do @set signJar=%%i
         set signJar=%signJar:"=%
-        if exist "%signJar%" ( 
+        if exist "%~dp0..\%signJar%" ( 
 	        call :LOGGER "%logFullName%"  "[info] package lrm file [%lrmFullName%]..."
-            java -jar "%signJar%" "%zipFullName%"
+            java -jar "%~dp0..\%signJar%" "%zipFullName%"
             ren "%zipFullPath%\%abcName%_sign.lrm" "%abcName%.lrm"
             if exist "%lrmFullName%" (
                 call :LOGGER "%logFullName%"  "[info] package is packaged successfully."
@@ -97,7 +97,7 @@ GOTO :EOF
                 goto ERROREXIT
             )
         ) else (
-            call :LOGGER "%logFullName%"  "[error] cannot find jar for sign [%signJar%]"
+            call :LOGGER "%logFullName%"  "[error] cannot find jar for sign [%~dp0..\%signJar%]"
             goto ERROREXIT
         )
     ) else (

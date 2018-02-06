@@ -14,8 +14,8 @@ this project is used for lombardrisk compliance team.
 2. zipProduct.bat is used on `windows`. It will package product files into *.zip and *.lrm.
    * in jenkins, we use `packageProduct.bat` to run zipProduct.bat.
    For example, for `fed` product:
-       <pre><code>ci-script\packageProduct.bat \fed\src \fed\src\package.properties b110</code></pre>
+       <pre><code>ci-script\packageProduct.bat \fed\src \fed\package.properties b110</code></pre>
 3. zipProduct.sh is used on `linux`. It will package product files into *.zip and *.lrm.
    * in jenkins, we use `packageProduct.sh` to run zipProduct.sh.
    For example, for `fed` product:
-       <pre><code>ci-script/packageProduct.sh /fed/src /fed/src/package.properties b110</code></pre>
+       <pre><code>ci-script/packageProduct.sh /fed/src /fed/package.properties b110</code></pre>

@@ -20,18 +20,16 @@ def lookCsvsByFilter1(csvPath,csvFilter,dic):
     if dic is None:
         dic={}
     for x in os.listdir(csvPath):
-        if os.path.isdir(os.sep.join([csvPath,x])):
-            # print(os.sep.join([csvPath,x])+r'===='+csvFilter)
-            lookCsvsByFilter1(os.sep.join([csvPath,x]),csvFilter,dic)
-        if os.path.isfile(os.sep.join([csvPath,x])) and os.path.splitext(x)[1].lower()=='.csv':
-            # print(os.sep.join([csvPath,x])+r'===='+csvFilter)
+        xfullName=os.sep.join([csvPath,x])
+        if os.path.isdir(xfullName):
+            logger.info(r'checking files in path:[{0}]'.format(xfullName))
+            lookCsvsByFilter1(xfullName,csvFilter,dic)
+        if os.path.isfile(xfullName) and os.path.splitext(x)[1].lower()=='.csv':
             if re.search(csvFilter, x,flags=re.IGNORECASE):
-                logger.debug(r'Found file:{0}'.format(x))
-                csvFileFullName = os.sep.join([csvPath, x])
-                logger.info(r'Need to check:{0}'.format(csvFileFullName))
-                dic[csvFileFullName]=x
+                logger.info(r'Need to check:{0}'.format(x))
+                dic[xfullName]=x
                 # csv_returnId = re.sub(r'(?:GridKey|GridRef|List|Ref|Sums|Vals|XVals)\_(\d+)\.csv', r'\1',x.lower(),flags=re.IGNORECASE)
-                # flag =readColumns(csvFileFullName, propsFullName, csv_returnId, dateFormat)
+                # flag =readColumns(xfullName, propsFullName, csv_returnId, dateFormat)
 
 def lookCsvsByFilter2(csvPath,csvFilter):
     for x in os.listdir(csvPath):
@@ -123,11 +121,8 @@ def readColumns(csvFullName,propsFullName,file_id,dateFormat='US'):
         table_name=tableName
         config = configparser.ConfigParser()
         config.read(propsFullName)
-        if table_name not in config:
-            logger.warning(r'table[{0}] not defined in {1}'.format(table_name,config_name))
+        if table_name not in config and re.match(r'\d+',file_id):
             table_name=re.split(r'\_',table_name)[0]
-            if table_name not in config:
-                logger.warning(r'table[{0}] not defined in {1}'.format(table_name,config_name))
         if table_name in config:
             # """"
             csv_name = os.path.basename(csvFullName)

@@ -32,9 +32,9 @@ def checkTypeOfStringColumn(*args, data, pattern,argsLen,argsIndex,tableName,col
                         logger.error(r'mismatch: data might be contains special character.')
                         data_flag=False
                     else:
-                        logger.debug(r'match:{4}- row[{0}] column[{1}]:{2} type:[{3}]'.format(row_id, col_id, col_value,args[1],tableName))
+                        logger.debug(r'match:{4}- row[{0}] column[{1}]:{2} type:[{3}]'.format(row_id, col_id, col_value,args[1:],tableName))
                 else:
-                    logger.error(r'mismatch:{4}- row[{0}] column[{5}][{1}]:{2} type:[{3}]'.format(row_id, col_id, col_value, args[1],tableName,args[0]))
+                    logger.error(r'mismatch:{4}- row[{0}] column[{5}][{1}]:{2} type:[{3}]'.format(row_id, col_id, col_value, args[1:],tableName,args[0]))
                     data_flag=False
             row_id=row_id+1
         if data_flag:
@@ -61,9 +61,9 @@ def checkTypeOfColumn(*args, data, pattern,argsLen,argsIndex,tableName,col_id):
             else:
                 ret=rr.match(col_value)
                 if ret is not None:
-                    logger.debug(r'match:{4}- row[{0}] column[{1}]:{2} type:[{3}]'.format(row_id, col_id, col_value,args[1],tableName))
+                    logger.debug(r'match:{4}- row[{0}] column[{1}]:{2} type:[{3}]'.format(row_id, col_id, col_value,args[1:],tableName))
                 else:
-                    logger.error(r'mismatch:{4}- row[{0}] column[{5}][{1}]:{2} type:[{3}]'.format(row_id, col_id, col_value, args[1],tableName,args[0]))
+                    logger.error(r'mismatch:{4}- row[{0}] column[{5}][{1}]:{2} type:[{3}]'.format(row_id, col_id, col_value, args[1:],tableName,args[0]))
                     data_flag=False
             row_id=row_id+1
         if data_flag:

@@ -32,6 +32,11 @@ out
 .DS_Store
 Thumbs.db
 
+#python
+*.pyc
+__pycache__
+
+
 *.bat
 *.class
 *.apk

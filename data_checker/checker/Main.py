@@ -30,34 +30,34 @@ def main():
     csvFilter = re.sub(r'\\\*', r'.*?', csvFilter)
     csvFilter = r'^{0}$'.format(csvFilter)
     logger.debug('csvPattern:{0}'.format(csvFilter))
-    # flag=FileUtil.lookCsvsByFilter(r'D:\Kun_Work\wk_home\ComplianceProduct\fed\src\Metadata',os.sep.join([dataPath,arg_config]), csvFilter ,arg_format)
-    # FileUtil.readColumns(os.sep.join([dataPath,arg_csv]),os.sep.join([dataPath,arg_config]),arg_format)
-    dic_csvs={}
-    FileUtil.lookCsvsByFilter1(dataPath, csvFilter,dic_csvs)
-    fileCount=len(dic_csvs.keys())
-    if fileCount==0:
+
+    csv_count=0
+    failedFiles=[]
+    for csv_info in FileUtil.lookCsvsByFilter2(dataPath, csvFilter):
+        t_start=time.time()
+        csv_count=csv_count+1
+        csvFullName=csv_info[0]
+        csv_filename=csv_info[1]
+        logger.info(r''.center(80, "*"))
+        logger.info(r'checking file:{0}'.format(csvFullName))
+        csv_returnId = re.sub(r'(?:GridKey|GridRef|List|Ref|Sums|Vals|XVals)\_(\d+)\.csv', r'\1', csv_filename,flags=re.IGNORECASE)
+        flagTmp=FileUtil.readColumns(csvFullName, os.sep.join([dataPath, arg_config]), csv_returnId, arg_format)
+        if flagTmp:
+            logger.info(r'successfully, checked file:{0} used {1} seconds'.format(csv_filename,time.time()-t_start))
+        else:
+            failedFiles.append(csv_filename)
+            logger.error(r'fail, checked file:{0} used {1} seconds'.format(csv_filename,time.time() - t_start))
+    
+    if csv_count==0:
         logger.error(r'Error: no files found by filter[{0}] under [{1}]'.format(arg_csv,dataPath))
     else:
-        failedFiles=[]
-        for key in dic_csvs:
-            t_start=time.time()
-            logger.info(r'checking file:{0}'.format(key))
-            csv_returnId = re.sub(r'(?:GridKey|GridRef|List|Ref|Sums|Vals|XVals)\_(\d+)\.csv', r'\1', dic_csvs[key].lower(),
-                                  flags=re.IGNORECASE)
-            flagTmp=FileUtil.readColumns(key, os.sep.join([dataPath, arg_config]), csv_returnId, arg_format)
-            if flagTmp:
-                logger.info(r'successfully, checked file:{0} used {1} seconds'.format(dic_csvs[key],time.time()-t_start))
-            else:
-                failedFiles.append(dic_csvs[key])
-                logger.error(r'fail, checked file:{0} used {1} seconds'.format(dic_csvs[key],time.time() - t_start))
-            logger.info(r''.center(80, "*"))
         failedCount=len(failedFiles)
         if failedCount>0:
-            logger.error(r'fail, checking {0} files with {1} failed files{2}.'.format(fileCount,failedCount,failedFiles))
+            logger.error(r'fail, checking {0} files with {1} failed files{2}.'.format(csv_count,failedCount,failedFiles))
         else:
             flag=0
-            logger.info(r'Successfully, checking {0} files without failed files.'.format(fileCount))
-        logger.info('totally, used {0} seconds.'.format(time.time()-a_start))
+            logger.info(r'Successfully, checking {0} files without failed files.'.format(csv_count))
+    logger.info('totally, used {0} seconds.'.format(time.time()-a_start))
     return flag
 
 

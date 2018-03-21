@@ -26,21 +26,22 @@ def lookCsvsByFilter1(csvPath,csvFilter,dic):
             lookCsvsByFilter1(xfullName,csvFilter,dic)
         if os.path.isfile(xfullName) and os.path.splitext(x)[1].lower()=='.csv':
             if re.search(csvFilter, x,flags=re.IGNORECASE):
-                logger.info(r'Need to check:{0}'.format(x))
+                logger.debug(r'Need to check:{0}'.format(x))
                 dic[xfullName]=x
                 # csv_returnId = re.sub(r'(?:GridKey|GridRef|List|Ref|Sums|Vals|XVals)\_(\d+)\.csv', r'\1',x.lower(),flags=re.IGNORECASE)
                 # flag =readColumns(xfullName, propsFullName, csv_returnId, dateFormat)
 
 def lookCsvsByFilter2(csvPath,csvFilter):
     for x in os.listdir(csvPath):
-        if os.path.isdir(os.sep.join([csvPath,x])):
-            lookCsvsByFilter1(os.sep.join([csvPath,x]),csvFilter)
-        if os.path.isfile(os.sep.join([csvPath,x])) and os.path.splitext(x)[1].lower()=='.csv':
+        xfullName=os.sep.join([csvPath,x])
+        if os.path.isdir(xfullName):
+            logger.info(r'checking files in path:[{0}]'.format(xfullName))
+            for item in lookCsvsByFilter2(xfullName,csvFilter):
+                yield item
+        if os.path.isfile(xfullName) and os.path.splitext(x)[1].lower()=='.csv':
             if re.search(csvFilter, x,flags=re.IGNORECASE):
-                logger.debug(r'Found file:{0}'.format(x))
-                csvFileFullName = os.sep.join([csvPath, x])
-                logger.info(r'Need to check:{0}'.format(csvFileFullName))
-                yield {csvFileFullName:x}
+                logger.debug(r'Need to check:{0}'.format(x))
+                yield [xfullName,x]
 
 def lookCsvsByFilter(csvPath, propsFullName,csvFilter, dateFormat='US'):
     flag=False

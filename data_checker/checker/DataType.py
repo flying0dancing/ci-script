@@ -14,7 +14,7 @@ def checkTypeOfStringColumn(*args, data, pattern,argsLen,argsIndex,tableName,col
         if len(args) == argsLen and strcmp(args[argsIndex], 'Nullable'):
             nullFlag=True
         rr = re.compile(pattern)
-        row_id=2
+        row_id=1
         data_flag=True
         for col_value in data:
             if col_value is None or col_value == '':
@@ -26,15 +26,18 @@ def checkTypeOfStringColumn(*args, data, pattern,argsLen,argsIndex,tableName,col
             else:
                 ret=rr.match(col_value)
                 if ret is not None:
+                    logger.debug(r'match:{4}- rec[{0}] column[{1}]:{2} type:[{3}]'.format(row_id, col_id, col_value,args[1:],tableName))
+                    '''
                     qr = re.compile(r'\?{2,}')
                     qret = qr.search(col_value)
                     if qret is not None:
                         logger.error(r'mismatch: data might be contains special character.')
                         data_flag=False
                     else:
-                        logger.debug(r'match:{4}- row[{0}] column[{1}]:{2} type:[{3}]'.format(row_id, col_id, col_value,args[1:],tableName))
+                        logger.debug(r'match:{4}- rec[{0}] column[{1}]:{2} type:[{3}]'.format(row_id, col_id, col_value,args[1:],tableName))
+                    '''
                 else:
-                    logger.error(r'mismatch:{4}- row[{0}] column[{5}][{1}]:{2} type:[{3}]'.format(row_id, col_id, col_value, args[1:],tableName,args[0]))
+                    logger.error(r'mismatch:{4}- rec[{0}] column[{5}][{1}]:{2} type:[{3}]'.format(row_id, col_id, col_value, args[1:],tableName,args[0]))
                     data_flag=False
             row_id=row_id+1
         if data_flag:
@@ -49,8 +52,9 @@ def checkTypeOfColumn(*args, data, pattern,argsLen,argsIndex,tableName,col_id):
         if len(args) == argsLen and strcmp(args[argsIndex], 'Nullable'):
             nullFlag=True
         rr = re.compile(pattern)
-        row_id=2
+        row_id=1
         data_flag=True
+        
         for col_value in data:
             if col_value is None or col_value == '':
                 if nullFlag:
@@ -61,9 +65,9 @@ def checkTypeOfColumn(*args, data, pattern,argsLen,argsIndex,tableName,col_id):
             else:
                 ret=rr.match(col_value)
                 if ret is not None:
-                    logger.debug(r'match:{4}- row[{0}] column[{1}]:{2} type:[{3}]'.format(row_id, col_id, col_value,args[1:],tableName))
+                    logger.debug(r'match:{4}- rec[{0}] column[{1}]:{2} type:[{3}]'.format(row_id, col_id, col_value,args[1:],tableName))
                 else:
-                    logger.error(r'mismatch:{4}- row[{0}] column[{5}][{1}]:{2} type:[{3}]'.format(row_id, col_id, col_value, args[1:],tableName,args[0]))
+                    logger.error(r'mismatch:{4}- rec[{0}] column[{5}][{1}]:{2} type:[{3}]'.format(row_id, col_id, col_value, args[1:],tableName,args[0]))
                     data_flag=False
             row_id=row_id+1
         if data_flag:
@@ -83,12 +87,15 @@ def varcharColumn( *args,**kwargs):
             logger.error(r'mismatch: length of column[{0}]:{1} should be <= 255 in configuration'.format(args[0],args[2]))
             return flag
         else:
-            pattern =r'^[0-9a-zA-Z\u4E00-\u9FA5\s\`\~\!\@\#\$\%\^\&\*\(\)\_\-\=\+\\\|\{\[\}\]\;\:\'\"\,\<\.\>\/\?]{1,'+args[2]+r'}$'
+            #pattern =r'^[0-9a-zA-Z\u4E00-\u9FA5\s\`\~\!\@\#\$\%\^\&\*\(\)\_\-\=\+\\\|\{\[\}\]\;\:\'\"\,\<\.\>\/\?]{1,'+args[2]+r'}$'
+            #pattern=r'^(?!.*([\？\?])\1+)^(?!.*\n+)^[÷éāǎǎàōóǒòêēéěèīíǐìūúǔùǖǘǚǜü\w\u4E00-\u9FA5\s\`\~\!\@\#\$\%\^\&\*\(\)\-\=\+\\\|\{\[\}\]\;\:\'\"\,\<\.\>\/\?\？\—\–±÷]+$'
+            pattern=r'^(?!.*([\？\?])\1+)^(?:.|\s)*$'
             flag = checkTypeOfStringColumn(*args,data=data,pattern=pattern,argsLen=4,argsIndex=3,tableName=tableName,col_id=col_id)    
     return flag
 
 def longtextColumn( *args,**kwargs):
-    pattern = r'^[0-9a-zA-Z\u4E00-\u9FA5\s\`\~\!\@\#\$\%\^\&\*\(\)\_\-\=\+\\\|\{\[\}\]\;\:\'\"\,\<\.\>\/\?]+$'
+    #pattern = r'^[0-9a-zA-Z\u4E00-\u9FA5\s\`\~\!\@\#\$\%\^\&\*\(\)\_\-\=\+\\\|\{\[\}\]\;\:\'\"\,\<\.\>\/\?]+$'
+    pattern=r'^(?!.*([\？\?])\1+)^(?:.|\s)*$'
     if 'data' not in kwargs:
         logger.error(r'Error: key data not defined in kwargs')
         return False
@@ -101,9 +108,12 @@ def longtextColumn( *args,**kwargs):
 def dateColumn(*args,**kwargs):
     #pattern_US=r"^[1-5]\d{3}/(?:0?[1-9]|1[0-2])/(?:0?[1-9]|[12]\d|3[01])(?:\s*(?:1?\d|2[0-4])(?:\:(?:[0-5]?\d|60)){2})?$" #yyyy/mm/dd
     #pattern_US=r"^[1-9]\d{3}/(?:0?[1-9]|1[0-2])/(?:0?[1-9]|[12]\d|3[01])(?:\s*(?:1?\d|2[0-3])(?:\:(?:[0-5]?\d)){2})?$" #yyyy/mm/dd delete 24 in hour,60 in min and sec
-    pattern_CN = r"^[1-9]\d{3}\-(?:0?[1-9]|1[0-2])\-(?:0?[1-9]|[12]\d|3[01])(?:\s*(?:1?\d|2[0-3])(?:\:(?:[0-5]?\d)){2})?$" #yyyy-mm-dd
-    pattern_GB=r"^(?:0?[1-9]|[12]\d|3[01])/(?:0?[1-9]|1[0-2])/[1-9]\d{3}(?:\s*(?:1?\d|2[0-3])(?:\:(?:[0-5]?\d)){2})?$" #dd/mm/yyyy
-    pattern_US=r"^(?:0?[1-9]|1[0-2])/(?:0?[1-9]|[12]\d|3[01])/[1-9]\d{3}(?:\s*(?:1?\d|2[0-3])(?:\:(?:[0-5]?\d)){2})?$" #mm/dd/yyyy
+    #pattern_CN1 = r"^[1-9]\d{3}\-(?:0?[1-9]|1[0-2])\-(?:0?[1-9]|[12]\d|3[01])(?:\s*(?:1?\d|2[0-3])(?:\:(?:[0-5]?\d)){2})?$" #yyyy-mm-dd
+    #pattern_GB1=r"^(?:0?[1-9]|[12]\d|3[01])/(?:0?[1-9]|1[0-2])/[1-9]\d{3}(?:\s*(?:1?\d|2[0-3])(?:\:(?:[0-5]?\d)){2})?$" #dd/mm/yyyy
+    #pattern_US1=r"^(?:0?[1-9]|1[0-2])/(?:0?[1-9]|[12]\d|3[01])/[1-9]\d{3}(?:\s*(?:1?\d|2[0-3])(?:\:(?:[0-5]?\d)){2})?$" #mm/dd/yyyy
+    pattern_CN = r"^[1-9]\d{3}\-(?:0?[1-9]|1[0-2])\-(?:0?[1-9]|[12]\d|3[01])(?:\s*(?:1?\d|2[0-3])(?:\:(?:[0-5]?\d)){2})$" #yyyy-mm-dd
+    pattern_GB=r"^(?:0?[1-9]|[12]\d|3[01])/(?:0?[1-9]|1[0-2])/[1-9]\d{3}(?:\s*(?:1?\d|2[0-3])(?:\:(?:[0-5]?\d)){2})$" #dd/mm/yyyy
+    pattern_US=r"^(?:0?[1-9]|1[0-2])/(?:0?[1-9]|[12]\d|3[01])/[1-9]\d{3}(?:\s*(?:1?\d|2[0-3])(?:\:(?:[0-5]?\d)){2})$" #mm/dd/yyyy
     dateFormats = {'CN': pattern_CN, 'GB': pattern_GB, 'US': pattern_US}
 
     if 'dateFormat' not in kwargs:

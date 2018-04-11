@@ -2,8 +2,7 @@
 2. We suppose the folder structure is:
 ci-script
     |--data_checker
-        |--bin
-            |--Bin.py
+        datachecker.py
         ....
     ...
 fed
@@ -29,15 +28,15 @@ mas
 ...
 
 Uses:
-cd to bin folder for run bin.py
-bin.py projectName dataConfigFileName csvFilter dateFormat
+run datachecker.py
+datachecker.py projectName dataConfigFileName csvFilter dateFormat
     projectName: project folder name, like fed, eba, hkma, case insensitive
     dataConfigFileName: get from another tool GenProductDPM, named like FED_FORM_META.ini, case insensitive
     csvFilter: * means all csv files, also can write like *abc, abc*,*a*b*c*,abc.csv, these will match one or more files.
-    dateFormat:you can choose GB,US,CN. GB:yyy/mm/dd, US::yyy/mm/dd, CN:yyyy-mm-dd
+    dateFormat:you can choose GB,US,CN. GB:yyy/mm/dd h:mm:ss, US::yyy/mm/dd h:mm:ss, CN:yyyy-mm-dd h:mm:ss
 
 functions:
-1. check csv files' columns and columns' definition in data config are same
-2. check varchar type are normal chars and under maximun length.
-3. check num
-4.
+1. check csv files' columns and columns' definition in data config are same.
+2. check varchar/longtext type are normal chars without too many ? and under maximun length.
+3. check returnId column in this file are same as returnId within this file's name.
+4. check nullable, if column doesn't allow nullable, content is nullable will be logged as error.

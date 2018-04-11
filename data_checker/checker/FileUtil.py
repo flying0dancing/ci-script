@@ -85,9 +85,9 @@ def readColumn(csvFullName,col_id,col_props,file_id,dateFormat='US'):
                     row_id = 2
                     for col_value in col:
                         if file_id == col_value:
-                            logger.debug(r'match:{4}- row[{0}] column[{1}]:{2} type:[{3}]'.format(row_id, col_id, col_value,col_props[1],tableName))
+                            logger.debug(r'match:{4}- rec[{0}] column[{1}]:{2} type:[{3}]'.format(row_id, col_id, col_value,col_props[1],tableName))
                         else:
-                            logger.error(r'mismatch:{5}-  row[{0}] column[{1}]:{2}, expected:{4} type:[{3}]'.format(row_id, col_id, col_value, col_props[1],file_id,tableName))
+                            logger.error(r'mismatch:{5}-  rec[{0}] column[{1}]:{2}, expected:{4} type:[{3}]'.format(row_id, col_id, col_value, col_props[1],file_id,tableName))
                             dataFlag=False
                         row_id = row_id + 1
                 else:

@@ -49,14 +49,20 @@ Const adOpenStatic = 3
 Const adLockOptimistic = 3  
 Const adCmdText = 1  
 
-Dim dbFullName,schemaFullName,dataPath,logFile,dateTime,createDBStat
+Dim dbFullName,schemaFullName,dataPath,logFile,dateTime,createDBStat,tableName,fso
 If WScript.Arguments.length=4 Then
  schemaFullName=Trim(WScript.Arguments(0))
  dbFullName=Trim(Wscript.Arguments(1))
  dataPath=Trim(Wscript.Arguments(2))
  logFile=Trim(Wscript.Arguments(3))
-Else
- WScript.Echo "		HELP Document"&Chr(13)&Chr(10)&Chr(13)&Chr(10)&_
+ElseIf WScript.Arguments.length=5 Then
+ schemaFullName=Trim(WScript.Arguments(0))
+ dbFullName=Trim(Wscript.Arguments(1))
+ dataPath=Trim(Wscript.Arguments(2))
+ logFile=Trim(Wscript.Arguments(3))
+ tableName=Trim(Wscript.Arguments(4))
+
+Else WScript.Echo "		HELP Document"&Chr(13)&Chr(10)&Chr(13)&Chr(10)&_
  			  "GenProductDMP.vbs [GENCSV|GENSCHEMA|schemaFullName] [accessDatabaseFullName] [dataFolder|schemaFolder] [logFullName]"&Chr(13)&Chr(10)&Chr(13)&Chr(10)&_
  			  "[GENCSV|GENSCHEMA|schemaFullName] "&Chr(13)&Chr(10)&_
  			  "	GENCSV is identified it will generate data files(*.csv) to [dataFolder]"&Chr(13)&Chr(10)&"	  according to [accessDatabaseFullName];"&Chr(13)&Chr(10)&_
@@ -86,13 +92,32 @@ If UCase(schemaFullName)="GENCSV" Then
 ElseIf UCase(schemaFullName)="GENSCHEMA" Then
 	createFolder dataPath
 	getAllTableProps dbFullName,dataPath,logFile
-Else
-	Dim fso
+ElseIf WScript.Arguments.length=4 Then
 	Set fso=CreateObject("Scripting.FileSystemObject")
 	If fso.FileExists(schemaFullName) And fso.FolderExists(dataPath) Then
 		createDBStat=createDatabase(dbFullName,logFile)
 		If createDBStat Then
 			getAllCsvIntoAccdb dbFullName,schemaFullName,dataPath,logFile
+		Else 
+			logger logFile,"[error] cannot create database["&dbFullName&"]"
+		End If
+	Else
+		logger logFile,"[error] file or folder doesn't(don't) exist: schema["&schemaFullName&"],dataPath["&dataPath&"]" 
+	End If
+	Set fso=Nothing
+ElseIf WScript.Arguments.length=5 Then
+	Set fso=CreateObject("Scripting.FileSystemObject")
+	If fso.FileExists(schemaFullName) And fso.FileExists(dataPath) Then
+		If fileExistence(dbFullName) Then
+    		logger logFile, "[info] FileExisted:"&dbFullName
+    		createDBStat=True
+    	Else
+    		logger logFile, "[info] File Need to Create:"&dbFullName
+    		createDBStat=createDatabase(dbFullName,logFile)
+    	End If
+		
+		If createDBStat Then
+			singleImportCsvIntoAccdb schemaFullName,dbFullName,dataPath,logFile,tableName
 		Else 
 			logger logFile,"[error] cannot create database["&dbFullName&"]"
 		End If
@@ -109,6 +134,58 @@ If searchStr(logFile,"fail|error") Then '
 Else
   Wscript.Quit(0)
 End If
+
+Sub singleImportCsvIntoAccdb(schemaFullName,dbFullName,dataPath,logFile,tableName)
+	On Error Resume Next
+	logger logFile,"	"
+	logger logFile,"[info] import a csv file to accessdb table"
+	Dim fso,objFile,connStr
+	Dim dataFileName,dataUppPath
+	connStr=getConnectStr(dbFullName)
+    If isEmptyNull(connStr) Then
+    	logger logFile,"[error] connectionString is emptyString"
+    	Exit Sub
+    End If
+    logger logFile,"[info] connectionString is " & connStr
+    Set fso=CreateObject("Scripting.FileSystemObject")
+	Set objFile=CreateObject("Scripting.File")
+	
+	Set objFile=fso.GetFile(dataPath)
+	dataFileName=objFile.Name
+	dataUppPath=objFile.ParentFolder
+	If UCase(fso.GetExtensionName(dataFileName))<>"CSV" Then
+		logger logFile,"[fail] import data should be from csv, not "+fso.GetExtensionName(dataFileName)
+		Set objFile=Nothing
+		Set fso=Nothing
+		Exit Sub
+	End If
+	'create table, import data
+	If Not tableExistence(connStr,tableName,logFile) Then
+		If createDBTable(connStr,schemaFullName,tableName,logFile) Then
+			If importTextToExistTable(dbFullName,tableName,dataUppPath,dataFileName,logFile) Then
+				logger logFile,"[pass] import data to existed table after create it"
+			Else
+				logger logFile,"[fail] import data to existed table after create it"
+			End If
+		Else 
+			'cannot create table 1.cannot find schema in schema file; 2.create table fail.
+			If importTxtToNewTable(dbFullName,tableName,dataUppPath,dataFileName,logFile) Then
+				logger logFile,"[pass] import data to new table"
+			Else
+				logger logFile,"[fail] import data to new table"
+			End If
+		End If
+	Else		 
+		If importTextToExistTable(dbFullName,tableName,dataUppPath,dataFileName,logFile) Then
+			logger logFile,"[pass] import data to existed table"
+		Else
+			logger logFile,"[fail] import data to existed table"
+		End If
+	End If
+	'clean up objects
+	Set objFile=Nothing
+	Set fso=Nothing
+End Sub
 
 '''''''''''''''''''''''''''''''''''
 ' list all csv file
@@ -279,7 +356,7 @@ End Sub
 Function importTxtToNewTable(dbFullName,tableName,dataPath,dataFileName,logFile)
 	importTxtToNewTable=False
 	logger logFile,"	"
-	logger logFile,"import data into new ["& tableName& "] from ["& dataFileName &"]"
+	logger logFile,"[info] import data into new ["& tableName& "] from ["& dataFileName &"]"
 	Dim queryStr
 	queryStr="select * into ["& tableName &"] in '" & dbFullName &"' from ["& dataFileName &"]"
     importTxtToNewTable=importTextToTable(dataPath,queryStr,logFile)
@@ -291,7 +368,7 @@ End Function
 Function importTextToExistTable(dbFullName,tableName,dataPath,dataFileName,logFile)
 	importTextToExistTable=False
 	logger logFile,"	"
-	logger logFile,"import data into existed ["& tableName& "] from ["& dataFileName &"]"
+	logger logFile,"[info] import data into existed ["& tableName& "] from ["& dataFileName &"]"
 	Dim queryStr
 	queryStr="insert into ["& tableName & "] in '" & dbFullName &"' select * from ["& dataFileName &"]"
     importTextToExistTable=importTextToTable(dataPath,queryStr,logFile)
@@ -308,8 +385,8 @@ Function importTextToTable(dataPath,queryStr,logFile)
 	Dim connStr,dateTime
     dateTime=Now
 	connStr="Provider=Microsoft.ACE.OLEDB.12.0;" & "Data Source="&dataPath&";" & "Extended Properties=""Text;HDR=Yes;FMT=Delimited"""
-	'logger logFile,"connectionString is " & connStr
-	'logger logFile,"queryStr: " & queryStr
+	logger logFile,"[info] connectionString is " & connStr
+	logger logFile,"[info] importTextToTable queryStr: " & queryStr
     
 	Set objConn = CreateObject("ADODB.Connection")
 	objConn.Open connStr
@@ -425,7 +502,7 @@ Function createDBTable(connStr,schemaFullName,tableName,logFile)
     'objCat.Create(connStr)
     Set objCat.ActiveConnection=objConn
     tableCount=objCat.Tables.Count
-    logger logFile, "create table count="&tableCount
+    logger logFile, "[info] createDBTable existed table count="&tableCount
     
     'Create the table
     'add columns

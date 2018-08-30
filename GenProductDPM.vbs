@@ -77,7 +77,8 @@ Else WScript.Echo "		HELP Document"&Chr(13)&Chr(10)&Chr(13)&Chr(10)&_
  			  "for example:"&Chr(13)&Chr(10)&Chr(13)&Chr(10)&_
  			  "GenProductDMP.vbs ""GENCSV"" ""E:\FED_FORM_META.accdb"" ""e:\abc"" ""e:\log\gencsv.log"" "&Chr(13)&Chr(10)&_
  			  "GenProductDMP.vbs ""GENSCHEMA"" ""E:\FED_FORM_META.accdb"" ""e:\foo"" ""e:\log\genschema.log"" "&Chr(13)&Chr(10)&_
- 			  "GenProductDMP.vbs ""e:\foo\FED_FORM_META.ini"" ""E:\abc\newcreate.accdb"" ""e:\abc"" ""e:\log\gendpm.log"" "&Chr(13)&Chr(10)
+ 			  "GenProductDMP.vbs ""e:\foo\FED_FORM_META.ini"" ""E:\abc\newcreate.accdb"" ""e:\abc"" ""e:\log\gendpm.log"" "&Chr(13)&Chr(10)&_
+ 			  "GenProductDMP.vbs ""e:\foo\FED_FORM_META.ini"" ""E:\abc\newcreate.accdb"" ""e:\abc\table_300016.csv"" ""e:\log\gendpm.log"" ""tableName"" "&Chr(13)&Chr(10)
  
  WScript.Quit(-1)
 End If
@@ -109,10 +110,10 @@ ElseIf WScript.Arguments.length=5 Then
 	Set fso=CreateObject("Scripting.FileSystemObject")
 	If fso.FileExists(schemaFullName) And fso.FileExists(dataPath) Then
 		If fileExistence(dbFullName) Then
-    		logger logFile, "[info] FileExisted:"&dbFullName
+    		logger logFile, "[info] Database Existed:"&dbFullName
     		createDBStat=True
     	Else
-    		logger logFile, "[info] File Need to Create:"&dbFullName
+    		logger logFile, "[info] Database Need to Create:"&dbFullName
     		createDBStat=createDatabase(dbFullName,logFile)
     	End If
 		
@@ -1061,10 +1062,10 @@ Function createDatabase(dbFullName,logFile)
 	logger logFile,"createDatabase ["&dbFullName&"]"
 	'find db file
     If fileExistence(dbFullName) Then
-    	logger logFile, "[info] FileExisted:"&dbFullName
+    	logger logFile, "[info] FileExisted: "&dbFullName
     	Call deleteFile(dbFullName)
     Else
-    	logger logFile, "[info] FileNotFind:"&dbFullName
+    	logger logFile, "[info] FileNotFind: "&dbFullName
     End If
     Dim dbPath
     dbPath=Mid(dbFullName,1,InStrRev(dbFullName,"\"))
@@ -1177,7 +1178,7 @@ End Function
 ' create folder
 '''''''''''''''''''''''''''''''''''
 Function createFolder(logFolder)
-	WScript.Echo "createFolder"&logFolder
+	WScript.Echo "createFolder "&logFolder
 	On Error Resume Next
 	Dim fso,pathArr,pathstr,pat,i
 	Set fso=CreateObject("Scripting.FileSystemObject")
@@ -1243,6 +1244,8 @@ Function getTypeInt(typeString)
 		getTypeInt=adDouble  '5
 	ElseIf	StrComp(typeStr,"DECIMAL" ,vbTextCompare)=0 Then
 		getTypeInt=adNumeric '131
+	ElseIf	StrComp(typeStr,"BOOLEAN" ,vbTextCompare)=0 Then
+		getTypeInt=adBoolean '11
 	End If
 
 End Function
@@ -1327,6 +1330,8 @@ Function getTypeStr(typeInt,defsize)
 		getTypeStr= "DOUBLE"  '5
 	ElseIf	typeInt=131 Then
 		getTypeStr= "DECIMAL"  '131
+	ElseIf	typeInt=11 Then
+		getTypeStr= "BOOLEAN"  '11
 	End If
 End Function
 

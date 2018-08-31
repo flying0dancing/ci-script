@@ -1276,6 +1276,8 @@ Function getAttributeInt(typeString)
 		getAttributeInt=3  '5
 	ElseIf	StrComp(typeStr,"DECIMAL" ,vbTextCompare)=0 Then
 		getAttributeInt=3  '131
+	ElseIf	StrComp(typeStr,"BOOLEAN" ,vbTextCompare)=0 Then
+		getAttributeInt=1  '
 	End If
 
 End Function

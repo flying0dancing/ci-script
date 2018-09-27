@@ -9,9 +9,9 @@ rem set _WorkSpace=%_WorkSpace:ci-script\=%
 REM =============== need to modify vars ======================
 REM =============== start ======================
 
-set _GEN_VAR_SCHEMA_FULLNAME=%_WorkSpace%..\%~1
-set _GEN_VAR_DB_FULLNAME=%_WorkSpace%..\%~2
-set _GEN_VAR_DATA_PATH=%_WorkSpace%..\%~3
+set _GEN_VAR_SCHEMA_FULLNAME="%_WorkSpace%..\%~1"
+set _GEN_VAR_DB_FULLNAME="%_WorkSpace%..\%~2"
+set _GEN_VAR_DATA_PATH="%_WorkSpace%..\%~3"
 set _GEN_VAR_LOG_FULLNAME="%~dp0log\%~n0.log"
 
 REM =============== end ======================

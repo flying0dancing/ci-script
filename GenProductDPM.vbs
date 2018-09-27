@@ -512,7 +512,7 @@ Function createDBTable(connStr,schemaFullName,tableName,logFile)
     Set rh=fso.OpenTextFile(schemaFullName,1)'1=ForReading
     i=1
     Do while not rh.AtEndOfStream
-    	Dim line,rowStr,row,rowLen,colName,colType,colSize
+    	Dim line,rowStr,row,rowLen,colName,colType,colSize,colSizeStr,coleSizeArr
     	line=rh.ReadLine
     	If line<>"" Then
     	 line=Trim(line)
@@ -543,7 +543,8 @@ Function createDBTable(connStr,schemaFullName,tableName,logFile)
     				colSize=-1
     			Else
     				colType=Mid(row(1), 1, InStr(row(1),"(")-1)
-    				colSize=CLng(Mid(row(1), InStr(row(1),"(")+1, Len(row(1))-Len(colType)-2))
+    				colSizeStr=Mid(row(1), InStr(row(1),"(")+1, Len(row(1))-Len(colType)-2)
+    				colSize=CLng(colSizeStr)
     			End If
 			End If
 			If	rowLen=4 Or rowLen=5 Then
@@ -554,10 +555,21 @@ Function createDBTable(connStr,schemaFullName,tableName,logFile)
     			
     		If colSize=-1 Then
     			objTbl.Columns.Append colName,getTypeInt(colType)
+    			objTbl.Columns(colName).Precision=getPrecision(colType)
     			logger logFile, colNo&colName&", type="&colType
     		Else
-    			objTbl.Columns.Append colName,getTypeInt(colType),colSize
-    			logger logFile, colNo&colName&", type="&colType&", size="&CStr(colSize)
+    			If InStr(colSizeStr,",") Then
+    				coleSizeArr=Split(colSizeStr,",",-1)
+    				objTbl.Columns.Append colName,getTypeInt(colType)
+    				objTbl.Columns(colName).Precision=coleSizeArr(0)
+    				objTbl.Columns(colName).NumericScale=coleSizeArr(1)
+    				logger logFile, colNo&colName&", type="&colType&", size="&CStr(colSizeStr)
+    			Else
+    				objTbl.Columns.Append colName,getTypeInt(colType),colSize
+    				objTbl.Columns(colName).Precision=getPrecision(colType)
+    				logger logFile, colNo&colName&", type="&colType&", size="&CStr(colSize)
+    			End If
+    			
     		End If
     		' set required=No
     		Dim attrInt
@@ -566,7 +578,7 @@ Function createDBTable(connStr,schemaFullName,tableName,logFile)
     			objTbl.Columns(colName).Attributes=attrInt
     			objTbl.Columns(colName).Properties("Nullable")=True
     		End If
-    		objTbl.Columns(colName).Precision=getPrecision(colType)
+    		
     		i=i+1 
 		End If
     	
@@ -639,7 +651,7 @@ Sub createDBTables(connStr,schemaFullName,logFile)
     Set rh=fso.OpenTextFile(schemaFullName,1)'1=ForReading
     i=1
     Do while not rh.AtEndOfStream
-    	Dim line,rowStr,row,rowLen,colName,colType,colSize
+    	Dim line,rowStr,row,rowLen,colName,colType,colSize,colSizeStr,coleSizeArr
     	line=rh.ReadLine
     	If line<>"" Then
     	 line=Trim(line)
@@ -676,8 +688,9 @@ Sub createDBTables(connStr,schemaFullName,logFile)
     				colType=row(1)
     				colSize=-1
     			Else
-    				colType=Mid(row(1), 1, InStr(row(1),"(")-1)
-    				colSize=CLng(Mid(row(1), InStr(row(1),"(")+1, Len(row(1))-Len(colType)-2))
+    				colType=Mid(row(1), 1, InStr(row(1),"(")-1)    				
+    				colSizeStr=Mid(row(1), InStr(row(1),"(")+1, Len(row(1))-Len(colType)-2)
+    				colSize=CLng(colSizeStr)
     			End If
 			End If
 			If	rowLen=4 Or rowLen=5 Then
@@ -688,10 +701,22 @@ Sub createDBTables(connStr,schemaFullName,logFile)
     			
     		If colSize=-1 Then
     			objTbl.Columns.Append colName,getTypeInt(colType)
+    			objTbl.Columns(colName).Precision=getPrecision(colType)
     			logger logFile, colNo&colName&", type="&colType
+    			
     		Else
-    			objTbl.Columns.Append colName,getTypeInt(colType),colSize
-    			logger logFile, colNo&colName&", type="&colType&", size="&CStr(colSize)
+    			If InStr(colSizeStr,",") Then
+    				coleSizeArr=Split(colSizeStr,",",-1,vbTextCompare)
+    				objTbl.Columns.Append colName,getTypeInt(colType)
+    				objTbl.Columns(colName).Precision=CLng(coleSizeArr(0))
+    				objTbl.Columns(colName).NumericScale=CByte(coleSizeArr(1))
+    				logger logFile, colNo&colName&", type="&colType&", size="&CStr(colSizeStr)
+    			Else
+    				objTbl.Columns.Append colName,getTypeInt(colType),colSize
+    				objTbl.Columns(colName).Precision=getPrecision(colType)
+    				logger logFile, colNo&colName&", type="&colType&", size="&CStr(colSize)
+    			End If
+    			
     		End If
     		' set required=No
     		Dim attrInt
@@ -700,7 +725,7 @@ Sub createDBTables(connStr,schemaFullName,logFile)
     			objTbl.Columns(colName).Attributes=attrInt
     			objTbl.Columns(colName).Properties("Nullable")=True
     		End If
-    		objTbl.Columns(colName).Precision=getPrecision(colType)
+    		
     		i=i+1 
 		End If
     	
@@ -769,7 +794,7 @@ Sub getAllTablePropsDisorder(connStr,logFile)
 				logger logFile,"========colTmpType:"&colTmp.Type  &", attribute=" & CStr(colTmp.Attributes)
 			End If
 			'
-    		colStr="col"& i+1 &"=" & colTmp.Name & " "& getTypeStr(colTmp.Type,colTmp.DefinedSize) '&" "&colTmp.DefinedSize & " "&colTmp.Precision & " " & colTmp.NumericScale
+    		colStr="col"& i+1 &"=" & colTmp.Name & " "& getTypeStr(colTmp.Type,colTmp.DefinedSize,colTmp.Precision,colTmp.NumericScale) '&" "&colTmp.DefinedSize & " "&colTmp.Precision & " " & colTmp.NumericScale
     		If colTmp.Properties("Nullable").Value=True Then
     			colStr=colStr & " Nullable"
     		End If
@@ -871,7 +896,7 @@ Sub getAllTableProps(dbFullName,schemaPath,logFile)
         	Set colTmp=CreateObject("ADOX.Column")
 			For j=0 To objRS.Fields.Count-1
 				Set colTmp=objRS.Fields(j)
-				colStr="col" & j+1 &"="& colTmp.Name&" "& getTypeStr(colTmp.Type,colTmp.DefinedSize) '&" "&colTmp.DefinedSize & " "&colTmp.Precision & " " & colTmp.NumericScale
+				colStr="col" & j+1 &"="& colTmp.Name&" "& getTypeStr(colTmp.Type,colTmp.DefinedSize,colTmp.Precision,colTmp.NumericScale) '&" "&colTmp.DefinedSize & " "&colTmp.Precision & " " & colTmp.NumericScale
 				If colTmp.Properties("Nullable").Value=True Then
     				colStr=colStr & " Nullable"
     			End If
@@ -1244,6 +1269,8 @@ Function getTypeInt(typeString)
 		getTypeInt=adDouble  '5
 	ElseIf	StrComp(typeStr,"DECIMAL" ,vbTextCompare)=0 Then
 		getTypeInt=adNumeric '131
+	ElseIf	StrComp(typeStr,"NUMERIC" ,vbTextCompare)=0 Then
+		getTypeInt=adNumeric '131
 	ElseIf	StrComp(typeStr,"BOOLEAN" ,vbTextCompare)=0 Then
 		getTypeInt=adBoolean '11
 	End If
@@ -1276,6 +1303,8 @@ Function getAttributeInt(typeString)
 		getAttributeInt=3  '5
 	ElseIf	StrComp(typeStr,"DECIMAL" ,vbTextCompare)=0 Then
 		getAttributeInt=3  '131
+	ElseIf	StrComp(typeStr,"NUMERIC" ,vbTextCompare)=0 Then
+		getAttributeInt=3  '131
 	ElseIf	StrComp(typeStr,"BOOLEAN" ,vbTextCompare)=0 Then
 		getAttributeInt=1  '
 	End If
@@ -1306,6 +1335,8 @@ Function getPrecision(typeString)
 		getPrecision=15  '5
 	ElseIf	StrComp(typeStr,"DECIMAL" ,vbTextCompare)=0 Then
 		getPrecision=18  '131
+	ElseIf	StrComp(typeStr,"NUMERIC" ,vbTextCompare)=0 Then
+		getPrecision=18  '131
 	End If
 
 End Function
@@ -1313,7 +1344,7 @@ End Function
 '''''''''''''''''''''''''''''''''''
 'get type's string with default size by type code and default size
 '''''''''''''''''''''''''''''''''''
-Function getTypeStr(typeInt,defsize)
+Function getTypeStr(typeInt,defsize,precision,numericScale)
 	getTypeStr="VARCHAR("&defsize&")"
 	'WScript.Echo typeStr
 	If typeInt=202 Then
@@ -1331,7 +1362,7 @@ Function getTypeStr(typeInt,defsize)
 	ElseIf	typeInt=5 Then
 		getTypeStr= "DOUBLE"  '5
 	ElseIf	typeInt=131 Then
-		getTypeStr= "DECIMAL"  '131
+		getTypeStr= "NUMERIC("&precision&","&numericScale&")"  '131 - equal to UI's DECIMAL
 	ElseIf	typeInt=11 Then
 		getTypeStr= "BOOLEAN"  '11
 	End If

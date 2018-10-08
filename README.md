@@ -23,4 +23,7 @@ this project is used for lombardrisk compliance team.
    * in jenkins, we use `packageProduct.sh` to run zipProduct.sh.<br> 
    For example, for `fed` product:<br> 
        <pre><code>ci-script/packageProduct.sh /fed/src /fed/package.properties b110</code></pre>
+4. testudo can use on linux and windows OSes.
+   * Generate metadata files from many databases(Sql Server, Oracle, Access Database), and then compress necessary files into packages(*.zip and *.lrm).
+   * Details see [readme document](https://bitbucket.lombardrisk.com/projects/CPROD/repos/testudo/browse/readme.md).
 	   

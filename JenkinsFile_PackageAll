@@ -31,7 +31,7 @@ pipeline {
 
 
 String getSomeProperties(projectFolder,keystr){
-	def files =findFiles(glob: '**/'+projectFolder+'/'=ARProject_Properties)
+	def files =findFiles(glob: '**/'+projectFolder+'/'+ARProject_Properties)
 	def returnValue=''
 	def props
 	for(int index=0;index<files.size();index++){

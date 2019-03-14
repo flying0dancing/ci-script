@@ -1,13 +1,5 @@
 #!/bin/bash
-installfolder=/home/testp/trump_11
-description="ar for MAS System alias"
-DIDimplementationVersion=2.23.1.7
-DIDprefix=MAS
-id=5
-DIDaliasName="STB Work:STB System:STB System MAS"
-type=1
-properties=MASoracleSystemaliasinfo.properties
-propertiesfolder=Z:\ProductLine\TrumpTest
+
 
 if [ X$1 == X-h -o X$1 == X-help -o X$1 == Xhelp ];then
   echo "--------------------------------------------------------------------------------------------------------"
@@ -104,13 +96,14 @@ else
             netstat -atunlp | awk '/${port_zookeeper}/{print substr($7,1,index($7,"/")-1)}' | sort | uniq | xargs kill -9
         fi
         cd "${installfolder}"
+	echo "java -jar ${app} -options ${properties} 2>&1 |tee $detaillog"
         java -jar "${app}" -options "${properties}" 2>&1 | tee $detaillog
         tail -5 $detaillog | grep -i "AgileREPORTER has been installed"
         if [ "$?" = "0" ]; then
             echo "${app} install or upgrade successfully."
             echo "install ${app} pass">$logfile
             if [ -n "${port_offset}" ];then
-                cd jboss-eap*/standalone/configuration
+                cd wildfly*/standalone/configuration
                 sed -i "s/port-offset:[0-9]/port-offset:${port_offset}/g" standalone.xml
             fi
         else

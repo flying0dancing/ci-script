@@ -19,5 +19,12 @@ fi
 installfolder=$1
 arproductname=$2
 type=1
-find "${installfolder}" -type f -name ${arproductname} -exec sh RemoteInstall.sh "${installfolder}" 1 {} \;
+#find "${installfolder}" -type f -name ${arproductname} -exec sh RemoteInstall.sh "${installfolder}" 1 {} \;
+for i in `find "${installfolder}" -type f -name ${arproductname}`
+do
+echo "================================================================================"
+echo "install $i :"
+sh RemoteInstall.sh "${installfolder}" 1 $i
+echo "================================================================================"
+done
 

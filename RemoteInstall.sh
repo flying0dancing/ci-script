@@ -31,7 +31,7 @@ fi
 curdatetime=`date "+%Y_%m_%d_%H_%M_%S"`
 installfolder=$1
 type=$2
-logfile=${0%.*}_$2_$curdatetime.tmp
+logfile=${0%.*}_$2.tmp
 detaillog=${0%.*}_$2_$curdatetime.log
 app=
 properties=

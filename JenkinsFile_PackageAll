@@ -2,6 +2,15 @@
 ARProject_Prefix=getprojectFolder(env.JOB_NAME)
 ARProject_Properties='package.properties'
 ARProduct_Manifest='/src/manifest.xml'
+
+server = Artifactory.server '-2131115395@1455437299997'
+rtMaven = Artifactory.newMavenBuild()
+rtMaven.tool = 'mvn-3.3.9' // Tool name from Jenkins configuration
+rtMaven.deployer( releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot-local', server: server)
+rtMaven.resolver( releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server)
+rtMaven.deployer.deployArtifacts = false // Disable artifacts deployment during Maven run
+buildInfo = Artifactory.newBuildInfo()
+
 pipeline {
     agent { label 'SHA-AR-PRODUCT-CI-TEST' }
     options {
@@ -23,9 +32,16 @@ pipeline {
 		}
 		stage('build package'){
 			steps{
-				packageARProduct(ARProject_Prefix,env.BUILD_NUMBER)
+				echo "build all packages"
+				packageARProduct(ARProject_Prefix,'b'+env.BUILD_NUMBER)
 			}
 		}
+		stage('upload package'){
+           steps{
+			   echo "upload all packages"
+               uploadARProduct(ARProject_Prefix,'b'+env.BUILD_NUMBER)
+			}    
+        }
     }
 }
 
@@ -48,7 +64,7 @@ String getSomeProperties(projectFolder,keystr){
 }
 
 def getExternalProjsFromJson(projectFolder){
-	def files =findFiles(glob: '**/'+projectFolder+'/testudo.json')
+	def files =findFiles(glob: '**/'+projectFolder+'/**/testudo.json')
 	def returnArr=[]
 	def cisettings
 	def zipset
@@ -107,29 +123,39 @@ String getVersionOfARProductFromManifest(manifestFullPath){
 	return version_APRroduct_Pacakge
 }
 
+void checkoutARProduct(projectFolder){
+    checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CleanBeforeCheckout'], [$class: 'RelativeTargetDirectory', relativeTargetDir: "${projectFolder}"]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '46afdff1-cdd3-4098-b8af-d904b4d298aa', url: "ssh://git@bitbucket.lombardrisk.com:7999/cprod/${projectFolder}.git"]]])
+           
+	def externalProjs=getExternalProjsFromJson(projectFolder)
+	if(externalProjs){
+		for(int i=0;i<externalProjs.size();i++){
+			checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CleanBeforeCheckout'], [$class: 'RelativeTargetDirectory', relativeTargetDir: "${projectFolder}xbrl"]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '46afdff1-cdd3-4098-b8af-d904b4d298aa', url: "ssh://git@bitbucket.lombardrisk.com:7999/cprod/${externalProjs[i]}.git"]]])
+		}
+	}
+}
+
 /**
 * package all products in projectFolder, packageBuildNumber like b1,b2,b3...,b290,..
 */
 void packageARProduct(projectFolder,packageBuildNumber){
     def productVersionFolder
-    sh (
-        '''
-			cd ci-script
-			java -jar testudo.jar -Dproject='''+projectFolder+''' -Did=* -Dproc=2 -DrunOnJenkins -Drelease='''+packageBuildNumber+'''
-		'''
-        )
-	
-	productVersionFolder=getProductVersionFolder(projectFolder)
+    dir(projectFolder){
+      rtMaven.run pom: 'pom.xml', goals: 'clean package -U -DskipITs -DskipTests -Dproduct.build.number='+packageBuildNumber, buildInfo: buildInfo
+    }
+}
+
+
+void uploadARProduct(projectFolder,packageBuildNumber){
+    def productVersionFolder=getProductVersionFolder(projectFolder)
 	def s3_bucket=getSomeProperties(projectFolder,'s3.bucket')
 	def local_linux=getSomeProperties(projectFolder,'local.linux')
 	def arproduct_repo_linux=getSomeProperties(projectFolder,'arproduct.repo.linux')+projectFolder+'/candidate-release/'
-	def manifestFiles = findFiles(glob: '**/'+projectFolder+'/*'+ARProduct_Manifest) 
+	def manifestFiles = findFiles(glob: '**/'+projectFolder+'/*/target/**'+ARProduct_Manifest)
 	productVersionFolder=productVersionFolder+'/'+packageBuildNumber
-	if(manifestFiles.size()>0){
+	if(manifestFiles){
 		for(int festIndex=0;festIndex<manifestFiles.size();festIndex++){
 		    def productPath=manifestFiles[festIndex].path.replaceAll(ARProduct_Manifest,'')
-			def productName=productPath.replaceAll(projectFolder+'/','')
-			echo "product name(prefix): ${productName}"
+			echo "product package path: "+productPath.replaceAll('/src','')
 			def version_APRroduct_Pacakge=getVersionOfARProductFromManifest(manifestFiles[festIndex].path)
 			def files = findFiles(glob: productPath+'/*'+version_APRroduct_Pacakge+'*') 
 			if(local_linux){
@@ -144,9 +170,7 @@ void packageARProduct(projectFolder,packageBuildNumber){
 	            	}
 	        	}
 			}
-	        //files.each{sh( returnStatus: true, script: 'scp '+it.path+' '+local_linux+':'+arproduct_repo_linux+productVersionFolder+'/'+it.name)}
-            withAWS(credentials: 'aws') {
-                //echo """${files[0].name}, ${files[0].path}, ${files[0].directory}, ${files[0].length}, ${files[0].lastModified}"""
+	        withAWS(credentials: 'aws') {
                 files.each{s3Upload( bucket:s3_bucket, path:"arproduct/${projectFolder}/CandidateReleases/${productVersionFolder}/${it.name}",includePathPattern:"${it.path}")}
             }
 		}
@@ -155,47 +179,4 @@ void packageARProduct(projectFolder,packageBuildNumber){
 	}
 }
 
-void checkoutARProduct(projectFolder){
-    checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CleanBeforeCheckout'], [$class: 'RelativeTargetDirectory', relativeTargetDir: "${projectFolder}"]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '46afdff1-cdd3-4098-b8af-d904b4d298aa', url: "ssh://git@bitbucket.lombardrisk.com:7999/cprod/${projectFolder}.git"]]])
-           
-    //checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CleanBeforeCheckout'], [$class: 'RelativeTargetDirectory', relativeTargetDir: 'ci-script']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '46afdff1-cdd3-4098-b8af-d904b4d298aa', url: 'ssh://git@bitbucket.lombardrisk.com:7999/cprod/ci-script.git']]])
-	def externalProjs=getExternalProjsFromJson(projectFolder)
-	if(externalProjs){
-		for(int i=0;i<externalProjs.size();i++){
-			checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CleanBeforeCheckout'], [$class: 'RelativeTargetDirectory', relativeTargetDir: "${projectFolder}xbrl"]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '46afdff1-cdd3-4098-b8af-d904b4d298aa', url: "ssh://git@bitbucket.lombardrisk.com:7999/cprod/${externalProjs[i]}.git"]]])
-		}
-	}
-}
 
-void downloadARInstaller(projectFolder){
-    def downfiles
-   
-    def arInstallerVersion = getSomeProperties(projectFolder,'ar.installer.version')
-    def s3_bucket=getSomeProperties(projectFolder,'s3.bucket')
-	def local_linux=getSomeProperties(projectFolder,'local.linux')
-	def ar_repo_linux=getSomeProperties(projectFolder,'ar.repo.linux')
-	def s3_ar_repo='AgileREPORTER/Releases/CandidateReleases/'
-    withAWS(credentials: 'aws') {
-        downfiles=s3FindFiles(bucket:s3_bucket, path:s3_ar_repo, glob:"**/AgileREPORTER-${arInstallerVersion}.jar")
-        //downfiles.each{print "${it.name},${it.path},${it.length},${it.lastModified}"}
-    }
-    if(downfiles.size()>0){
-        def ar_path=downfiles[0].path[0..downfiles[0].path.indexOf(downfiles[0].name)-1]
-	
-	    sh( returnStatus: true, script: '''ssh '''+local_linux+'''  'mkdir -p '''+ar_repo_linux+ar_path+'''' ''')
-	    def jarExisted=sh(returnStdout: true, script: '''ssh '''+local_linux+''' '[ -e '''+ar_repo_linux+downfiles[0].path+''' ]; echo $?' ''').trim()
-
-        if(jarExisted=='0'){//existed
-            echo "Agile Reporter jar already exists.No need to download again."
-        }else{
-            withAWS(credentials: 'aws') {
-                s3Download(bucket:s3_bucket, path:s3_ar_repo+downfiles[0].path,file:downfiles[0].path,force:true)
-            }
-            def status=sh( returnStatus: true, script: 'scp '+downfiles[0].path+' '+local_linux+':'+ar_repo_linux+ar_path)
-            echo "downloaded Agile Reporter jar completely."
-    }
-    }else{
-	    echo "there is no packages existed in bucket server, please check your ar.installer.version in ${ARProject_Properties}."
-	}
-	
-}

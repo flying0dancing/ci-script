@@ -12,7 +12,7 @@ rtMaven.deployer.deployArtifacts = false // Disable artifacts deployment during 
 buildInfo = Artifactory.newBuildInfo()
 
 pipeline {
-    agent { label 'SHA-AR-PRODUCT-CI-TEST' }
+    agent { label 'PRODUCT-CI-TEST' }
     options {
         timeout(time: 60, unit: 'MINUTES') 
     }

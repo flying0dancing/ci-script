@@ -135,6 +135,7 @@ else
 		  DIDaliasName=$7
 		fi
         if [ -n "${app}" ];then
+            echo "================================================================================"
             echo "./bin/config.sh -a ${app}" >$detaillog
             echo "================================================================================" >>$detaillog
             ./bin/config.sh -a "${app}"  2>&1 | tee -a $detaillog
@@ -152,6 +153,7 @@ else
             i=1
             while((1==1))
             do
+               echo "================================================================================"
                split=`echo ${DIDaliasName}|cut -d ":" -f$i`
                 if [ "$split" != ""  -a "$split" != "${DIDaliasName}" ];then
                     ((i++))

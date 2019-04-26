@@ -40,11 +40,90 @@ pipeline {
            steps{
 			   echo "upload all packages"
                uploadARProduct(ARProject_Prefix,'b'+env.BUILD_NUMBER)
-			}    
+			} 
+        }
+		
+    }
+	post {
+        always {
+            echo 'This will always run'
+        }
+        success {
+            echo 'This will run only if successful'
+			updateBuild(ARProject_Prefix,'b'+env.BUILD_NUMBER)
+        }
+        failure {
+            echo 'This will run only if failed'
+        }
+        unstable {
+            echo 'This will run only if the run was marked as unstable'
+        }
+        changed {
+            echo 'This will run only if the state of the Pipeline has changed'
+            echo 'For example, if the Pipeline was previously failing but is now successful'
         }
     }
 }
 
+void updateBuild(projectFolder, buildnumber){
+	def productVersion=getProductVersionFolder(projectFolder)
+	def packageSection = createPackagesSection(projectFolder, productVersion,buildnumber)
+	currentBuild.displayName=productVersion+'-b'+env.BUILD_NUMBER
+	currentBuild.description = """
+		$packageSection
+    """
+}
+
+def createPackagesSection(projectFolder, productVersion, buildnumber) {
+	def bucketName=getSomeProperties(projectFolder,'s3.bucket')
+	def s3repo='arproduct/'+projectFolder+'/CandidateReleases/'+productVersion
+	def downloadlink=''
+	def packageLinksRows=''
+	def displaylink=''
+	def downfiles
+	withAWS(credentials: 'aws') {
+		downfiles=s3FindFiles(bucket:bucketName, path:s3repo, glob:"**/*$buildnumber*")
+	}
+    downfiles.each{print "${it.name},${it.path},${it.length},${it.lastModified}"}
+	for(int index=0;index<downfiles.size();index++){
+	    downloadlink=createLink(bucketName,s3repo,downfiles[index].path,downfiles[index].name)
+	    if(downfiles[index].name.toLowerCase().startsWith(projectFolder.toLowerCase())){
+	        displaylink=displaylink+"""<h4 style='margin: 3px 0'>$downloadlink</h4>&#x000A;&#x000D;"""
+	    }
+		packageLinksRows=packageLinksRows+
+			"""<tr>
+                <td>${downfiles[index].name}</td>
+                <td>$downloadlink</td>
+            </tr>"""
+	}
+    
+    return displaylink+convertToTable(
+            description: 'Packages',
+            firstColumn: 'Package Name', secondColumn: 'Download Link',
+            rows: packageLinksRows
+    )
+}
+
+String createLink(bucketName,s3repo,downloadpath,downloadname){
+    def rootUrl="https://s3-eu-west-1.amazonaws.com"
+    return """<a href = '$rootUrl/$bucketName/$s3repo/${downloadpath}' title = 'Download [${downloadname}] from the [$bucketName] S3 bucket'>${downloadpath}</a>"""
+}
+
+def convertToTable(Map args) {
+    return """
+        <h3 style='margin-bottom:5px'>${args.description}:</h3>
+        <table class='pane stripped-odd bigtable' style='text-align: left'>
+            <thead>
+                <tr>
+                    <th class='pane-header' style='width:40%'>${args.firstColumn}</th>
+                    <th class='pane-header' style='width:30%'>${args.secondColumn}</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${args.rows}
+            </tbody>
+        </table>"""
+}
 
 String getSomeProperties(projectFolder,keystr){
 	def files =findFiles(glob: '**/'+projectFolder+'/'+ARProject_Properties)

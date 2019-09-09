@@ -249,9 +249,9 @@ void uploadARProduct(projectFolder,packageBuildNumber){
 	            	}
 	        	}
 			}
-	        withAWS(credentials: 'aws') {
-                files.each{s3Upload( bucket:s3_bucket, path:"arproduct/${projectFolder}/CandidateReleases/${productVersionFolder}/${it.name}",includePathPattern:"${it.path}")}
-            }
+	        /*withAWS(credentials: 'aws') {
+             *   files.each{s3Upload( bucket:s3_bucket, path:"arproduct/${projectFolder}/CandidateReleases/${productVersionFolder}/${it.name}",includePathPattern:"${it.path}")}
+            }*/
 		}
 	}else{
 	    error "there is no packages, generated with failures."

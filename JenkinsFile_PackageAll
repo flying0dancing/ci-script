@@ -50,7 +50,7 @@ pipeline {
         }
         success {
             echo 'This will run only if successful'
-			updateBuild(ARProject_Prefix,'b'+env.BUILD_NUMBER)
+			/*updateBuild(ARProject_Prefix,'b'+env.BUILD_NUMBER)*/
         }
         failure {
             echo 'This will run only if failed'

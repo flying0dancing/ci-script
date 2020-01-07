@@ -5,7 +5,7 @@
                 homeDir  : '/home/test',
                 configDir: 'scripts/sha-qa2-env',
                 cluster  : false,
-                skipS3DeployDownload: false
+                skipS3DeployDownload: true
         ]
 pipeline {
     agent { label 'PRODUCT-CI-SHA-LOCAL1' }
@@ -23,7 +23,7 @@ pipeline {
 				echo "${S3DOWNPATH}"
 				echo "${DOWNLOADFILENAMES}"
 				sh 'pwd'
-				checkoutIgnis()
+				//checkoutIgnis()
 				
 			}
 		}
@@ -126,7 +126,7 @@ private void copyToEnvironmenttest() {
     String bucket = 'lrm-deploy'
     String remotePath='FCR-Engine/Releases/CandidateReleases/design-studio/2.3.0-b1090/fcr-engine-design-studio-2.3.0-b1090.zip'
     String localPath='fcr-engine-design-studio-2.3.0-b1090.zip'
-    String cmd = "s3 cp s3://$bucket/$remotePath $localPath  --no-progress  --no-verify-ssl"//
+    String cmd = "s3 cp s3://$bucket/$remotePath $localPath  --no-progress "//
     execute(cmd)
    
 }

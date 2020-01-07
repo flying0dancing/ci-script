@@ -1,4 +1,3 @@
-#!groovy
 @Library('pipeline-libs') _
 
  SELECTED_ENV = [

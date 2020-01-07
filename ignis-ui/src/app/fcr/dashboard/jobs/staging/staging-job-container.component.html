@@ -1,0 +1,20 @@
+<app-staging-job-dialog-dataset-jobs
+  *ngIf="!selectedJob && datasetJobHistory$ | async as stagingDatasets"
+  [stagingDatasets]="stagingDatasets"
+  (selectedDatasetEvent)="handleDatasetSelection($event)">
+</app-staging-job-dialog-dataset-jobs>
+
+<app-staging-job-dialog
+  *ngIf="selectedJob && jobExecution$ | async as jobExecution"
+  [jobExecution]="jobExecution"
+  [stagingGetDetailsLoading]="stagingGetDetailsLoading$ | async"
+  [stagingGetJobDatasets]="stagingGetJobDatasets$ | async"
+  [getByIdLoading]="getJobByIdLoading$ | async"
+>
+</app-staging-job-dialog>
+
+<a
+  *ngIf="selectedJob && displayBackButton"
+  (click)="handleJobDeselection()">
+  Back
+</a>

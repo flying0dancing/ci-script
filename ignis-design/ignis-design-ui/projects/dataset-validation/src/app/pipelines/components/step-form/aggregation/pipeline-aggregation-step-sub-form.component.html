@@ -1,0 +1,69 @@
+<div class="form-container">
+  <div [formGroup]="formGroup" class="flex-form full-width">
+    <div class="full-width" style="display: flex">
+      <div class="half-width-left">
+        <dv-auto-complete
+          [options]="schemas"
+          [valueExtractor]="schemaDisplayNameFunction"
+          [initialValue]="formGroupControls.schemaIn.value"
+          [placeholder]="'Schema In'"
+          [title]="'Schema In'"
+          [formInputName]="'Schema'"
+          [disabled]="formGroup.disabled"
+          (valueChanged)="schemaInValueChanged($event)"
+        ></dv-auto-complete>
+      </div>
+
+      <div class="half-width-right">
+        <dv-auto-complete
+          [options]="schemas"
+          [valueExtractor]="schemaDisplayNameFunction"
+          [initialValue]="formGroupControls.schemaOut.value"
+          [placeholder]="'Schema Out'"
+          [disabled]="formGroup.disabled"
+          [title]="'Schema Out'"
+          [formInputName]="'Schema'"
+          (valueChanged)="schemaOutValueChanged($event)"
+        ></dv-auto-complete>
+      </div>
+
+    </div>
+
+    <dv-groupings-form
+      [formControl]="formGroupControls.groupings"
+      [inputSchema]="formGroupControls.schemaIn.value"
+    >
+    </dv-groupings-form>
+  </div>
+
+  <div [formGroup]="formGroup" class="flex-form full-width" style="display: flex">
+
+    <div class="half-width-left">
+      <dv-filters-form
+        [formControl]="formGroupControls.filter"
+        [inputSchemas]="
+        formGroupControls.schemaIn.value
+          ? [formGroupControls.schemaIn.value]
+          : []
+      "
+      >
+      </dv-filters-form>
+    </div>
+
+    <div class="half-width-right">
+      <dv-selects-form
+        [formControl]="formGroupControls.selects"
+        [showOrder]="false"
+        [selectExecutionErrors]="selectExecutionErrors"
+        [inputSchemas]="this.getInputSchemas()"
+        [inputSchemasMetadata]="this.getInputSchemasMetadata()"
+        [outputFields]="
+        formGroupControls.schemaOut.value
+          ? formGroupControls.schemaOut.value.fields
+          : []
+      "
+      >
+      </dv-selects-form>
+    </div>
+  </div>
+</div>

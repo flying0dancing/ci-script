@@ -1,0 +1,55 @@
+<ng-container *ngIf="editing; then edit; else view"></ng-container>
+<ng-template #edit>
+  <div>
+    <form [formGroup]="inputForm">
+      <mat-form-field
+        [ngStyle]="{ width: width }"
+        hintLabel="Enter to confirm, Esc to cancel"
+      >
+        <input
+          #editInput
+          matInput
+          [matDatepicker]="datePicker"
+          [placeholder]="label"
+          class="uppercase"
+          [width]="width"
+          formControlName="val"
+          (keydown)="onKey($event)"
+        />
+
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="datePicker"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #datePicker></mat-datepicker>
+      </mat-form-field>
+    </form>
+  </div>
+</ng-template>
+
+<ng-template #view>
+  <div
+    class="editable-surface"
+    (mouseenter)="hover = true"
+    (mouseleave)="hover = false"
+  >
+    <div (click)="editValue()" style="">
+      <span *ngIf="label" class="input-label">{{ label }}:</span>
+      {{ initialValue }}
+    </div>
+
+    <div
+      *ngIf="hover && !loading"
+      style="display: inline-block; margin-left: 10px;"
+      (click)="editValue()"
+    >
+      <mat-icon style="font-size: 18px">edit</mat-icon>
+    </div>
+
+    <div style="display: inline-block;  margin-left: 10px;" *ngIf="loading">
+      <mat-icon inline>
+        <mat-spinner diameter="20"></mat-spinner>
+      </mat-icon>
+    </div>
+  </div>
+</ng-template>

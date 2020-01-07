@@ -1,0 +1,12 @@
+<app-dialog-header [showClose]="false"
+  >Log in to access FCR Engine</app-dialog-header
+>
+<mat-dialog-content>
+  <p>
+    You'll be automatically redirected in {{ secondsText }}, or click the button
+    below.
+  </p>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button color="primary" (click)="login()">Login</button>
+</mat-dialog-actions>

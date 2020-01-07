@@ -1,0 +1,10 @@
+{
+  "extends": "../../tslint.json",
+  "rules": {
+    "directive-selector": [true, "attribute", "dv", "camelCase"],
+    "component-selector": [true, "element", "dv", "kebab-case"],
+    "no-use-before-declare": false,
+    "forin": false,
+    "member-ordering": [false]
+  }
+}

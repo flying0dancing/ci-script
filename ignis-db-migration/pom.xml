@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>ignis</artifactId>
+    <groupId>com.lombardrisk</groupId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>ignis-db-migration</artifactId>
+
+  <properties>
+    <flyway.placeholders.H2_MODE_FLAG></flyway.placeholders.H2_MODE_FLAG>
+    <db.scripts.path>${project.basedir}/src/dbscript/sql</db.scripts.path>
+    <flyway.baselineOnMigrate>true</flyway.baselineOnMigrate>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-jdbc</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+
+    <!-- Test dependencies -->
+    <dependency>
+      <groupId>com.lombardrisk</groupId>
+      <artifactId>ignis-server-product</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.lombardrisk</groupId>
+      <artifactId>ignis-server-product</artifactId>
+      <version>${project.version}</version>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <configuration>
+          <keepDependenciesWithProvidedScope>false</keepDependenciesWithProvidedScope>
+          <createDependencyReducedPom>false</createDependencyReducedPom>
+          <filters>
+            <filter>
+              <artifact>*:*</artifact>
+              <excludes>
+                <exclude>META-INF/*.SF</exclude>
+                <exclude>META-INF/*.DSA</exclude>
+                <exclude>META-INF/*.RSA</exclude>
+              </excludes>
+            </filter>
+          </filters>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.flywaydb</groupId>
+          <artifactId>flyway-maven-plugin</artifactId>
+          <version>${flyway.version}</version>
+          <dependencies>
+            <dependency>
+              <groupId>com.h2database</groupId>
+              <artifactId>h2</artifactId>
+              <version>${h2.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>com.oracle</groupId>
+              <artifactId>ojdbc8</artifactId>
+              <version>${oracle.jdbc.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>com.microsoft.sqlserver</groupId>
+              <artifactId>mssql-jdbc</artifactId>
+              <version>${mssqlserver.jdbc.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>mysql</groupId>
+              <artifactId>mysql-connector-java</artifactId>
+              <version>${mysql.version}</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>flyway-h2-ignis</id>
+      <properties>
+        <flyway.url>jdbc:h2:${project.basedir}/../ignis-server-parent/ignis-server/data/ignis;MODE=Oracle;AUTO_SERVER=TRUE</flyway.url>
+
+        <flyway.locations>filesystem:${db.scripts.path}/oracle,classpath:com/lombardrisk/ignis/db/migration/oracle</flyway.locations>
+
+        <flyway.placeholders.H2_MODE_FLAG>--</flyway.placeholders.H2_MODE_FLAG>
+        <flyway.placeholders.USER_APP_RW_ROLE></flyway.placeholders.USER_APP_RW_ROLE>
+        <flyway.placeholders.ADMIN_USER>admin</flyway.placeholders.ADMIN_USER>
+        <flyway.placeholders.ADMIN_PASSWORD>
+          $2a$10$AGVu4qjfE/GkfrE/qy8lqefdGY/OOxxTkAgamc84z1tKWLir2/IJi
+        </flyway.placeholders.ADMIN_PASSWORD>
+        <flyway.installedBy>${project.basedir}/../flyway-ignis</flyway.installedBy>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-maven-plugin</artifactId>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>flyway-oracle-ignis</id>
+      <properties>
+        <oracle.host>localhost</oracle.host>
+        <oracle.port>1521</oracle.port>
+        <oracle.db.name>orcl</oracle.db.name>
+        <flyway.url>jdbc:oracle:thin:@${oracle.host}:${oracle.port}:${oracle.db.name}</flyway.url>
+
+        <flyway.user>IGNIS$OWNER</flyway.user>
+        <flyway.password>password</flyway.password>
+        <flyway.locations>filesystem:${db.scripts.path}/oracle,classpath:com/lombardrisk/ignis/db/migration/oracle</flyway.locations>
+
+        <flyway.placeholders.USER_APP_RW_ROLE>IGNIS$RW_ROLE</flyway.placeholders.USER_APP_RW_ROLE>
+        <flyway.placeholders.ADMIN_USER>admin</flyway.placeholders.ADMIN_USER>
+        <flyway.placeholders.ADMIN_PASSWORD>
+          $2a$10$AGVu4qjfE/GkfrE/qy8lqefdGY/OOxxTkAgamc84z1tKWLir2/IJi
+        </flyway.placeholders.ADMIN_PASSWORD>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-maven-plugin</artifactId>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>flyway-mssqlserver-ignis</id>
+      <properties>
+        <mssqlserver.port>1433</mssqlserver.port>
+        <mssqlserver.host>localhost</mssqlserver.host>
+        <flyway.url>jdbc:sqlserver://${mssqlserver.host}:${mssqlserver.port}</flyway.url>
+
+        <flyway.user>IGNIS_OWNER</flyway.user>
+        <flyway.password>password</flyway.password>
+        <flyway.locations>filesystem:${db.scripts.path}/mssqlserver,classpath:com/lombardrisk/ignis/db/migration/mssqlserver</flyway.locations>
+
+        <flyway.placeholders.USER_APP_RW_ROLE>IGNIS_RW_ROLE</flyway.placeholders.USER_APP_RW_ROLE>
+        <flyway.placeholders.ADMIN_USER>admin</flyway.placeholders.ADMIN_USER>
+        <flyway.placeholders.ADMIN_PASSWORD>
+          $2a$10$AGVu4qjfE/GkfrE/qy8lqefdGY/OOxxTkAgamc84z1tKWLir2/IJi
+        </flyway.placeholders.ADMIN_PASSWORD>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-maven-plugin</artifactId>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>flyway-mysql-ignis</id>
+      <properties>
+        <mysql.port>3306</mysql.port>
+        <mysql.host>localhost</mysql.host>
+        <mysql.db.name>ignis</mysql.db.name>
+        <flyway.url>jdbc:mysql://${mysql.host}:${mysql.port}/${mysql.db.name}</flyway.url>
+
+        <flyway.user>IGNIS_OWNER</flyway.user>
+        <flyway.password>password</flyway.password>
+        <flyway.locations>filesystem:${db.scripts.path}/mysql,classpath:com/lombardrisk/ignis/db/migration/mysql</flyway.locations>
+
+        <flyway.placeholders.USER_APP_RW_ROLE>IGNIS_RW_ROLE</flyway.placeholders.USER_APP_RW_ROLE>
+        <flyway.placeholders.ADMIN_USER>admin</flyway.placeholders.ADMIN_USER>
+        <flyway.placeholders.ADMIN_PASSWORD>
+          $2a$10$AGVu4qjfE/GkfrE/qy8lqefdGY/OOxxTkAgamc84z1tKWLir2/IJi
+        </flyway.placeholders.ADMIN_PASSWORD>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-maven-plugin</artifactId>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

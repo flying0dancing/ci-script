@@ -1,0 +1,24 @@
+<div *ngIf="hasRules; else showNoRules" class="validation-status">
+  <span *ngIf="!jobRunning">
+    <mat-icon
+      *ngIf="icon"
+      [matTooltip]="params?.value | uppercase"
+      matTooltipPosition="left"
+      aria-hidden="true"
+      class="{{ iconClass }} mat-icon material-icons"
+    >
+      {{ icon }}
+    </mat-icon>
+  </span>
+  <span *ngIf="jobRunning">
+    <mat-icon inline matTooltip="VALIDATING" matTooltipPosition="left">
+      <app-spinner size="small"></app-spinner>
+    </mat-icon>
+  </span>
+</div>
+
+<ng-template #showNoRules>
+  <div class="validation-status">
+    <p matTooltip="NO VALIDATION RULES" matTooltipPosition="left">N/A</p>
+  </div>
+</ng-template>

@@ -1,0 +1,14 @@
+<div [title]="'View / Edit ' + cellValue">
+  <a
+    (click)="onClick(params)"
+    (mouseover)="hover = true"
+    (mouseleave)="hover = false"
+    class="mat-primary flex-row-spaced-between flex-inline"
+  >
+    <span>{{ cellValue }}</span>
+
+    <span [hidden]="!hover">
+      <mat-icon>edit</mat-icon>
+    </span>
+  </a>
+</div>

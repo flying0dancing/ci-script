@@ -1,0 +1,193 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>FCR Eraser</title>
+
+    <link rel="stylesheet" th:href="@{webjars/bootstrap/4.3.1/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{webjars/font-awesome/css/font-awesome.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+      <img th:width="30" th:src="@{/header_icon.png}" class="header-icon"/>
+      <a class="navbar-brand" href="#">FCR Eraser</a>
+    </nav>
+
+    <script type="text/javascript" th:src="@{webjars/jquery/3.0.0/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{webjars/bootstrap/4.3.1/js/bootstrap.min.js}"></script>
+    <!-- /.container -->
+
+    <!--/*@thymesVar id="products" type="java.util.List<com.lombardrisk.ignis.server.product.productconfig.ProductConfig>"*/-->
+    <!--/*@thymesVar id="product" type="com.lombardrisk.ignis.server.product.productconfig.ProductConfig"*/-->
+    <main role="main" class="container">
+
+      <div class="starter-template">
+        <h1>FCR Engine Eraser</h1>
+
+        <div class="alert alert-danger" role="alert">
+          This app erases data from the FCR Engine! If you use this in production <b>"You're luggage!"</b>
+        </div>
+
+        <div class="accordion" id="accordionExample">
+          <div class="card">
+            <div class="card-header" id="headingOne">
+              <h2 class="mb-0">
+                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne"
+                        aria-expanded="true" aria-controls="collapseOne">
+                  Introduction
+                </button>
+              </h2>
+            </div>
+
+            <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+              <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-muted ">Product Developer tool</h6>
+                <p class="card-text ">
+                  This application is designed to support management of product configuration throughout the product
+                  development lifecycle.
+                </p>
+                <p class="card-text">
+                  <b>In FCR we do not allow the delete of configuration once data has been staged against it.</b>
+                </p>
+
+                <p>
+                  This is to prevent accidental deletion of submitted data.
+                </p>
+                <p>
+                  This app has therefore been created to help delete test data and configuration, exclusively for
+                  internal use.
+                </p>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header" id="useCase1">
+                <h2 class="mb-0">
+                  <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+                          data-target="#collapse1" aria-expanded="false" aria-controls="collapse1">
+                    Use Case #1: Deleting an entire product
+                  </button>
+                </h2>
+              </div>
+              <div id="collapse1" class="collapse" aria-labelledby="useCase1" data-parent="#accordionExample">
+                <div class="card-body">
+                  <p>
+                    Deleting a product will delete all schemas and pipelines for that given version, it will also
+                    delete the physical tables that have been created, and all the data in them.
+                    This means that any colleagues using FCR will no longer be able to use the product any Agile
+                    Reporter returns referencing schemas in the product will break.
+                    It is recommended to talk to your team before deleting an entire product.
+                  </p>
+
+
+                  <div class="alert alert-warning" role="alert">
+                    If you have multiple versions of the same schema within a product, or across different product
+                    versions, deleting a product will delete the physical table used by the other schema. So tread
+                    carefully!
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header" id="UseCase2">
+                <h2 class="mb-0">
+                  <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+                          data-target="#collapse2" aria-expanded="false" aria-controls="collapse2">
+                    Use Case #2: Deleting part of the product
+                  </button>
+                </h2>
+              </div>
+              <div id="collapse2" class="collapse" aria-labelledby="UseCase2" data-parent="#accordionExample">
+                <div class="card-body">
+                  <p>
+                    If two product developers are working on the same product, i.e. APRA v2.1.
+                  </p>
+                  <p>
+                    Product Developer #1 might want to make changes to Schema A whilst not disturbing Product Developer
+                    #2 who is working on Schema B. (If they delete the whole product, PD#2 will not be able to read
+                    any data from Schema B into AR)
+                  </p>
+                  <p>
+                    <b>Product Developer #1 can do the following:</b>
+                  </p>
+                  <ul class="list-group" style="margin-bottom: 24px;">
+                    <li class="list-group-item list-group-item-info">Delete Schema A</li>
+                    <li class="list-group-item list-group-item-light">
+                      Go to design studio and change the product version to APRA v2.1-b2 (build 2)
+                    </li>
+                    <li class="list-group-item list-group-item-light">Change Schema A in design studio</li>
+                    <li class="list-group-item list-group-item-light">Export product APRAv2.1-b2</li>
+                    <li class="list-group-item list-group-item-light">Import into FCR</li>
+                    <li class="list-group-item list-group-item-success">Use the new schema</li>
+                  </ul>
+
+                  <div class="alert alert-warning" role="alert">
+                    <b>Note</b> that once the product is ready for release, the version should be renamed to something
+                    sensible. (I.e. APRA v2.1.RELEASE)
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section th:if="${products.size() == 0}" style="text-align: center">
+        <h4>There are no products on the system!</h4>
+        <img src="https://media1.giphy.com/media/l378b59fSuMV12tzO/giphy.gif" alt=""></section>
+      </section>
+
+      <section th:each="product : ${products}">
+
+        <div style="display: flex; justify-content: space-between;">
+          <h4 th:text="${product.name + ' v.' + product.version}"></h4>
+
+          <form th:action="@{/deleteProduct}" method="post" style="display: inline" th:object="${product}">
+            <input type="hidden" name="id" id="productId" class="form-control" th:value="${product.id}">
+
+            <button class="btn btn-primary" type="submit">Delete Product <i class="fa fa-trash"></i>
+            </button>
+          </form>
+        </div>
+
+        <ul>
+          <div th:each="pipeline : ${product.pipelines}">
+            <div class="panel-body" th:object="${pipeline}" style="display: flex; justify-content: space-between;">
+
+              <p th:text="${pipeline.name}">name</p>
+
+              <form th:action="@{/deletePipeline}" method="post" style="display: inline" th:object="${pipeline}">
+                <input type="hidden" name="id" id="pipelineId" class="form-control" th:value="${pipeline.id}">
+
+                <button class="btn btn-secondary" type="submit">Delete Pipeline<i class="fa fa-trash"></i>
+                </button>
+              </form>
+            </div>
+          </div>
+        </ul>
+
+        <ul>
+          <div th:each="schema : ${product.schemas}">
+            <div class="panel-body" th:object="${schema}" style="display: flex; justify-content: space-between;">
+
+              <p th:text="${schema.displayName}">displayName</p>
+
+              <form th:action="@{/deleteSchema}" method="post" style="display: inline" th:object="${schema}">
+                <input type="hidden" name="id" id="tableId" class="form-control" th:value="${schema.id}">
+
+                <button class="btn btn-secondary" type="submit">Delete Schema<i class="fa fa-trash"></i>
+                </button>
+              </form>
+            </div>
+          </div>
+        </ul>
+      </section>
+
+    </main>
+  </body>
+</html>

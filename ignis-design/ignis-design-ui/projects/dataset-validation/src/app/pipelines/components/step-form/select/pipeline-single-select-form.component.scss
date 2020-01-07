@@ -1,0 +1,38 @@
+.window-select-container {
+  padding: 3px;
+}
+
+.select-card-container {
+  min-height: 125px;
+}
+
+.expand-select-button {
+  right: 26px;
+  position: absolute;
+  top: 89px;
+}
+
+
+::ng-deep .mat-tab-body-content {
+  overflow-x: hidden !important;
+}
+
+.error-list {
+  list-style: none;
+  color: red;
+  padding: 0;
+}
+
+.intermediate-container {
+  min-height: 24px;
+  display: flex;
+  justify-content: space-between;
+}
+
+::ng-deep .order-container > div {
+  min-height: 24px;
+}
+
+.hidden-order {
+  display: none;
+}

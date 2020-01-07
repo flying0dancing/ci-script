@@ -1,0 +1,108 @@
+@import "../../../../fcr/styles.scss";
+@import "../../../../core/_theme/variables";
+
+$drillBackHighlightColor: #86abca87;
+
+$orange: mat-palette($mat-orange);
+
+a {
+  cursor: pointer;
+  color: mat-color($mat-blue, A700);
+  text-decoration: underline;
+}
+
+.dataset-info-container {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 24px 8px;
+  height: 30px;
+}
+
+.dataset-warning {
+  display: flex;
+  margin-bottom: 15px;
+
+  mat-icon {
+    margin-right: 8px;
+    color: mat-color($orange);
+  }
+}
+
+.dataset-info-item {
+  display: block;
+  width: calc(50% - 50px);
+  height: 30px;
+}
+
+.mat-expanded {
+  .mat-expansion-panel-header {
+    background: rgba(255, 255, 255, 0) !important;
+  }
+}
+
+.mat-expansion-panel {
+  position: relative;
+  margin: 20px 0 !important;
+
+  .mat-expansion-panel-header {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .mat-expansion-panel-header-title {
+    font-size: 15px !important;
+    line-height: 15px !important;
+  }
+}
+
+:host ::ng-deep ag-grid-angular {
+  .drillback-row {
+    background-color: $drillBackHighlightColor;
+  }
+
+  .ag-row-selected {
+    background-color: $drillBackHighlightColor;
+  }
+}
+
+:host ::ng-deep app-grid {
+  .ag-header-cell {
+    text-transform: none;
+  }
+}
+
+.dataset-info-icon-container {
+  display: flex;
+  height: 25px;
+  padding: 10px;
+  vertical-align: middle;
+}
+
+.dataset-icon-button {
+  display: flex;
+  margin-bottom: 15px;
+}
+
+.dataset-info-item-container {
+  display: flex;
+  width: 100px;
+  margin-top: -15px;
+  height: 30px;
+}
+
+.dataset-button {
+  background-color: #4f2368;
+  width: 24px;
+  height: 24px;
+}
+
+.dataset-button-selected {
+  background-color: #8f06ff !important;
+  width: 24px;
+  height: 24px;
+}
+
+.show-drillback-button-icon {
+  font-size: 16px;
+  margin-top: -8px;
+}

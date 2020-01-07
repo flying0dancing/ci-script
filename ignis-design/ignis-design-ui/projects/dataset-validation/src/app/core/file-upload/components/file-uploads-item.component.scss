@@ -1,0 +1,41 @@
+$green: green;
+$orange: orange;
+
+:host {
+  display: flex;
+}
+
+.fail {
+  color: $orange;
+  cursor: default;
+}
+
+.success {
+  color: $green;
+  cursor: default;
+}
+
+.state {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  justify-content: center;
+  width: 30px;
+  height: 40px;
+}
+
+.file {
+  align-self: center;
+}
+
+.controls {
+  display: flex;
+  align-self: basline;
+  align-items: center;
+}
+
+mat-progress-bar {
+  width: 100px;
+  margin-top: 2px;
+  margin-left: 5px;
+}

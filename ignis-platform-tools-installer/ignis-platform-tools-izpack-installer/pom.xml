@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <groupId>com.lombardrisk</groupId>
+    <artifactId>ignis-platform-tools-installer</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>ignis-platform-tools-izpack-installer</artifactId>
+  <packaging>izpack-jar</packaging>
+
+  <properties>
+    <skip.integration.tests>true</skip.integration.tests>
+    <skip.unit.tests>true</skip.unit.tests>
+    <jacoco.skip>true</jacoco.skip>
+
+    <phoenix.dist>apache-phoenix-${phoenix.version}</phoenix.dist>
+
+    <shared.src.dir>${project.basedir}/../../ignis-core/ignis-izpack-common/src/</shared.src.dir>
+    <installer.archive.descriptor.path>
+      ${shared.src.dir}/assembly/installer-archive.xml
+    </installer.archive.descriptor.path>
+    <installer.scripts.path>
+      ${shared.src.dir}/scripts
+    </installer.scripts.path>
+    <installer.scripts.cluster.path>${project.basedir}/src/scripts</installer.scripts.cluster.path>
+    <installer.out.path>${project.build.directory}/installer</installer.out.path>
+    <installer.src.path>${project.basedir}/src/main/installer</installer.src.path>
+    <installer.src.izpack.path>${project.basedir}/src/main/izpack</installer.src.izpack.path>
+
+    <izpack.staging.platform-tools.jar>
+      ${project.basedir}/../ignis-platform-tools-izpack/target/ignis-platform-tools-izpack-${project.version}-jar-with-dependencies.jar
+    </izpack.staging.platform-tools.jar>
+    <izpack.app.version>${project.version}</izpack.app.version>
+
+    <izpack.dist.zookeeper.dir>zookeeper-${zookeeper.version}</izpack.dist.zookeeper.dir>
+    <izpack.dist.hadoop.dir>hadoop-${hadoop.version}</izpack.dist.hadoop.dir>
+    <izpack.dist.hbase.dir>hbase-${hbase.version}</izpack.dist.hbase.dir>
+    <izpack.dist.phoenix.dir>${phoenix.dist}-bin</izpack.dist.phoenix.dir>
+    <izpack.dist.spark.dir>spark-${spark.version}-bin-without-hadoop</izpack.dist.spark.dir>
+
+    <izpack.hadoop.config.files>
+      core-site.xml,hadoop-env.sh,hdfs-site.xml,mapred-site.xml,yarn-site.xml
+    </izpack.hadoop.config.files>
+    <izpack.hbase.config.files>hbase-site.xml,hbase-env.sh</izpack.hbase.config.files>
+    <izpack.phoenix.config.files>config/env.sh,hbase-site.xml</izpack.phoenix.config.files>
+    <izpack.spark.config.files>spark-defaults.conf,spark-env.sh</izpack.spark.config.files>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.googlecode.maven-download-plugin</groupId>
+        <artifactId>download-maven-plugin</artifactId>
+        <configuration>
+          <unpack>true</unpack>
+          <outputDirectory>${installer.out.path}</outputDirectory>
+        </configuration>
+        <executions>
+          <execution>
+            <id>download and unpack ${izpack.dist.zookeeper.dir}</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>
+                http://archive.apache.org/dist/zookeeper/zookeeper-${zookeeper.version}/${izpack.dist.zookeeper.dir}.tar.gz
+              </url>
+            </configuration>
+          </execution>
+          <execution>
+            <id>download and unpack ${izpack.dist.hbase.dir}</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>
+                http://archive.apache.org/dist/hbase/${hbase.version}/${izpack.dist.hbase.dir}-bin.tar.gz
+              </url>
+            </configuration>
+          </execution>
+          <execution>
+            <id>download and unpack ${izpack.dist.phoenix.dir}</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>
+                http://archive.apache.org/dist/phoenix/${phoenix.dist}/bin/${izpack.dist.phoenix.dir}.tar.gz
+              </url>
+            </configuration>
+          </execution>
+          <execution>
+            <id>download and unpack ${izpack.dist.spark.dir}</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>
+                http://archive.apache.org/dist/spark/spark-${spark.version}/${izpack.dist.spark.dir}.tgz
+              </url>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.1.1</version>
+        <executions>
+          <execution>
+            <id>download and unpack ${izpack.dist.hadoop.dir}</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <artifactItems>
+            <artifactItem>
+              <groupId>com.lombardrisk</groupId>
+              <artifactId>ignis-platform-tools-hadoop</artifactId>
+              <version>2.8.3</version>
+              <!-- download custom hadoop tar with symlinks removed, was causing issues on windows-->
+                <classifier>dereferenced</classifier>
+              <type>tar.gz</type>
+              <overWrite>true</overWrite>
+            </artifactItem>
+          </artifactItems>
+          <outputDirectory>${installer.out.path}</outputDirectory>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>setup IzPack config</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <copy todir="${installer.out.path}" overwrite="true">
+                  <fileset dir="${installer.src.izpack.path}" />
+                </copy>
+                <touch file="${installer.out.path}/${project.build.finalName}.defaults" />
+              </target>
+            </configuration>
+          </execution>
+          <execution>
+            <id>setup installer scripts</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <copy todir="${installer.out.path}" overwrite="true">
+                  <fileset dir="${installer.scripts.path}" />
+                </copy>
+                <copy todir="${installer.out.path}" overwrite="true">
+                  <fileset dir="${installer.scripts.cluster.path}" />
+                </copy>
+                <replace dir="${installer.out.path}"
+                         includes="install.sh,cluster-install.sh"
+                         token="#APP_SUBPATH"
+                         value="platform-tools/${project.version}" />
+              </target>
+            </configuration>
+          </execution>
+          <execution>
+            <id>setup installer shared config</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <copy todir="${installer.out.path}/bin" overwrite="true">
+                  <fileset dir="${installer.src.path}/bin" />
+                </copy>
+                <copy todir="${installer.out.path}/conf" overwrite="true">
+                  <fileset dir="${installer.src.path}/conf" />
+                </copy>
+                <copy todir="${installer.out.path}/data" overwrite="true">
+                  <fileset dir="${installer.src.path}/data" />
+                </copy>
+                <copy todir="${installer.out.path}" overwrite="true">
+                  <file name="${installer.src.path}/post-install.sh" />
+                </copy>
+              </target>
+            </configuration>
+          </execution>
+          <execution>
+            <id>setup installer distributions config</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <copy todir="${installer.out.path}/${izpack.dist.zookeeper.dir}" overwrite="true">
+                  <fileset dir="${installer.src.path}/zookeeper" />
+                </copy>
+                <copy todir="${installer.out.path}/${izpack.dist.hadoop.dir}" overwrite="true">
+                  <fileset dir="${installer.src.path}/hadoop" />
+                </copy>
+                <copy todir="${installer.out.path}/${izpack.dist.hbase.dir}" overwrite="true">
+                  <fileset dir="${installer.src.path}/hbase" />
+                </copy>
+                <copy todir="${installer.out.path}/${izpack.dist.phoenix.dir}" overwrite="true">
+                  <fileset dir="${installer.src.path}/phoenix" />
+                </copy>
+                <copy todir="${installer.out.path}/${izpack.dist.spark.dir}" overwrite="true">
+                  <fileset dir="${installer.src.path}/spark" />
+                </copy>
+                <fixcrlf srcdir="${installer.out.path}"
+                         includes="**/*.sh,**/*.properties,**/*.xml,**/*.cfg,**/*.conf"
+                         encoding="UTF-8"
+                         eol="lf" />
+              </target>
+            </configuration>
+          </execution>
+          <execution>
+            <id>cleanup installer izpack config</id>
+            <phase>package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <delete dir="${installer.out.path}/bin" />
+                <delete dir="${installer.out.path}/conf" />
+                <delete dir="${installer.out.path}/lang" />
+                <delete dir="${installer.out.path}/panel" />
+                <delete dir="${installer.out.path}/data" />
+                <delete file="${installer.out.path}/system.properties" />
+                <delete file="${installer.out.path}/install.xml" />
+                <delete file="${installer.out.path}/post-install.sh" />
+
+                <delete file="${installer.out.path}/${izpack.dist.zookeeper.dir}/conf/zoo.cfg" />
+                <delete verbose="true">
+                  <fileset dir="${installer.out.path}/${izpack.dist.hadoop.dir}/etc/hadoop"
+                           includes="${izpack.hadoop.config.files}" />
+                </delete>
+                <delete verbose="true">
+                  <fileset dir="${installer.out.path}/${izpack.dist.hbase.dir}/conf"
+                           includes="${izpack.hbase.config.files}" />
+                </delete>
+                <delete verbose="true">
+                  <fileset dir="${installer.out.path}/${izpack.dist.phoenix.dir}/bin"
+                           includes="${izpack.phoenix.config.files}" />
+                </delete>
+                <delete verbose="true">
+                  <fileset dir="${installer.out.path}/${izpack.dist.spark.dir}/conf"
+                           includes="${izpack.spark.config.files}" />
+                </delete>
+              </target>
+            </configuration>
+          </execution>
+          <execution>
+            <id>cleanup installer distributions</id>
+            <phase>package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <delete>
+                  <fileset dir="${installer.out.path}" includes="**/*-sources.jar" />
+                  <fileset dir="${installer.out.path}" includes="**/*-tests.jar" />
+                  <fileset dir="${installer.out.path}" includes="**/*-javadoc.jar" />
+                </delete>
+                <delete dir="${installer.out.path}/${izpack.dist.zookeeper.dir}/contrib" />
+                <delete dir="${installer.out.path}/${izpack.dist.zookeeper.dir}/docs" />
+                <delete dir="${installer.out.path}/${izpack.dist.zookeeper.dir}/dist-maven" />
+                <delete dir="${installer.out.path}/${izpack.dist.zookeeper.dir}/src" />
+                <delete dir="${installer.out.path}/${izpack.dist.zookeeper.dir}/recipes" />
+                <delete dir="${installer.out.path}/${izpack.dist.hadoop.dir}/share/doc" />
+                <delete dir="${installer.out.path}/${izpack.dist.hbase.dir}/docs" />
+                <delete dir="${installer.out.path}/${izpack.dist.phoenix.dir}/examples" />
+                <delete dir="${installer.out.path}/${izpack.dist.spark.dir}/data" />
+                <delete dir="${installer.out.path}/${izpack.dist.spark.dir}/examples" />
+                <delete dir="${installer.out.path}/${izpack.dist.spark.dir}/python" />
+                <delete dir="${installer.out.path}/${izpack.dist.spark.dir}/R" />
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.izpack</groupId>
+        <artifactId>izpack-maven-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <baseDir>${installer.out.path}</baseDir>
+          <installFile>${installer.src.izpack.path}/install.xml</installFile>
+          <outputDirectory>${installer.out.path}</outputDirectory>
+          <finalName>${project.build.finalName}</finalName>
+          <mkdirs>true</mkdirs>
+          <autoIncludeUrl>false</autoIncludeUrl>
+          <autoIncludeDevelopers>false</autoIncludeDevelopers>
+          <enableAttachArtifact>false</enableAttachArtifact>
+        </configuration>
+        <executions>
+          <execution>
+            <id>default-izpack</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>izpack</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>archive</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>pack installer</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+                <configuration>
+                  <finalName>fcr-engine-platform-tools-${project.version}</finalName>
+                  <appendAssemblyId>false</appendAssemblyId>
+                  <descriptors>
+                    <descriptor>${installer.archive.descriptor.path}</descriptor>
+                  </descriptors>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

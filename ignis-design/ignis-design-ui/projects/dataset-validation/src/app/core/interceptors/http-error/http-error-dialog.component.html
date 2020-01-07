@@ -1,0 +1,52 @@
+<mat-dialog-content>
+  <h2 mat-dialog-title>There was an error processing your request</h2>
+
+  <div class="error-body-container" *ngFor="let err of errors">
+    <p>
+      <b>{{ err.errorCode }}</b>
+    </p>
+    <p class="padding-left-2">{{ err.errorMessage }}</p>
+  </div>
+
+  <div *ngIf="unhandledError">
+    <h5>Unexpected error</h5>
+    <table>
+      <tr *ngIf="unhandledError.error">
+        <td>Error</td>
+        <td class="mono-font">{{ unhandledError.error }}</td>
+      </tr>
+      <tr
+        *ngIf="
+          unhandledError.message &&
+          unhandledError.message !== 'No message available'
+        "
+      >
+        <td>Message</td>
+        <td class="mono-font">{{ unhandledError.message }}</td>
+      </tr>
+      <tr *ngIf="unhandledError.status">
+        <td>Status</td>
+        <td class="mono-font">{{ unhandledError.status }}</td>
+      </tr>
+      <tr *ngIf="unhandledError.path">
+        <td>Path</td>
+        <td class="mono-font">{{ unhandledError.path }}</td>
+      </tr>
+      <tr *ngIf="unhandledError.timestamp">
+        <td class="padding-right-2">Timestamp</td>
+        <td class="mono-font">{{ unhandledError.timestamp | date: 'long' }}</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="log-info-container" *ngIf="correlationId">
+    For more information, open the application logs and search for the following
+    id:
+    <div class="correlationId">{{ correlationId }}</div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close color="primary">Close</button>
+  <button mat-button color="primary" (click)="reload()">Reload</button>
+</mat-dialog-actions>

@@ -1,0 +1,11 @@
+<div [formGroup]="formGroup">
+  <dv-chip-list-input
+    [placeholder]="'Partition By'"
+    [class]="'full-width'"
+    [chipInputFormControl]="formGroupControls.partitionValue"
+    [chipsFormArray]="formGroupControls.partitionsArray"
+    [chipInputValidator]="schemaInFieldNameValidator"
+    [autoCompleteOptions]="schemaInFieldNames"
+  >
+  </dv-chip-list-input>
+</div>

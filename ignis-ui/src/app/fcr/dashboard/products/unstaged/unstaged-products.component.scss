@@ -1,0 +1,44 @@
+@import "../../../../core/_theme/variables";
+
+$blue: mat-palette($mat-blue-gray);
+$red: mat-palette($mat-red);
+
+.info {
+  color: mat-color($blue);
+  cursor: default;
+  padding: 5px 0 0 0 !important;
+}
+
+.fail {
+  color: mat-color($red);
+  cursor: default;
+  padding: 5px 0 0 0 !important;
+  margin-top: -2px;
+}
+
+mat-icon {
+  vertical-align: middle;
+}
+
+.product-name {
+  padding-right: 10px;
+  width: 260px;
+  max-width: 260px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.product-version {
+  padding-right: 10px;
+  width: 100px;
+  max-width: 100px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.product-operations {
+  width: 60px;
+  max-width: 60px;
+}

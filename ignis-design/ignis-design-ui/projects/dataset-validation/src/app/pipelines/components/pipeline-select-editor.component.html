@@ -1,0 +1,14 @@
+<ng-container *ngIf="editorControl">
+  <dv-input-label
+    [showRequiredMarker]="isRequired"
+    [value]="editorLabel"
+    [error]="error"
+  ></dv-input-label>
+  <ngx-monaco-editor
+    [style.height]="editorHeight"
+    [formControl]="editorControl"
+    [options]="editorOptions"
+    (onInit)="handleEditorInit($event)"
+  >
+  </ngx-monaco-editor>
+</ng-container>

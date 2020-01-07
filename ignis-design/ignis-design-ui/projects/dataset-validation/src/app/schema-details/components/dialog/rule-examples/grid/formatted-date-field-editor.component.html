@@ -1,0 +1,16 @@
+<mat-form-field class="full-width date-editor">
+  <!--suppress HtmlFormInputWithoutLabel -->
+  <input
+    matInput
+    [matDatepicker]="datePicker"
+    [required]="!field.nullable"
+    [(ngModel)]="moment"
+  />
+
+  <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+  <mat-datepicker #datePicker></mat-datepicker>
+
+  <mat-error *ngIf="exampleField.error">
+    {{ exampleField.error }}
+  </mat-error>
+</mat-form-field>

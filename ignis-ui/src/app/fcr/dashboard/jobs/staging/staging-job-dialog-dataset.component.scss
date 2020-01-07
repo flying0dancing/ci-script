@@ -1,0 +1,30 @@
+@import "../../../../core/_theme/variables";
+
+$green: mat-palette($mat-green);
+$orange: mat-palette($mat-orange);
+$red: mat-palette($mat-red);
+
+.fail {
+  color: mat-color($red);
+  cursor: default;
+}
+
+.warning {
+  color: mat-color($orange);
+  cursor: default;
+}
+
+.success {
+  color: mat-color($green);
+  cursor: default;
+}
+
+.dataset {
+  margin: 6px;
+}
+
+a {
+  cursor: pointer;
+  color: mat-color($mat-blue, A700);
+  text-decoration: underline;
+}

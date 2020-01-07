@@ -1,0 +1,15 @@
+<mat-sidenav-container class="e2e-side-nav">
+  <div class="primary-content">
+    <ng-content select="[primary-content]"></ng-content>
+  </div>
+
+  <mat-sidenav
+    class="side-content"
+    [mode]="mode"
+    [opened]="sidenavOpened"
+    [disableClose]="disableClose"
+    position="end"
+  >
+    <ng-content select="[side-content]"></ng-content>
+  </mat-sidenav>
+</mat-sidenav-container>

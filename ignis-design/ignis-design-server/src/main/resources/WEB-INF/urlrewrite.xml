@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!DOCTYPE urlrewrite
+    PUBLIC "-//tuckey.org//DTD UrlRewrite 4.0//EN"
+    "http://www.tuckey.org/res/dtds/urlrewrite4.0.dtd">
+
+<urlrewrite>
+  <rule>
+    <name>Non-RESTful Routes</name>
+    <note>
+      Support refresh for URL rewrites in the browser
+      by forwarding to the index.html, ignoring certain request paths
+    </note>
+
+    <condition name="ignore /api/**"
+               type="request-uri"
+               operator="notequal">
+      \/api\/.*?
+    </condition>
+    <condition name="ignore /togglz/**"
+               type="request-uri"
+               operator="notequal">
+      \/togglz
+    </condition>
+    <condition name="ignore /actuator/**"
+               type="request-uri"
+               operator="notequal">
+      \/actuator
+    </condition>
+    <condition name="ignore files"
+               type="request-uri"
+               operator="notequal">
+      ^\/(?:[\-\w\.]+)(?:[\-/\w\.]*)(?:\.(?:[\-\w]+))$
+    </condition>
+
+    <from>^\/(?:[/\-\w]+)$</from>
+    <to last="true">/index.html</to>
+  </rule>
+</urlrewrite>

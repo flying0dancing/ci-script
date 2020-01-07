@@ -1,0 +1,153 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "schematics": {
+    "@ngrx/schematics:component": {
+      "changeDetection": "OnPush",
+      "flat": true,
+      "styleext": "scss"
+    }
+  },
+  "projects": {
+    "dataset-validation": {
+      "root": "projects/dataset-validation/",
+      "sourceRoot": "projects/dataset-validation/src",
+      "projectType": "application",
+      "prefix": "dv",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/dataset-validation",
+            "index": "projects/dataset-validation/src/index.html",
+            "main": "projects/dataset-validation/src/main.ts",
+            "polyfills": "projects/dataset-validation/src/polyfills.ts",
+            "tsConfig": "projects/dataset-validation/tsconfig.app.json",
+            "assets": [
+              "projects/dataset-validation/src/favicon.ico",
+              {
+                "glob": "**/*",
+                "input": "node_modules/ngx-monaco-editor/assets/monaco",
+                "output": "./assets/monaco/"
+              },
+              "projects/dataset-validation/src/assets"
+            ],
+            "styles": [
+              "projects/dataset-validation/src/styles/styles.scss",
+              "node_modules/angular2-draggable/css/resizable.min.css"
+            ],
+            "stylePreprocessorOptions": {
+              "includePaths": ["projects/dataset-validation/src"]
+            },
+            "scripts": ["node_modules/hammerjs/hammer.min.js"]
+          },
+          "configurations": {
+            "optimized": {
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true
+            },
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/dataset-validation/src/environments/environment.ts",
+                  "with": "projects/dataset-validation/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "dataset-validation:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "dataset-validation:build:production"
+            },
+            "optimized": {
+              "browserTarget": "dataset-validation:build:optimized"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "dataset-validation:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/dataset-validation/src/test.ts",
+            "polyfills": "projects/dataset-validation/src/polyfills.ts",
+            "tsConfig": "projects/dataset-validation/tsconfig.spec.json",
+            "karmaConfig": "projects/dataset-validation/karma.conf.js",
+            "styles": [
+              "projects/dataset-validation/src/styles.scss", "node_modules/angular2-draggable/css/resizable.min.css"
+            ],
+            "scripts": [],
+            "assets": [
+              "projects/dataset-validation/src/favicon.ico",
+              "projects/dataset-validation/src/assets"
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/dataset-validation/tsconfig.app.json",
+              "projects/dataset-validation/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        }
+      }
+    },
+    "dataset-validation-e2e": {
+      "root": "projects/dataset-validation-e2e/",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "projects/dataset-validation-e2e/protractor.conf.js",
+            "devServerTarget": "dataset-validation:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "dataset-validation:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": "projects/dataset-validation-e2e/tsconfig.e2e.json",
+            "exclude": ["**/node_modules/**"]
+          }
+        }
+      }
+    }
+  },
+  "defaultProject": "dataset-validation"
+}

@@ -1,0 +1,14 @@
+{
+  "physicalTableName": "DECI_SUMRY",
+  "displayName": "Decimal Summary",
+  "startDate": "1970-01-01",
+  "majorVersion": 1,
+  "fields": [
+    {
+      "type": "decimal",
+      "name": "DECIMAL_VALUE",
+      "precision": 6,
+      "scale": 0
+    }
+  ]
+}

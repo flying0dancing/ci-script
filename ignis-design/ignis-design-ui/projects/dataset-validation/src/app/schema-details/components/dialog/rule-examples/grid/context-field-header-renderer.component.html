@@ -1,0 +1,82 @@
+<div>
+  <span
+    (mouseover)="hover = true"
+    (mouseleave)="hover = false"
+    [ngClass]="{
+      'context-field-nullable': field.nullable,
+      'context-field-non-nullable': !field.nullable
+    }"
+    class="context-field-header"
+  >
+    {{ field.name }}
+  </span>
+
+  <div>
+    <div
+      [ngClass]="{
+        'context-field-hidden': !hover,
+        'context-field-visible': hover
+      }"
+    >
+      <table>
+        <tr>
+          <td
+            [ngClass]="{
+              'context-field-nullable': field.nullable,
+              'context-field-non-nullable': !field.nullable
+            }"
+          >
+            <strong
+              ><code>{{ field.name }}</code></strong
+            >
+          </td>
+          <td
+            [ngClass]="{
+              'context-field-nullable': field.nullable,
+              'context-field-non-nullable': !field.nullable
+            }"
+          >
+            <strong
+              ><code>{{ field.type }}</code></strong
+            >
+          </td>
+        </tr>
+        <tr>
+          <td class="padding-top-1">nullable</td>
+          <td *ngIf="field.nullable" class="padding-top-1">
+            <strong>YES</strong>
+          </td>
+          <td *ngIf="!field.nullable" class="padding-top-1">no</td>
+        </tr>
+        <tr *ngIf="field.format">
+          <td>format</td>
+          <td>
+            <code>{{ field.format }}</code>
+          </td>
+        </tr>
+        <tr *ngIf="field.minLength">
+          <td>min length</td>
+          <td>{{ field.minLength }}</td>
+        </tr>
+        <tr *ngIf="field.maxLength">
+          <td>max length</td>
+          <td>{{ field.maxLength }}</td>
+        </tr>
+        <tr *ngIf="field.regularExpression">
+          <td>regular expression</td>
+          <td>
+            <code>{{ field.regularExpression }}</code>
+          </td>
+        </tr>
+        <tr *ngIf="field.precision">
+          <td>precision</td>
+          <td>{{ field.precision }}</td>
+        </tr>
+        <tr *ngIf="field.scale">
+          <td>scale</td>
+          <td>{{ field.scale }}</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>

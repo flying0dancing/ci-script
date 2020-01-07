@@ -1,0 +1,40 @@
+.full-width {
+  width: 100%;
+}
+
+.one-fifth-width {
+  width: 20%;
+}
+
+.warn {
+  color: #f44336;
+}
+
+.errors-title {
+  display: flex;
+  align-items: center;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  padding: 10px 0;
+}
+
+.mini-fab-outline {
+  background-color: transparent;
+  box-shadow: none;
+  border: darkgray solid 1px;
+}
+
+::ng-deep .mini-fab-outline .mat-button-wrapper {
+  padding: 7px 0 !important;
+}
+
+.editor {
+  height: 280px;
+}

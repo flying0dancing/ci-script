@@ -1,0 +1,11 @@
+<div [formGroup]="formGroup">
+  <dv-chip-list-input
+    [placeholder]="'Order By'"
+    [class]="'full-width'"
+    [chipInputFormControl]="formGroupControls.orderByValue"
+    [chipsFormArray]="formGroupControls.orderByArray"
+    [chipInputValidator]="schemaInFieldNameValidator"
+    [autoCompleteOptions]="orderByFields"
+  >
+  </dv-chip-list-input>
+</div>

@@ -1,0 +1,21 @@
+.editable-surface {
+  display: flex;
+}
+
+.editable-surface:hover {
+  cursor: pointer;
+}
+
+.close-input:hover {
+  cursor: pointer;
+}
+
+.input-label {
+  font-weight: bold;
+}
+
+.main-input {
+  width: 100%;
+  display: inline-block;
+  margin-top: 2px;
+}

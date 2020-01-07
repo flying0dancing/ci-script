@@ -1,0 +1,42 @@
+<form [formGroup]="workingDaysForm">
+  <div class="working-days-container">
+    <mat-checkbox formControlName="monday" labelPosition="before">
+      Monday
+    </mat-checkbox>
+
+    <mat-checkbox formControlName="tuesday" labelPosition="before">
+      Tuesday
+    </mat-checkbox>
+
+    <mat-checkbox formControlName="wednesday" labelPosition="before">
+      Wednesday
+    </mat-checkbox>
+
+    <mat-checkbox formControlName="thursday" labelPosition="before">
+      Thursday
+    </mat-checkbox>
+
+    <mat-checkbox formControlName="friday" labelPosition="before">
+      Friday
+    </mat-checkbox>
+
+    <mat-checkbox formControlName="saturday" labelPosition="before">
+      Saturday
+    </mat-checkbox>
+
+    <mat-checkbox formControlName="sunday" labelPosition="before">
+      Sunday
+    </mat-checkbox>
+
+    <div class="working-days-submit-button">
+      <app-save-button
+        [displayText]="'Update'"
+        [loading]="loading"
+        [done]="submitted && !loading"
+        [disabled]="loading || (submitted && !loading)"
+        (click)="save()"
+      ></app-save-button>
+    </div>
+  </div>
+  <span>(If none set will default to Mon-Fri)</span>
+</form>

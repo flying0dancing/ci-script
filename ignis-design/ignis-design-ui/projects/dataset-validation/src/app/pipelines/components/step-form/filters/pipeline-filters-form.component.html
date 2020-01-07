@@ -1,0 +1,13 @@
+<div [formGroup]="formGroup">
+  <h2 class="mat-h3">Filters</h2>
+
+  <mat-card class="filter-card-container">
+    <dv-pipeline-select-editor
+      class="e2e-create-pipeline-step-filters-input"
+      [editorControl]="formGroupControls.filter"
+      [editorLabel]="'Filter Sql'"
+      [schemas]="inputSchemas"
+    >
+    </dv-pipeline-select-editor>
+  </mat-card>
+</div>

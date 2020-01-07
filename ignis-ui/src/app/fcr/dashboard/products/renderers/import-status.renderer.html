@@ -1,0 +1,17 @@
+<mat-icon
+  *ngIf="importStatus === 'ERROR'"
+  matTooltip="Error while importing"
+  matTooltipPosition="left"
+  class="fail mat-icon material-icons"
+>
+  error
+</mat-icon>
+
+<mat-icon
+  *ngIf="importStatus === 'IN_PROGRESS'"
+  matTooltip="Import in progress"
+  matTooltipPosition="left"
+  class="info mat-icon material-icons"
+>
+  schedule
+</mat-icon>

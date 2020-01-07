@@ -1,0 +1,5 @@
+T_DATE, S_DATE    , STOCK_QUALIFIER, STOCK_ID, QUOTE_ID, TYPE, AMOUNT
+6     , 1515092271, 30             , 21      , 8       , BUY , 10.0
+7     , 1515092271, 100            , 1       , 9       , SELL, 11.1
+8     , 1515092271, 100            , 1       , 8       , BUY , 8.4
+9     , 1515092271, 100            , 1       , 9       , BUY , 3.2

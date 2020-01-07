@@ -1,0 +1,58 @@
+<div class="form-container">
+
+  <div [formGroup]="formGroup" class="full-width" style="display: flex">
+
+    <dv-auto-complete
+      (valueChanged)="jarNameValueChanged($event)"
+      [disabled]="formGroup.disabled"
+      [formInputName]="'Jar_File'"
+      [initialValue]="formGroupControls.jarName.value"
+      [options]="jarNames"
+      [placeholder]="'Jar File'"
+      [title]="'Jar File'"
+      [valueExtractor]="jarNameDisplayNameFunction"
+      class="input-half-width"
+    ></dv-auto-complete>
+
+    <dv-auto-complete
+      (valueChanged)="classNameValueChanged($event)"
+      [disabled]="formGroup.disabled"
+      [formInputName]="'Java_Class'"
+      [initialValue]="formGroupControls.className.value"
+      [options]="classNames"
+      [placeholder]="'Java Class'"
+      [title]="'Java Class'"
+      [valueExtractor]="classNameDisplayNameFunction"
+      class="input-half-width"
+    ></dv-auto-complete>
+
+  </div>
+
+  <div class="half-width-left">
+    <dv-auto-complete
+      (valueChanged)="schemaInValueChanged($event, metadataInput)"
+      *ngFor="let metadataInput of metadataInputs"
+      [options]="schemas"
+      [valueExtractor]="schemaDisplayNameFunction"
+      [disabled]="formGroup.disabled"
+      [initialValue]=""
+      [placeholder]="metadataInput"
+      [formInputName]="'Schema'"
+      [title]="metadataInput"
+    ></dv-auto-complete>
+  </div>
+
+  <div class="half-width-right">
+    <dv-auto-complete
+      [options]="schemas"
+      [valueExtractor]="schemaDisplayNameFunction"
+      (valueChanged)="schemaOutValueChanged($event)"
+      [formInputName]="'Schema'"
+      [disabled]="formGroup.disabled"
+      [initialValue]="formGroupControls.schemaOut.value"
+      [placeholder]="'Schema Out'"
+      [title]="'Schema Out'"
+    ></dv-auto-complete>
+  </div>
+
+</div>

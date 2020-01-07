@@ -1,0 +1,36 @@
+<app-dialog-header [showClose]="true">Upload Product</app-dialog-header>
+<mat-dialog-content class="e2e-upload-products-dialog">
+  <app-file-uploads title="Product" *ngIf="uploaderManager.queue.length" class="e2e-uploaded-products">
+    <app-file-uploads-item class="e2e-uploaded-product"
+      *ngFor="let fileItem of uploaderManager.queue"
+      [fileName]="fileItem.file.name"
+      [fileSize]="fileItem.file.bytesAsSize"
+      [showProgress]="fileItem.isUploading"
+      [progress]="fileItem.progress"
+      [removeTooltipText]="fileItem.isUploading ? 'Cancel' : 'Remove'"
+      [showRemove]="false"
+      [showRetry]="fileItem.isFail"
+      [showSuccessIcon]="fileItem.isSuccess"
+      [showFailIcon]="fileItem.isFail"
+      (onRemoveClick)="fileItem.remove()"
+      (onRetryClick)="fileItem.upload()"
+    >
+    </app-file-uploads-item>
+  </app-file-uploads>
+  <app-file-drop
+    class="e2e-upload-products-drop-area"
+    appFileDrop
+    [uploadManager]="uploaderManager"
+    [allowedFileTypes]="['zip']"
+    (onSelectFilesClick)="fileInputMulti.click()"
+  >
+  </app-file-drop>
+  <input
+    type="file"
+    multiple
+    #fileInputMulti
+    appFileSelect
+    [uploadManager]="uploaderManager"
+    style="display: none;"
+  />
+</mat-dialog-content>

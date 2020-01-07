@@ -1,0 +1,25 @@
+<h1 class="mat-h1" mat-dialog-title>Create Pipeline</h1>
+
+<div mat-dialog-content>
+  <form [formGroup]="pipelineForm">
+    <mat-form-field class="full-width">
+      <input matInput
+             placeholder="Name"
+             formControlName="name"
+             class="e2e-create-schema-pipeline-name"
+             required />
+    </mat-form-field>
+  </form>
+</div>
+
+<div mat-dialog-actions class="margin-top-5">
+  <dv-save-button
+    displayText="Create Pipeline"
+    class="e2e-create-pipeline-button"
+    [disabled]="pipelineForm.invalid"
+    (save)="createPipeline()"
+  >
+  </dv-save-button>
+
+  <button mat-button (click)="cancel()">Cancel</button>
+</div>

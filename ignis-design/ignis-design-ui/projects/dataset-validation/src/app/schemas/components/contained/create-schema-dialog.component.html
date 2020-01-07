@@ -1,0 +1,86 @@
+<h2 class="mat-dialog-title">{{dialogTitle()}} Schema</h2>
+
+<div mat-dialog-content class="e2e-create-schema-dialog">
+  <div class="errors-container" *ngIf="!schemaForm.valid && confirmed">
+    There are errors in the form below, fix them before creating a schema
+  </div>
+
+  <form [formGroup]="schemaForm">
+    <div class="schema-properties-container">
+      <mat-form-field class="input-full-width">
+        <input
+          class="e2e-create-schema-display-name"
+          matInput
+          placeholder="Schema Display Name"
+          formControlName="displayName"
+        />
+      </mat-form-field>
+
+      <mat-form-field class="input-full-width">
+        <input
+          matInput
+          placeholder="Physical Table Name"
+          formControlName="physicalTableName"
+          class="uppercase e2e-create-schema-physical-name"
+          required
+        />
+        <mat-error
+          *ngIf="
+            schemaPhysicalTableNameControl.errors &&
+            schemaPhysicalTableNameControl.errors.simpleNamePattern
+          "
+        >
+          {{ schemaPhysicalTableNameControl.errors.simpleNamePattern }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="input-full-width">
+        <input
+          class="e2e-create-schema-start-date"
+          id="schema-form-start-date"
+          formControlName="startDate"
+          matInput
+          [matDatepicker]="startDatePicker"
+          placeholder="Start Date"
+          required
+        />
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="startDatePicker"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #startDatePicker></mat-datepicker>
+        <mat-error *ngIf="schemaStartDateControl.invalid">
+          Start date is required
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="input-full-width">
+        <input
+          class="e2e-create-schema-end-date"
+          id="schema-form-end-date"
+          formControlName="endDate"
+          matInput
+          [matDatepicker]="endDatePicker"
+          placeholder="End Date"
+        />
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="endDatePicker"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #endDatePicker></mat-datepicker>
+      </mat-form-field>
+    </div>
+  </form>
+</div>
+
+<div mat-dialog-actions class="margin-top-3">
+  <dv-save-button
+    class="e2e-confirm-create-schema-button"
+    [displayText]="'Create'"
+    [disabled]="schemaForm.invalid"
+    (save)="saveSchema()"
+  >
+  </dv-save-button>
+
+  <button mat-button (click)="cancel()">Cancel</button>
+</div>

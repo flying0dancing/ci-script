@@ -1,0 +1,40 @@
+{
+  "physicalTableName": "ALL_FLDS",
+  "displayName": "ALL_FIELD_TYPES",
+  "startDate": "1970-01-01",
+  "majorVersion": 1,
+  "fields": [
+    {
+      "type": "string",
+      "name": "STRING_FIELD"
+    }, {
+      "type": "double",
+      "name": "DOUBLE_FIELD"
+    }, {
+      "type": "decimal",
+      "name": "DECIMAL_FIELD",
+      "precision": "16",
+      "scale": "6"
+    }, {
+      "type": "int",
+      "name": "INTEGER_FIELD"
+    }, {
+      "type": "long",
+      "name": "LONG_FIELD"
+    }, {
+      "type": "date",
+      "name": "DATE_FIELD",
+      "format": "yyyy-MM-dd"
+    }, {
+      "type": "float",
+      "name": "FLOAT_FIELD"
+    }, {
+      "type": "boolean",
+      "name": "BOOLEAN_FIELD"
+    }, {
+      "type": "timestamp",
+      "name": "TIMESTAMP_FIELD",
+      "format": "yyyy-MM-dd"
+    }
+  ]
+}

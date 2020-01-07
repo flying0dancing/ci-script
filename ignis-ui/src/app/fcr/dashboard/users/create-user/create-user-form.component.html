@@ -1,0 +1,31 @@
+<form [formGroup]="createUserForm" (ngSubmit)="onSubmit()">
+  <mat-form-field>
+    <input matInput formControlName="username" placeholder="Username" />
+    <mat-error *ngIf="username.invalid && (username.dirty || username.touched)">
+      <span *ngIf="username.errors?.required">
+        Username is required.
+      </span>
+    </mat-error>
+  </mat-form-field>
+  <br />
+  <mat-form-field>
+    <input
+      matInput
+      formControlName="password"
+      placeholder="Password"
+      type="password"
+    />
+    <mat-error *ngIf="password.invalid && (password.dirty || password.touched)">
+      <span *ngIf="password.errors?.minlength">
+        Password must be at least 6 characters long.
+      </span>
+      <span *ngIf="password.errors?.required">
+        Password is required.
+      </span>
+    </mat-error>
+  </mat-form-field>
+  <br />
+  <button mat-raised-button color="primary" [disabled]="createUserForm.invalid">
+    Create user
+  </button>
+</form>

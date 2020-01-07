@@ -1,0 +1,10 @@
+<app-product-job-dialog
+  *ngIf="jobExecution$ | async as jobExecution; else loading"
+  [jobExecution]="jobExecution"
+  titlePrefix="Rollback Product"
+>
+</app-product-job-dialog>
+
+<ng-template #loading>
+  <app-spinner size="medium" text="Fetching details"></app-spinner>
+</ng-template>

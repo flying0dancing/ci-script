@@ -1,0 +1,140 @@
+<div class="flex-row-spaced-between margin-bottom-2">
+  <div>
+    <dv-pipeline-step-test-form
+      [isEdit]="true"
+      [pipeline]="pipeline$ | async"
+      [pipelineStepTest]="pipelineStepTest$ | async"
+      [pipelineStepTestLoading]="pipelineStepTestLoading$ | async"
+    ></dv-pipeline-step-test-form>
+  </div>
+  <div>
+    <button
+      mat-raised-button
+      [disabled]="pipelineStepTestRunning$ | async"
+      (click)="runTest()"
+    >
+      <div class="flex-inline flex-align-center">
+        {{ (pipelineStepTestRunning$ | async) ? 'Running' : 'Run' }} Test
+        <div
+          class="icon-placeholder"
+          *ngIf="(pipelineStepTest$ | async)?.status as status"
+        >
+          <dv-pipeline-step-test-status-icon
+            [status]="status"
+          ></dv-pipeline-step-test-status-icon>
+        </div>
+      </div>
+    </button>
+  </div>
+</div>
+
+<div class="container">
+  <div class="container__item">
+    <mat-card>
+      <div class="flex-row-spaced-between">
+        <div>
+          <h2 class="mat-h3">Input Values</h2>
+        </div>
+
+        <div>
+          <dv-export-fab-button (click)="downloadRowData(selectedSchema.id,'input')"
+                                *ngIf="selectedInputSchema$ | async as selectedSchema"
+                                class="import-export"
+                                mini="true"
+                                title="Export Input Data Row"
+          >
+          </dv-export-fab-button>
+          <dv-import-fab-button class="import-export"
+                                *ngIf="selectedInputSchema$ | async as selectedSchema"
+                                mini="true"
+                                title="Import Input Data Row"
+                                (click)="uploadDataRowDialog(selectedSchema.id,'input')"
+          >
+          </dv-import-fab-button>
+          <dv-add-fab-button
+            *ngIf="selectedInputSchema$ | async as selectedSchema"
+            mini="true"
+            shortcutKey="alt+n"
+            title="Add Input Data Row"
+            [disabled]="inputDataRowCreating$ | async"
+            (add)="createInputDataRow(selectedSchema.id)"
+          >
+          </dv-add-fab-button>
+        </div>
+      </div>
+
+      <mat-tab-group
+        (selectedIndexChange)="onTabChange($event)"
+        *ngIf="productsLoaded$ | async"
+      >
+        <mat-tab
+          *ngFor="let schema of schemas$ | async"
+          [label]="schema.displayName"
+        >
+          <ng-template matTabContent>
+            <dv-pipeline-step-test-input-data-grid
+              [pipelineStepTest]="pipelineStepTest$ | async"
+              [inputData]="pipelineTestInputRows$ | async"
+              [schema]="schema"
+              [isLoading]="pipelineTestInputRowsLoading$ | async"
+              (cellEdit)="handleCellEdit($event)"
+              (rowDelete)="handleInputRowDelete($event)"
+            ></dv-pipeline-step-test-input-data-grid>
+          </ng-template>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-card>
+  </div>
+  <div class="container__item">
+    <mat-card>
+      <div class="flex-row-spaced-between">
+        <div>
+          <h2 class="mat-h3">Expected Values</h2>
+        </div>
+
+        <div>
+          <dv-export-fab-button *ngIf="pipelineStepSchemaOut$ | async as selectedSchema"
+                                [matMenuTriggerFor]="exportExpectedMenu"
+                                class="import-export"
+                                mini="true"
+                                title="Export Expected Data Row"
+          >
+          </dv-export-fab-button>
+          <mat-menu #exportExpectedMenu="matMenu"
+                    xPosition="before">
+            <button *ngIf="pipelineStepSchemaOut$ | async as selectedSchema" mat-menu-item
+                    (click)="downloadRowData(selectedSchema.id,'actual')">Download Actual Values
+            </button>
+            <button *ngIf="pipelineStepSchemaOut$ | async as selectedSchema" mat-menu-item
+                    (click)="downloadRowData(selectedSchema.id,'expected')">Download Expected Values
+            </button>
+          </mat-menu>
+          <dv-import-fab-button class="import-export"
+                                (click)="uploadDataRowDialog(selectedSchema.id,'expected')"
+                                mini="true"
+                                title="Import Expected Data Row"
+                                *ngIf="pipelineStepSchemaOut$ | async as selectedSchema"
+          >
+          </dv-import-fab-button>
+          <dv-add-fab-button
+            *ngIf="pipelineStepSchemaOutId$ | async as schemaOutId"
+            mini="true"
+            shortcutKey="alt+c"
+            title="Add Expected Data Row"
+            [disabled]="expectedDataRowCreating$ | async"
+            (add)="createExpectedDataRow(schemaOutId)"
+          >
+          </dv-add-fab-button>
+        </div>
+      </div>
+      <dv-pipeline-step-test-output-data-grid
+        [pipelineStepTest]="pipelineStepTest$ | async"
+        [outputData]="pipelineTestOutputRows$ | async"
+        [schema]="pipelineStepSchemaOut$ | async"
+        [isLoading]="pipelineTestOutputRowsLoading$ | async"
+        (cellEdit)="handleCellEdit($event)"
+        (rowDelete)="handleExpectedRowDelete($event)"
+      ></dv-pipeline-step-test-output-data-grid>
+    </mat-card>
+  </div>
+</div>

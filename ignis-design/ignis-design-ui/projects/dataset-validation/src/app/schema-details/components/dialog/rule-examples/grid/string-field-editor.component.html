@@ -1,0 +1,36 @@
+<mat-form-field>
+  <!--suppress HtmlFormInputWithoutLabel -->
+  <input
+    matInput
+    [pattern]="field.regularExpression"
+    [minlength]="field.minLength"
+    [maxlength]="field.maxLength"
+    [placeholder]="field.name"
+    [required]="!field.nullable"
+    [(ngModel)]="exampleField.value"
+    #expected="ngModel"
+  />
+  <mat-hint *ngIf="field.maxLength" align="end">
+    {{ exampleField.value?.length || 0 }} / {{ field.maxLength }}
+  </mat-hint>
+
+  <mat-error *ngIf="expected?.errors?.required" [title]="notNullableErrorMsg">
+    {{ notNullableErrorMsg }}
+  </mat-error>
+
+  <mat-error
+    *ngIf="expected?.errors?.pattern"
+    [title]="
+      regularExpressionErrorMessage(expected.errors.pattern.requiredPattern)
+    "
+  >
+    {{ regularExpressionErrorMessage(expected.errors.pattern.requiredPattern) }}
+  </mat-error>
+
+  <mat-error
+    *ngIf="expected?.errors?.minlength"
+    [title]="minLengthErrorMessage()"
+  >
+    {{ minLengthErrorMessage() }}
+  </mat-error>
+</mat-form-field>

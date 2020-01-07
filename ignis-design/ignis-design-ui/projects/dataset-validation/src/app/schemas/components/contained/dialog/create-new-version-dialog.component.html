@@ -1,0 +1,48 @@
+<h1 class="mat-h1" mat-dialog-title>Create Next Versioned Schema</h1>
+<p>From schema:</p>
+<p class="mat-h3 mono-font padding-left-1">{{ schemaDisplayName }}</p>
+
+<div
+  mat-dialog-content
+  class="padding-top-2  e2e-create-new-schema-version-dialog"
+>
+  <form [formGroup]="newVersionForm">
+    <mat-form-field
+      class="full-width margin-right-2"
+      hintLabel="Start date must be after {{
+        minStartDateText
+      }} (latest version's start date)"
+    >
+      <input
+        id="new-version-start-date"
+        formControlName="startDate"
+        matInput
+        class="e2e-create-new-schema-version-start-date"
+        [min]="minStartDate"
+        [matDatepicker]="startDatePicker"
+        placeholder="Start Date"
+        required
+      />
+      <mat-datepicker-toggle
+        matSuffix
+        [for]="startDatePicker"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #startDatePicker></mat-datepicker>
+      <mat-error *ngIf="startDateControl.invalid">
+        Start date must be after {{ minStartDateText }}
+      </mat-error>
+    </mat-form-field>
+  </form>
+</div>
+
+<div mat-dialog-actions>
+  <dv-save-button
+    class="e2e-confirm-create-new-schema-version-button"
+    displayText="Create"
+    [disabled]="newVersionForm.invalid"
+    (save)="createNewVersion()"
+  >
+  </dv-save-button>
+
+  <button mat-button (click)="cancel()">Cancel</button>
+</div>

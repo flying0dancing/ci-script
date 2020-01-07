@@ -1,0 +1,17 @@
+{
+  "name": "ACCOUNTS TEST",
+  "items": [
+    {
+      "source": {
+        "header": true,
+        "filePath": "accounts_invalid.csv"
+      },
+      "schema": "ACCOUNTS_TEST_V1",
+      "schemaVersion": 1,
+      "dataset": {
+        "entityCode": "ENTITY-21",
+        "referenceDate": "28/02/2018"
+      }
+    }
+  ]
+}

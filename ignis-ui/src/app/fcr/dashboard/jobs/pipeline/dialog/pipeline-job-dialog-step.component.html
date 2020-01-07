@@ -1,0 +1,34 @@
+<mat-card *ngIf="pipelineStepInvocation.status !== PipelineStepStatus.SKIPPED"
+          class="pipeline-step-progress-container">
+  <mat-card-header>
+    <div
+      mat-card-avatar
+      [matTooltip]="pipelineStepInvocation.status"
+      matTooltipPosition="left"
+    >
+      <span *ngIf="!stepRunning">
+        <mat-icon class="{{ iconClass }} mat-40 material-icons">{{
+          icon
+        }}</mat-icon>
+      </span>
+      <span *ngIf="stepRunning">
+        <mat-spinner
+          color="accent"
+          mode="indeterminate"
+          matTooltipPosition="left"
+          [diameter]="37"
+          [matTooltip]="pipelineStepInvocation.status"
+        >
+        </mat-spinner>
+      </span>
+    </div>
+    <mat-card-title
+      ><b>STEP:</b>
+      {{ pipelineStepInvocation.pipelineStep.name }}</mat-card-title
+    >
+    <mat-card-subtitle>{{ pipelineStepInvocation.status }}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <p>{{ pipelineStepInvocation.pipelineStep.description }}</p>
+  </mat-card-content>
+</mat-card>

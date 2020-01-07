@@ -1,0 +1,44 @@
+<mat-card class="dataset">
+  <mat-card-header>
+    <div
+      mat-card-avatar
+      [matTooltip]="dataset.status | uppercase"
+      matTooltipPosition="left"
+    >
+      <mat-icon class="{{ iconClass }} mat-40 material-icons">{{
+        icon
+      }}</mat-icon>
+    </div>
+    <mat-card-title
+      ><b>NAME:</b> {{ dataset.schema.name }} /
+      {{ dataset.schema.physicalName }}</mat-card-title
+    >
+    <mat-card-subtitle>{{ dataset.status | uppercase }}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <p>
+      <b>Start time:</b> {{ dataset.startTime | localeTime }}
+      <span *ngIf="dataset.endTime"
+        >| <b>End time:</b> {{ dataset.endTime | localeTime }}</span
+      >
+    </p>
+    <a *ngIf="viewJobDetails"
+       (click)="handleClickEvent(dataset)">
+      View job details
+    </a>
+  </mat-card-content>
+  <mat-card-actions align="end" *ngIf="validationFailed(dataset)">
+    <a
+      [matTooltip]="'Download validation file'"
+      matTooltipPosition="right"
+      mat-raised-button
+      color="accent"
+      href="{{ environment.api.externalRoot }}/stagingItems/{{
+        dataset.id
+      }}/validationError"
+    >
+      <mat-icon>file_download</mat-icon>
+      Validation file
+    </a>
+  </mat-card-actions>
+</mat-card>

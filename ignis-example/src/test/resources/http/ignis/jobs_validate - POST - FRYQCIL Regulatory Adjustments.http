@@ -1,0 +1,14 @@
+// Create FRY14QCIL Validation Rule Set
+POST {{context-path}}/api/internal/jobs
+Authorization: Basic {{user-pass}}
+Content-Type: application/json
+
+{ "datasetId" : -10, "name": "run validation job"}
+###
+
+
+// GET Validation Results Summaries
+GET {{context-path}}/api/v1/datasets/-10/validationResultsSummaries
+Authorization: Basic {{user-pass}}
+Content-Type: application/json
+###

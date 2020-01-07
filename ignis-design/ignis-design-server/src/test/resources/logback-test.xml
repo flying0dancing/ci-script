@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration debug="false">
+  <include resource="org/springframework/boot/logging/logback/base.xml" />
+
+  <logger name="com.lombardrisk.ignis" level="DEBUG" />
+
+  <logger name="org.hibernate" level="INFO" />
+  <logger name="org.springframework" level="WARN" />
+
+  <!--Log SQL Statements-->
+  <!--<logger name="org.hibernate.SQL" level="DEBUG"/>-->
+  <!--<logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE"/>-->
+
+  <logger name="org.apache.spark" level="WARN" />
+
+  <root level="INFO">
+    <appender-ref ref="CONSOLE" />
+  </root>
+</configuration>

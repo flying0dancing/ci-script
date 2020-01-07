@@ -1,0 +1,45 @@
+@import "../core/_theme/index";
+@import "./_theme/index";
+
+.mat-tooltip {
+  font-size: small;
+}
+
+.header-wrap .ag-header-cell-text {
+  padding: 6px 0;
+  line-height: 22px;
+  word-break: break-word !important;
+  white-space: normal !important;
+  word-spacing: 2000px !important;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rule-row .ag-cell {
+  line-height: 24px !important;
+  margin-top: 7px;
+}
+
+.rule-description {
+  white-space: pre-wrap !important;
+}
+
+.rule-expression {
+  font-family: "Roboto Mono", monospace;
+  white-space: pre !important;
+}
+
+.help-icon {
+  opacity: 1;
+  cursor: default;
+  padding-left: 5px;
+}
+
+.mat-snack-bar-container {
+  margin: 0 !important;
+}

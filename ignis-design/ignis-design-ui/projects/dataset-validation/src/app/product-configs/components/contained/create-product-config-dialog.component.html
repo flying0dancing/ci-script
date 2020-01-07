@@ -1,0 +1,44 @@
+<h1 class="mat-h1" mat-dialog-title>Create Product</h1>
+
+<div mat-dialog-content>
+  <form [formGroup]="productForm">
+    <mat-form-field class="full-width">
+      <input
+        matInput
+        class="e2e-product-name-input"
+        placeholder="Name"
+        formControlName="name"
+        required
+      />
+
+      <mat-error *ngIf="nameControl.errors && nameControl.errors[fieldErrors]">
+        {{ nameControl.errors[fieldErrors] }}
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <input
+        matInput
+        class="e2e-product-version-input"
+        type="text"
+        step="1"
+        min="1"
+        placeholder="Version"
+        formControlName="version"
+        required
+      />
+    </mat-form-field>
+  </form>
+</div>
+
+<div mat-dialog-actions class="margin-top-5">
+  <dv-save-button
+    class="e2e-confirm-create-product"
+    displayText="Create Product"
+    [disabled]="productForm.invalid"
+    (save)="createProduct()"
+  >
+  </dv-save-button>
+
+  <button mat-button (click)="cancel()">Cancel</button>
+</div>

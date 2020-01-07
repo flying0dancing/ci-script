@@ -1,0 +1,58 @@
+{
+  "physicalTableName": "DEADJ001",
+  "displayName": "REG_ADJUSTMENTS",
+  "startDate": 946684800000,
+  "version": 1,
+  "fields": [
+    {
+      "type": "string",
+      "name": "HIADJ002",
+      "nullable": false,
+      "maxLength": 50
+    }, {
+      "type": "decimal",
+      "name": "PK_HIADJ002",
+      "nullable": false,
+      "scale": 0,
+      "precision": 10
+    }, {
+      "type": "string",
+      "name": "HIADJ001",
+      "nullable": false,
+      "maxLength": 255
+    }, {
+      "type": "decimal",
+      "name": "PK_HIADJ001",
+      "nullable": false,
+      "scale": 0,
+      "precision": 10
+    }, {
+      "type": "decimal",
+      "name": "PK_HIREG004",
+      "nullable": false,
+      "scale": 0,
+      "precision": 10
+    }, {
+      "type": "string",
+      "name": "HIREG002",
+      "nullable": true,
+      "maxLength": 100
+    }, {
+      "type": "date",
+      "name": "HIREG001",
+      "nullable": false,
+      "format": "dd-MMM-yyyy HH:mm:ss"
+    }, {
+      "type": "decimal",
+      "name": "PK_HIREG001",
+      "nullable": false,
+      "scale": 0,
+      "precision": 10
+    }, {
+      "type": "double",
+      "name": "MSADJ001",
+      "nullable": true
+    }
+  ],
+  "validationRules": []
+}

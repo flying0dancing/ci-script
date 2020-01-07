@@ -1,0 +1,5 @@
+TRADE_DATE, SETTLEMENT_DATE, STOCK                              , TRADE_TYPE, RATE    , AMOUNT  , CALCULATED_VALUE
+1501335139, 1497218645     , Pacific Special Acquisition Corp.  , SELL      , 41.31762, 24.00135, 991.678658787
+1499492739, 1504527342     , "Willamette Valley Vineyards, Inc.", SELL      , 52.88523, 58.54721, 3096.2826667083
+1504781505, 1495304692     , Chevron Corporation                , BUY       , 17.65179, 5.90263 , 104.1919852077
+1497000511, 1505678928     , "Asia Pacific Fund, Inc. (The)"    , BUY       , 18.55996, 43.21321, 802.0354490716

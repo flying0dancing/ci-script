@@ -1,0 +1,15 @@
+@import "variables";
+@import "vendor";
+
+.action-buttons {
+  margin-top: -52px;
+  margin-bottom: 20px;
+  right: 20px;
+  position: absolute;
+  z-index: 99;
+  text-align: center;
+
+  &_button.mat-fab {
+    margin-left: 10px;
+  }
+}

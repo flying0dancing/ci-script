@@ -1,0 +1,17 @@
+{
+  "name": "Trades Staging for Validation Details Feature",
+  "items": [
+    {
+      "source": {
+        "header": true,
+        "filePath": "FT_validation_details_trades.csv"
+      },
+      "schema": "TRADES_DATA_SCHEDULES",
+      "schemaVersion": 2,
+      "dataset": {
+        "entityCode": "ENTITY-21",
+        "referenceDate": "01/01/2016"
+      }
+    }
+  ]
+}

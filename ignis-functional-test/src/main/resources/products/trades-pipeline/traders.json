@@ -1,0 +1,27 @@
+{
+  "physicalTableName": "TRADERS",
+  "displayName": "Traders and trade dates",
+  "period" : {
+    "startDate" : "2018-01-01",
+    "endDate" : "2020-01-01"
+  },
+  "version": 1,
+  "fields": [
+    {
+      "name": "TRADER_ID",
+      "type": "int",
+      "nullable": false
+    },
+    {
+      "name": "Name",
+      "type": "string",
+      "nullable": false
+    },
+    {
+      "name": "TRADE_DATE",
+      "type": "int",
+      "nullable": false
+    }
+  ],
+  "validationRules" : []
+}

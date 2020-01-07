@@ -1,0 +1,12 @@
+<app-dialog-header [showClose]="true"
+>Staging History
+</app-dialog-header>
+<mat-dialog-content *ngIf="stagingDatasets">
+  <div *ngFor="let dataset of stagingDatasets">
+    <app-staging-job-dialog-dataset
+      [dataset]="dataset"
+      [viewJobDetails]="true"
+      (viewJobDetailsEvent)="handleClickEvent($event)">
+    </app-staging-job-dialog-dataset>
+  </div>
+</mat-dialog-content>

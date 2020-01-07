@@ -42,7 +42,7 @@ pipeline {
 			steps{
 				echo "download all package"
                 //downloadProductPackage(S3BUCKET,S3DOWNPATH,DOWNLOADFILENAMES)
-                copyToEnvironmenttest()
+                //copyToEnvironmenttest()
 			}
 		}
 		stage('build package'){

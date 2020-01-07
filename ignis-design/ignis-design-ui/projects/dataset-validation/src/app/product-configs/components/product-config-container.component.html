@@ -1,0 +1,64 @@
+<div class="main-content ">
+  <dv-product-breadcrumb
+    *ngIf="product"
+    [productName]="product.name"
+    [breadcrumbLevel]="'PRODUCT'"
+  >
+  </dv-product-breadcrumb>
+
+  <h1 class="mat-h1">
+    {{ (product$ | async)?.name }}
+  </h1>
+
+  <mat-card>
+    <mat-card-content class="product-detail-container">
+      <div class="product-input-container">
+        <dv-inline-edit
+          label="Name"
+          class="e2e-edit-product-name"
+          [required]="true"
+          type="text"
+          [initialValue]="product?.name"
+          [editFunction]="editName"
+        >
+        </dv-inline-edit>
+      </div>
+      <div class="product-input-container">
+        <dv-inline-edit
+          label="Version"
+          class="e2e-edit-product-version"
+          [required]="true"
+          type="text"
+          [initialValue]="product?.version"
+          [editFunction]="editVersion"
+        >
+        </dv-inline-edit>
+      </div>
+    </mat-card-content>
+
+    <div class="download-product-btn-container">
+      <button
+        mat-button
+        class="e2e-export-product-button"
+        (click)="validateProduct()"
+        [disabled]="!checkSchemaCurrentCount()"
+      >
+        Export
+        <mat-icon inline>file_download</mat-icon>
+      </button>
+    </div>
+  </mat-card>
+</div>
+
+<dv-schema-container
+  *ngIf="product"
+  [productId]="product.id"
+  [productName]="product.name"
+  [schemas]="schemas"
+  [loading]="loading$ | async"
+></dv-schema-container>
+
+<dv-pipelines-container
+  *ngIf="product"
+  [productId]="product.id"
+></dv-pipelines-container>

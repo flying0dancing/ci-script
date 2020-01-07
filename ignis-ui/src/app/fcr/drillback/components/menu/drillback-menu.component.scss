@@ -1,0 +1,62 @@
+@import "~@angular/material/theming";
+
+$menu-width: 400px;
+$menu-height: 430px;
+
+.drillback-menu {
+  background-color: whitesmoke;
+  margin: 0;
+
+  width: $menu-width + 24px;
+  @include mat-elevation(8);
+}
+
+.drillback-menu-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.drillback-menu-header-text {
+  padding: 0;
+  line-height: 40px;
+  font-size: 18px;
+  margin-left: 32px;
+}
+
+.drillback-menu-icon {
+  margin-left: -24px;
+}
+
+.drillback-form-field {
+  width: 100%;
+}
+
+.tab-container {
+  margin-top: 8px;
+}
+
+.graph-label {
+  user-select: none;
+  padding-bottom: 4px;
+}
+
+.graph-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-bottom: 1.25em;
+}
+
+.description {
+  min-height: 100px;
+}
+
+.drillback-menu-contents {
+  height: $menu-height;
+  width: $menu-width;
+  padding: 24px 8px 8px;
+}
+
+.drillback-menu .mat-card-header-text {
+  margin: 0;
+}

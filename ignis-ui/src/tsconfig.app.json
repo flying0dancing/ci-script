@@ -1,0 +1,13 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../out-tsc/app",
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["app/*"],
+      "@env/*": ["environments/*"]
+    },
+    "types": []
+  },
+  "exclude": ["setupJest.ts", "app/test-helpers/**/*", "**/*.spec.ts"]
+}

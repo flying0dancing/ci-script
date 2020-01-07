@@ -1,0 +1,40 @@
+<app-dialog-header [showClose]="true">
+  Pipeline Job #{{ jobExecutionId }} Details
+</app-dialog-header>
+
+<mat-dialog-content>
+  <ng-container *ngIf="jobExecution; else loading">
+    <p><b>Job name:</b> {{ jobExecution.name }}</p>
+    <p>
+      <b>Started:</b> {{ jobExecution.startTime | localeTime }}
+      <span *ngIf="jobExecution.endTime"
+      >- <b>Finished:</b> {{ jobExecution.endTime | localeTime }}</span
+      >
+    </p>
+    <p><b>Status: </b> {{ jobExecution.status | uppercase }}</p>
+    <p><b>Exit Status: </b> {{ jobExecution.exitCode | uppercase }}</p>
+
+    <p *ngIf="jobExecution.yarnApplicationTrackingUrl">
+      <a target="_blank" href="{{ jobExecution.yarnApplicationTrackingUrl }}"
+      >View job details on yarn</a
+      >
+    </p>
+
+    <div *ngIf="jobExecution.errors.length > 0" class="errors">
+      <b class="fail">Errors: </b>
+      <ul>
+        <li *ngFor="let err of jobExecution.errors">
+          {{ err }}
+        </li>
+      </ul>
+    </div>
+
+    <app-pipeline-invocation-dialog
+      [pipelineInvocations]="pipelineInvocations$ | async"
+    >
+    </app-pipeline-invocation-dialog>
+  </ng-container>
+  <ng-template #loading>
+    <app-spinner size="medium" text="Fetching details"></app-spinner>
+  </ng-template>
+</mat-dialog-content>

@@ -1,0 +1,80 @@
+<div class="flex-row-spaced-between">
+  <h1 mat-dialog-title>Rule Expression Help</h1>
+
+  <button
+    mat-icon-button
+    (click)="close()"
+    matTooltip="Close (ESC)"
+    matTooltipPosition="left"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+
+<div mat-dialog-content>
+  <div class="help-intro">
+    <p>
+      A validation rule Expression is written using the
+      <a href="http://commons.apache.org/proper/commons-jexl/" target="_blank">
+        Apache JEXL
+      </a>
+      scripting language.
+    </p>
+    <p>
+      An Expression must <b>return a Boolean result</b> (true/false) and must
+      <b>use 1 or more schema fields</b> as variables:
+    </p>
+  </div>
+
+  <div class="help-example">
+    <pre class="inline-code mono-font">
+      <br>    INTEREST_RATE_INDEX <= 6 && INTEREST_RATE_INDEX > 0
+    </pre>
+
+    <p>
+      Defining variables is supported. A set of predefined
+      <a
+        href="https://confluence.lombardrisk.com/display/ARCE/LRM+Functions"
+        target="_blank"
+      >
+        VERMEG Functions
+      </a>
+      that can also be used:
+    </p>
+
+    <pre class="inline-code mono-font">
+      <br>    var logExposure = log10( EXPOSURE )
+      <br>    isNumeric( INTEREST_RATE_INDEX ) && logExposure < 1.0
+    </pre>
+
+    <p>
+      Typing <span class="inline-code">CTRL+SPACE</span> in the Expression
+      Editor will open the suggestions panel and list the available variables.
+    </p>
+  </div>
+
+  <div class="margin-top-4 margin-bottom-4">
+    <p>
+      The Apache JEXL syntax is described
+      <a
+        href="https://commons.apache.org/proper/commons-jexl/reference/syntax.html"
+        target="_blank"
+        >here</a
+      >.
+    </p>
+  </div>
+</div>
+
+<div mat-dialog-actions>
+  <a
+    mat-raised-button
+    color="primary"
+    href="https://confluence.lombardrisk.com/display/ARCE/Writing+Validation+Rules"
+    target="_blank"
+    matTooltip="Open Guide on Confluence"
+    cdk-focus-initial
+  >
+    Open Guide
+    <mat-icon>launch</mat-icon>
+  </a>
+</div>

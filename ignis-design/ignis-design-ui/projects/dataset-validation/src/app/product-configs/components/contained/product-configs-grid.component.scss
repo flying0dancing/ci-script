@@ -1,0 +1,21 @@
+:host ::ng-deep .ag-row-selected {
+  animation: flash linear 2s;
+}
+
+@keyframes flash {
+  0% {
+    background-color: initial;
+  }
+  25% {
+    background-color: #f5f5f5;
+  }
+  50% {
+    background-color: initial;
+  }
+  75% {
+    background-color: #f5f5f5;
+  }
+  100% {
+    background-color: initial;
+  }
+}

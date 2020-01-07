@@ -1,0 +1,85 @@
+<configuration>
+  <property>
+    <name>hbase.tmp.dir</name>
+    <value>%{tmp.path}</value>
+  </property>
+  <property>
+    <name>hbase.rootdir</name>
+    <value>%{hbase.rootdir}</value>
+  </property>
+
+  <property>
+    <name>hbase.cluster.distributed</name>
+    <value>true</value>
+  </property>
+  <property>
+    <name>hbase.zookeeper.property.dataDir</name>
+    <value>%{DATA_PATH}/zookeeper</value>
+  </property>
+  <property>
+    <name>hbase.zookeeper.quorum</name>
+    <value>%{zookeeper.hosts}</value>
+  </property>
+
+  <property>
+    <name>phoenix.query.rowKeyOrderSaltedTable</name>
+    <value>true</value>
+  </property>
+
+  <!-- Apache phoenix integration -->
+  <!-- for secondary index -->
+  <property>
+    <name>hbase.regionserver.wal.codec</name>
+    <value>org.apache.hadoop.hbase.regionserver.wal.IndexedWALEditCodec</value>
+  </property>
+
+  <property>
+    <name>hbase.region.server.rpc.scheduler.factory.class</name>
+    <value>org.apache.hadoop.hbase.ipc.PhoenixRpcSchedulerFactory</value>
+    <description>Factory to create the Phoenix RPC Scheduler that uses separate queues for index and metadata updates
+    </description>
+  </property>
+  <property>
+    <name>hbase.rpc.controllerfactory.class</name>
+    <value>org.apache.hadoop.hbase.ipc.controller.ServerRpcControllerFactory</value>
+    <description>Factory to create the Phoenix RPC Scheduler that uses separate queues for index and metadata updates
+    </description>
+  </property>
+
+  <property>
+    <name>hbase.hregion.memstore.flush.size</name>
+    <value>%{hbase.hregion.memstore.flush.size}</value>
+  </property>
+  <property>
+    <name>hbase.client.write.buffer</name>
+    <value>%{hbase.client.write.buffer}</value>
+  </property>
+  <property>
+    <name>hbase.regionserver.handler.count</name>
+    <value>%{hbase.regionserver.handler.count}</value>
+  </property>
+  <property>
+    <name>dfs.client.hedged.read.threadpool.size</name>
+    <value>%{dfs.client.hedged.read.threadpool.size}</value>
+  </property>
+  <property>
+    <name>dfs.client.hedged.read.threshold.millis</name>
+    <value>%{dfs.client.hedged.read.threshold.millis}</value>
+  </property>
+  <property>
+    <name>dfs.client.read.shortcircuit</name>
+    <value>%{dfs.client.read.shortcircuit}</value>
+  </property>
+  <property>
+    <name>dfs.domain.socket.path</name>
+    <value>%{DATA_PATH}/hdfs/scr/dn._PORT</value>
+  </property>
+  <property>
+    <name>hbase.bucketcache.ioengine</name>
+    <value>offheap</value>
+  </property>
+  <property>
+    <name>hbase.bucketcache.size</name>
+    <value>%{hbase.bucketcache.size}</value>
+  </property>
+</configuration>

@@ -1,0 +1,19 @@
+<div [formGroup]="quickFilterForm">
+  <mat-form-field class="quick-filter">
+    <input class="e2e-steps-quick-filter"
+           matInput
+           placeholder="Quick filter steps"
+           formControlName="quickFilter"/>
+
+  </mat-form-field>
+</div>
+
+<div class="main-table e2e-pipeline-steps-grid">
+  <ag-grid-angular
+    class="ag-theme-material"
+    style="width: 100%; height: 100%;"
+    [gridOptions]="gridOptions"
+    [columnDefs]="columnDefs"
+    [rowData]="pipelineSteps"
+  ></ag-grid-angular>
+</div>

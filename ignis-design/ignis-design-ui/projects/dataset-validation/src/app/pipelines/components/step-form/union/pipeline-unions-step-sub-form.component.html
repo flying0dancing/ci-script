@@ -1,0 +1,46 @@
+<div [formGroup]="formGroup">
+
+  <div>
+    <dv-union-input-schemas-form
+      [inputSchemas]="schemas"
+      [formControlName]="formControlNames.schemaIns"
+      (schemaAdded)="addUnionItem($event)"
+      (schemaRemoved)="removeUnionItem($event)"
+    ></dv-union-input-schemas-form>
+  </div>
+
+  <div class="full-width">
+    <dv-auto-complete class="e2e-pipeline-step-schema-out-union-input"
+                      [options]="schemas"
+                      [valueExtractor]="schemaDisplayNameFunction"
+                      [initialValue]="formGroupControls.schemaOut.value"
+                      [placeholder]="'Schema Out'"
+                      [disabled]="formGroup.disabled"
+                      [title]="'Schema Out'"
+                      [formInputName]="'Schema'"
+                      (valueChanged)="schemaOutValueChanged($event)"
+    ></dv-auto-complete>
+  </div>
+</div>
+
+<div [formGroup]="formGroup">
+  <h2 class="mat-h2" *ngIf="formGroupControls.unions.length > 0">Unions</h2>
+  <mat-tab-group class="e2e-create-pipeline-step-schemas-in-tab-group">
+    <mat-tab *ngFor="let unionSchema of formGroupControls.unions.controls; let i = index">
+
+      <ng-template mat-tab-label>
+        <div [ngClass]="unionHasErrors(unionSchema.value.schemaIn) ? 'error-tab' : 'regular-tab'">
+          {{getSchemaInTabHeader(unionSchema.value.schemaIn)}}
+          <mat-icon inline *ngIf="unionHasErrors(unionSchema.value.schemaIn)">error</mat-icon>
+        </div>
+      </ng-template>
+
+      <dv-union-form [formControl]="unionSchema"
+                     [selectExecutionErrors]="getSelectErrorsForUnion(unionSchema.value.schemaIn)"
+                     [schemaOut]="this.formGroupControls.schemaOut.value">
+      </dv-union-form>
+
+    </mat-tab>
+  </mat-tab-group>
+</div>
+

@@ -1,0 +1,195 @@
+<app-dialog-header [showClose]="true">Start Pipeline Job</app-dialog-header>
+<app-spinner
+  *ngIf="startPipelineService.formLoading$ | async"
+  size="medium"
+  text="Fetching details"
+></app-spinner>
+<form
+  [formGroup]="startPipelineService.form"
+  (ngSubmit)="submit()"
+  novalidate
+  *ngIf="
+      (startPipelineService.formReady$ | async) &&
+      !(startPipelineService.formLoading$ | async)
+    "
+>
+  <mat-dialog-content>
+    <app-spinner
+      *ngIf="startPipelineService.formLoading$ | async"
+      size="medium"
+      text="Fetching details"
+    ></app-spinner>
+
+    <div
+      *ngIf="
+        !(startPipelineService.formReady$ | async) &&
+        !(startPipelineService.formLoading$ | async)
+      "
+    >
+      <p>No pipelines.</p>
+    </div>
+
+      <div class="pipeline-job">
+        <div
+          [ngClass]="{'job-details-when-datasets-enabled' : isDatasetsEnabled(),
+            'job-details-when-datasets-disabled' : !isDatasetsEnabled()}">
+          <mat-form-field class="form-field-full-width">
+            <input matInput formControlName="jobName" placeholder="Job Name" />
+          </mat-form-field>
+
+          <br />
+
+          <mat-form-field class="entity-code">
+            <input matInput formControlName="entityCode" placeholder="Entity code" />
+          </mat-form-field>
+
+          <mat-form-field class="reference-date">
+            <input
+              matInput
+              formControlName="referenceDate"
+              [matDatepicker]="picker"
+              placeholder="Reference Date"
+            />
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field class="form-field-full-width">
+            <input
+              type="text"
+              matInput
+              formControlName="pipelineName"
+              [matAutocomplete]="pipelineAutocomplete"
+              placeholder="Pipeline Name"
+            />
+            <mat-error
+              *ngIf="
+                startPipelineService.form.controls.pipelineName.errors &&
+                startPipelineService.form.controls.pipelineName.errors.matchValue
+              "
+            >
+              Pipeline name does not exist
+            </mat-error>
+            <mat-autocomplete #pipelineAutocomplete="matAutocomplete">
+              <mat-option
+                *ngFor="
+                  let schema of autocompleteOptions(pipelineAutocompleteInput.value)
+                "
+                [value]="schema"
+              >
+                <small>{{ schema }}</small>
+              </mat-option>
+            </mat-autocomplete>
+            <input
+              type="hidden"
+              formControlName="_pipelineAutocomplete"
+              #pipelineAutocompleteInput
+            />
+          </mat-form-field>
+
+          <mat-select
+            *ngIf="startPipelineService.form.controls.selectedPipeline.valid && (runPipelineActive$ | async)"
+            placeholder="Pipeline Step"
+            formControlName="selectedPipelineStep"
+          >
+            <mat-option>None</mat-option>
+            <mat-option *ngFor="let pipelineStep of startPipelineService.pipelineSteps"
+                        [value]="pipelineStep"
+            >
+              {{pipelineStep.name}}
+            </mat-option>
+          </mat-select>
+
+          <mat-error
+            *ngIf="
+              !startPipelineService.form.controls.referenceDate.invalid &&
+              !startPipelineService.form.controls.pipelineName.invalid &&
+              startPipelineService.form.controls.selectedPipeline.invalid
+            "
+          >
+            <h4>No pipeline</h4>
+          </mat-error>
+
+          <div *ngIf="!startPipelineService.form.controls.selectedPipeline.valid">
+            Please select a valid pipeline
+          </div>
+        </div>
+
+        <div>
+          <app-spinner
+            *ngIf="startPipelineService.requiredSchemasLoading$ | async"
+            size="small"
+            text="Fetching pipeline datasets"
+          ></app-spinner>
+
+          <div
+            *ngIf="
+              startPipelineService.form.controls.selectedPipeline.valid &&
+                startPipelineService.requiredSchemasReady$ | async
+            "
+            class="full-width"
+            [ngClass]="{'datasets-when-datasets-enabled' : isDatasetsEnabled(),
+            'datasets-when-datasets-disabled' : !isDatasetsEnabled()}"
+          >
+            <h4>Datasets:</h4>
+            <p>The following datasets will be used as inputs to the pipeline</p>
+            <div class="pipeline-job-dataset-list">
+              <div
+                *ngFor="
+                  let schemaControls of startPipelineService.form.get('requiredSchemas')
+                    .controls
+                "
+              >
+                <mat-form-field class="form-field-full-width">
+                  <label
+                    [class]="
+                      !schemaControls.value.pipelineSchemaDataset
+                        ? 'error-field field-label'
+                        : 'field-label'
+                    "
+                  >
+                    {{
+                    schemaControls.value.pipelineSchema.displayName +
+                    " v." +
+                    schemaControls.value.pipelineSchema.version
+                    }}
+                  </label>
+                  <input
+                    matInput
+                    class="field-padded"
+                    [disabled]="true"
+                    [title]="
+                      schemaControls.value.pipelineSchema.displayName +
+                      ' v.' +
+                      schemaControls.value.pipelineSchema.version
+                    "
+                    [value]="
+                      schemaControls.value.pipelineSchemaDataset
+                        ? schemaControls.value.pipelineSchemaDataset
+                        : 'No Dataset Found'
+                    "
+                  />
+                </mat-form-field>
+              </div>
+            </div>
+            <mat-error
+              *ngIf="
+                startPipelineService.form.get('requiredSchemas').controls.invalid
+              "
+            >
+              Not all required datasets are staged
+            </mat-error>
+          </div>
+        </div>
+      </div>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button
+      mat-raised-button
+      color="primary"
+      [disabled]="!startPipelineService.form.valid"
+    >
+      Start
+    </button>
+  </mat-dialog-actions>
+</form>

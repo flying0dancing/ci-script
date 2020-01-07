@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>ignis-core</artifactId>
+    <groupId>com.lombardrisk</groupId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>ignis-pipeline</artifactId>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>com.lombardrisk</groupId>
+      <artifactId>ignis-common</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+      <type>test-jar</type>
+    </dependency>
+
+    <dependency>
+      <groupId>com.lombardrisk</groupId>
+      <artifactId>ignis-web-common</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jgrapht</groupId>
+      <artifactId>jgrapht-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.vavr</groupId>
+      <artifactId>vavr</artifactId>
+    </dependency>
+
+  </dependencies>
+</project>

@@ -1,0 +1,53 @@
+<div
+  (rzResizing)="onResize($event)"
+  [rzHandles]="'se'"
+  cdkDrag
+  cdkDragRootElement=".cdk-overlay-pane"
+  id="select-editor-dialog-container"
+  ngResizable>
+
+  <div cdkDragHandle id="select-editor-dialog-drag-handle">
+    <svg fill="currentColor" viewBox="0 0 24 24" width="24px">
+      <path
+        d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"
+      ></path>
+      <path d="M0 0h24v24H0z" fill="none"></path>
+    </svg>
+  </div>
+  <div mat-dialog-title>
+    <div id="select-editor-dialog-title">Selects Edit Pane</div>
+  </div>
+
+  <div id="select-editor-dialog-body">
+    <dv-pipeline-select-editor
+      style="padding-bottom: 20px"
+      [editorControl]="selectControl"
+      [editorHeightSetter]=editorHeight
+      [editorLabel]="selectName"
+      [error]="!syntaxValid()"
+      [schemas]="schemasIn"
+    >
+    </dv-pipeline-select-editor>
+
+    <div class="select-editor-actions" mat-dialog-actions>
+      <div>
+        <button (click)="done()" class="mat-primary" mat-raised-button>Done</button>
+        <button (click)="checkSyntax()" [ngClass]="{
+                  refresh: !syntaxChecked,
+                  valid: syntaxValid() && syntaxChecked,
+                  invalid: !syntaxValid() && syntaxChecked
+                }"
+                class="mat-secondary"
+                mat-raised-button>Check Syntax
+          <mat-icon *ngIf="!syntaxChecked" inline>refresh</mat-icon>
+          <mat-icon *ngIf="syntaxValid() && syntaxChecked" inline>done</mat-icon>
+          <mat-icon *ngIf="!syntaxValid() && syntaxChecked" inline>error</mat-icon>
+        </button>
+      </div>
+      <button (click)="close()" mat-raised-button>Cancel</button>
+    </div>
+
+    <dv-step-form-errors *ngIf="!!result" [apiErrors]="!!result ? result.errors : []">
+    </dv-step-form-errors>
+  </div>
+</div>

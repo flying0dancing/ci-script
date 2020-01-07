@@ -1,0 +1,25 @@
+<app-dialog-header [showClose]="true">Users</app-dialog-header>
+<mat-dialog-content>
+  <div class="action-buttons">
+    <button
+      class="action-buttons_button"
+      mat-fab
+      (click)="handleAddUserButtonClick()"
+      [matTooltip]="'Add user'"
+      matTooltipPosition="right"
+    >
+      <mat-icon aria-label="Add new user">add</mat-icon>
+    </button>
+  </div>
+
+  <div *ngIf="!(usersCollection$ | async) || (usersGetLoading$ | async)">
+    <app-spinner size="medium" [text]="'Loading users'"></app-spinner>
+  </div>
+
+  <mat-list *ngIf="(usersCollection$ | async) && !(usersGetLoading$ | async)">
+    <mat-list-item *ngFor="let user of usersCollection$ | async; let i = index">
+      <mat-icon mat-list-icon>account_circle</mat-icon>
+      <h4 mat-line>{{ user.username | uppercase }}</h4>
+    </mat-list-item>
+  </mat-list>
+</mat-dialog-content>

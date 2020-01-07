@@ -1,0 +1,25 @@
+<app-header-navigation></app-header-navigation>
+<div class="content">
+
+  <mat-card class="error-container">
+    <div id="notfound">
+      <div class="notfound">
+        <div class="notfound-404">
+          <h1>
+            <mat-icon class="mat-icons">warning</mat-icon>
+          </h1>
+        </div>
+        <div><h2>{{ errorTitle }}</h2>
+          <p>{{ errorMessage }}</p>
+          <button
+            mat-button
+            color="primary"
+            [routerLink]="['/dashboard']"
+            routerLinkActive="active"
+          >go back to dashboard
+          </button>
+        </div>
+      </div>
+    </div>
+  </mat-card>
+</div>

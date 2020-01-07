@@ -1,0 +1,278 @@
+<izpack:userinput version="5.0"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xmlns:izpack="http://izpack.org/schema/userinput"
+                  xsi:schemaLocation="http://izpack.org/schema/userinput http://izpack.org/schema/5.1/izpack-userinput-5.1.xsd">
+
+  <panel id="panel.server">
+    <field type="title" txt="Configure Ignis Server" bold="true" size="2" />
+    <field type="divider" align="top" />
+
+    <field type="text" variable="server.http.port">
+      <spec txt="Ignis HTTP Port:" size="6" />
+      <validator class="com.izforge.izpack.panels.userinput.validator.NotEmptyValidator"
+                 txt="Port number cannot be empty" />
+      <validator class="com.izforge.izpack.panels.userinput.validator.IsPortValidator" txt="Invalid port number" />
+    </field>
+    <field type="space" />
+
+    <field type="text" variable="server.https.port">
+      <spec txt="Ignis HTTPs Port:" size="6" />
+      <validator class="com.izforge.izpack.panels.userinput.validator.NotEmptyValidator"
+                 txt="Port number cannot be empty" />
+      <validator class="com.izforge.izpack.panels.userinput.validator.IsPortValidator" txt="Invalid port number" />
+    </field>
+
+    <field type="space" />
+  </panel>
+
+  <panel id="panel.admin.password">
+    <field type="title" txt="Set Admin Password" bold="true" size="2" />
+    <field type="divider" align="top" />
+
+    <field type="password" variable="ignis.admin.password">
+      <spec>
+        <pwd txt="Admin password" size="15" />
+      </spec>
+      <validator class="com.izforge.izpack.panels.userinput.validator.NotEmptyValidator"
+                 txt="Password cannot be empty" />
+    </field>
+  </panel>
+
+  <panel id="panel.database.type">
+    <field type="title" txt="Configure Database Type" bold="true" size="2" />
+    <field type="divider" align="top" />
+
+    <field type="radio" variable="database.type">
+      <description txt="Database Type" id="database.type" />
+      <spec>
+        <choice txt="Oracle" id="Oracle" value="oracle" />
+        <choice txt="MS SQL Server (SQL Server authentication)" id="SqlServer" value="mssqlserver" />
+        <choice txt="MySQL" id="MySql" value="mysql" set="true" />
+      </spec>
+    </field>
+  </panel>
+
+  <panel id="panel.database.connection">
+    <field type="title" txt="Configure Database Connection" bold="true" size="2" />
+    <field type="divider" align="top" />
+
+    <field type="text" variable="database.host">
+      <spec txt="Database server host or address" size="30" />
+    </field>
+    <field type="space" />
+
+    <field type="text" variable="database.port">
+      <spec txt="Database server port" size="10" />
+      <validator class="com.izforge.izpack.panels.userinput.validator.IsPortValidator"
+                 txt="Database port is not valid" />
+    </field>
+    <field type="space" />
+
+    <field type="text" variable="database.name" align="right" conditionid="isMySqlorMsSqlServer">
+      <spec txt="Database name" size="15" />
+      <validator class="com.izforge.izpack.panels.userinput.validator.NotEmptyValidator"
+                 txt="Database name cannot be empty" />
+    </field>
+    <field type="radio" variable="database.oracle.connection.type" conditionid="isOracle">
+      <description txt="SID / Service name / TNS" id="database.oracle.connection.type" />
+      <spec>
+        <choice txt="SID" id="sid" value="sid" set="true" />
+        <choice txt="Service name" id="serviceName" value="serviceName" />
+        <choice txt="TNS connect string" id="tns" value="tns" />
+      </spec>
+    </field>
+    <field type="space" />
+
+    <field type="text" variable="database.instance" conditionid="isOracle+oracleSid">
+      <spec txt="SID" size="40" />
+      <validator class="com.izforge.izpack.panels.userinput.validator.NotEmptyValidator"
+                 txt="SID cannot be empty" />
+    </field>
+    <field type="text" variable="database.instance" conditionid="isOracle+oracleServiceName">
+      <spec txt="Service name" size="40" />
+      <validator class="com.izforge.izpack.panels.userinput.validator.NotEmptyValidator"
+                 txt="Service name cannot be empty" />
+    </field>
+    <field type="text" variable="database.oracle.tns" conditionid="isOracle+oracleTns">
+      <spec txt="TNS connect string" size="40" />
+      <validator class="com.izforge.izpack.panels.userinput.validator.NotEmptyValidator"
+                 txt="TNS cannot be empty" />
+    </field>
+    <field type="space" />
+
+    <field type="text" variable="database.instance" align="left" conditionid="isMSSqlServer">
+      <spec txt="Instance" size="15" />
+    </field>
+    <field type="space" />
+
+    <field type="text" variable="database.owner.user">
+      <spec txt="Ignis owner username" size="15" />
+      <validator class="com.izforge.izpack.panels.userinput.validator.NotEmptyValidator"
+                 txt="User name cannot be empty" />
+    </field>
+    <field type="space" />
+
+    <field type="password" variable="database.owner.password">
+      <spec>
+        <pwd txt="Ignis owner password" size="15" />
+      </spec>
+      <validator class="com.izforge.izpack.panels.userinput.validator.NotEmptyValidator"
+                 txt="Password cannot be empty" />
+    </field>
+    <field type="space" conditionid="isOracle" />
+
+    <field type="text" variable="database.app.user" conditionid="isOracle">
+      <spec txt="Ignis application username" size="15" />
+      <validator class="com.izforge.izpack.panels.userinput.validator.NotEmptyValidator"
+                 txt="User name cannot be empty" />
+    </field>
+    <field type="space" conditionid="isOracle" />
+    <field type="password" variable="database.app.password" conditionid="isOracle">
+      <spec>
+        <pwd txt="Ignis application password" size="15" />
+      </spec>
+      <validator class="com.izforge.izpack.panels.userinput.validator.NotEmptyValidator"
+                 txt="Password cannot be empty" />
+    </field>
+    <field type="space" conditionid="isOracle" />
+
+    <field type="text" variable="database.role.name" conditionid="isOracle">
+      <spec txt="Ignis database rolename" size="15" />
+      <validator class="com.izforge.izpack.panels.userinput.validator.NotEmptyValidator"
+                 txt="Role name cannot be empty" />
+    </field>
+  </panel>
+
+  <panel id="panel.dataset.source.location">
+    <field type="title" txt="Configure Dataset Location Type" bold="true" size="2" />
+    <field type="divider" align="top" />
+
+    <field type="radio" variable="dataset.source.location.type">
+      <description txt="Local / S3" id="dataset.source.location.type" />
+      <spec>
+        <choice txt="Local" id="local" value="LOCAL" set="true" />
+        <choice txt="S3" id="s3" value="S3" />
+      </spec>
+    </field>
+  </panel>
+
+  <panel id="panel.dataset.source.location.local">
+    <field type="title" txt="Configure Dataset Source Path" bold="true" size="2" />
+    <field type="divider" align="top" />
+
+    <field type="dir" variable="dataset.source.location.localPath">
+      <spec mustExist="false" txt="Datasets Path:" size="40" />
+    </field>
+  </panel>
+
+  <panel id="panel.dataset.source.location.s3">
+    <field type="title" txt="Configure Dataset S3 Location" bold="true" size="2" />
+    <field type="divider" align="top" />
+
+    <field type="text" variable="dataset.source.location.s3.region">
+      <spec txt="Region" size="30" />
+    </field>
+    <field type="space" />
+
+    <field type="text" variable="dataset.source.location.s3.bucket">
+      <spec txt="Source Files Bucket Name" size="30" />
+    </field>
+    <field type="space" />
+
+    <field type="text" variable="dataset.source.location.s3.prefix">
+      <spec txt="Source Files S3 Key Prefix" size="30" />
+    </field>
+    <field type="space" />
+
+    <field type="text" variable="dataset.error.location.s3.bucket">
+      <spec txt="Error Files Bucket Name" size="30" />
+    </field>
+    <field type="space" />
+
+    <field type="text" variable="dataset.error.location.s3.prefix">
+      <spec txt="Error Files S3 Key Prefix" size="30" />
+    </field>
+  </panel>
+
+  <panel id="panel.phoenix">
+    <field type="title" txt="Configure Apache Phoenix Settings" bold="true" size="2" />
+    <field type="divider" align="top" />
+
+    <field type="text" variable="phoenix.query.server.host">
+      <spec txt="Query server host" size="40" />
+    </field>
+    <field type="space" />
+
+    <field type="text" variable="phoenix.query.server.port">
+      <spec txt="Query server port" size="40" />
+    </field>
+  </panel>
+
+  <panel id="panel.hadoop">
+    <field type="title" txt="Configure Apache Hadoop Settings" bold="true" size="2" />
+    <field type="divider" align="top" />
+
+    <field type="text" variable="zookeeper.hosts">
+      <spec txt="ZooKeeper client host/s (comma separated)" size="40" />
+    </field>
+    <field type="space" />
+
+    <field type="text" variable="zookeeper.client.port">
+      <spec txt="ZooKeeper client port" size="40" />
+    </field>
+    <field type="space" />
+
+    <field type="text" variable="hadoop.user">
+      <spec txt="Hadoop username" size="40" />
+    </field>
+    <field type="space" />
+
+    <field type="text" variable="fs.defaultFS">
+      <spec txt="HDFS File System URL" size="40" />
+    </field>
+    <field type="space" />
+
+    <field type="text" variable="yarn.resourcemanager.hostname">
+      <spec txt="YARN Resource Manager host" size="40" />
+    </field>
+  </panel>
+
+  <panel id="panel.spark">
+    <field type="title" txt="Configure Apache Spark Settings" bold="true" size="2" />
+    <field type="divider" align="top" />
+
+    <field type="text" variable="spark.history.server.host">
+      <spec txt="Spark History Server host" size="40" />
+    </field>
+    <field type="space" />
+
+    <field type="text" variable="spark.history.server.port">
+      <spec txt="Spark History Server port" size="40" />
+    </field>
+    <field type="space" />
+
+    <field type="text" variable="spark.driver.memory">
+      <spec txt="Spark Driver memory" size="40" />
+    </field>
+    <field type="space" />
+
+    <field type="text" variable="spark.default.parallelism">
+      <spec txt="Spark number of partitions" size="40" />
+    </field>
+    <field type="space" />
+
+    <field type="text" variable="spark.executor.memory">
+      <spec txt="Spark Executor memory" size="40" />
+    </field>
+    <field type="space" />
+
+    <field type="text" variable="spark.executor.cores">
+      <spec txt="Spark Executor number of cores" size="40" />
+    </field>
+    <field type="space" />
+
+    <field type="text" variable="spark.executor.instances">
+      <spec txt="Spark Executor number of instances" size="40" />
+    </field>
+  </panel>
+</izpack:userinput>

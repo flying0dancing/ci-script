@@ -1,0 +1,54 @@
+@import "../../../core/_theme/variables";
+
+$green: mat-palette($mat-green);
+$orange: mat-palette($mat-orange);
+$red: mat-palette($mat-red);
+
+.fail {
+  color: mat-color($red);
+  cursor: default;
+}
+
+.warning {
+  color: mat-color($orange);
+  cursor: default;
+}
+
+.success {
+  color: mat-color($green);
+  cursor: default;
+}
+
+.job-list {
+  list-style: none;
+  padding: 0;
+
+  &__job {
+    display: flex;
+    padding: 0 0 3px;
+    align-items: center;
+  }
+}
+
+.state {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+
+  &--loading {
+    width: 150px;
+  }
+}
+
+.file {
+  align-self: center;
+}
+
+.controls {
+  display: flex;
+  align-self: basline;
+  align-items: center;
+}

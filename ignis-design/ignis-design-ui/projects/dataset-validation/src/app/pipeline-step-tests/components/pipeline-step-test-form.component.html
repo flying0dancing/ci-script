@@ -1,0 +1,72 @@
+<form
+  class="flex-row-spaced-between flex-align-baseline"
+  [formGroup]="formGroup"
+  autocomplete="off"
+>
+  <mat-form-field class="margin-right-3">
+    <input
+      matInput
+      formControlName="name"
+      placeholder="Name"
+      [errorStateMatcher]="errorStateMatcher"
+    />
+  </mat-form-field>
+
+  <mat-form-field class="margin-right-3 flex-expand">
+    <mat-label>Description</mat-label>
+    <textarea
+      matInput
+      formControlName="description"
+      cdkTextareaAutosize
+      cdkAutosizeMinRows="1"
+      cdkAutosizeMaxRows="2"
+      [errorStateMatcher]="errorStateMatcher"
+    ></textarea>
+  </mat-form-field>
+
+  <mat-form-field class="margin-right-3">
+    <mat-label>Test Reference Date</mat-label>
+    <input
+      formControlName="testReferenceDate"
+      matInput
+      [matDatepicker]="testReferenceDate"
+      placeholder="Test Reference Date"
+    />
+    <mat-datepicker-toggle
+      matSuffix
+      [for]="testReferenceDate"
+    ></mat-datepicker-toggle>
+    <mat-datepicker #testReferenceDate></mat-datepicker>
+  </mat-form-field>
+
+  <mat-form-field class="margin-right-3">
+    <mat-label>Step</mat-label>
+    <mat-select
+      formControlName="pipelineStepId"
+      [errorStateMatcher]="errorStateMatcher"
+    >
+      <mat-option [value]="step.id" *ngFor="let step of stepOptions">{{
+        step.name
+      }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <button
+    (click)="onSubmit()"
+    mat-raised-button
+    color="primary"
+    [disabled]="(isFormDisabled$ | async) || !formGroup.valid"
+  >
+    <ng-container
+      *ngIf="isEdit === true; then editText; else createText"
+    ></ng-container>
+  </button>
+</form>
+
+<ng-template #createText>
+  {{ (isSubmitting$ | async) ? 'Creating' : 'Create' }}
+</ng-template>
+
+<ng-template #editText>
+  {{ (isSubmitting$ | async) ? 'Editing' : 'Edit' }}
+</ng-template>

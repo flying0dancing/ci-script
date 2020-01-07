@@ -1,0 +1,38 @@
+.schema-properties-container {
+  margin-bottom: 26px;
+}
+
+.fields-container {
+  display: inline-flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.field-container {
+  padding: 4px;
+  width: 390px;
+}
+
+.remove-field-button {
+  margin-left: calc(100% - 83px);
+  margin-top: 10px;
+}
+
+.errors-container {
+  color: red;
+  margin-bottom: 0.5em;
+}
+
+.add-field-card {
+  padding: 6px;
+  height: 36px;
+}
+
+.add-field-card mat-card-subtitle {
+  color: black;
+}
+
+.add-field-card:hover {
+  background-color: whitesmoke;
+  cursor: pointer;
+}

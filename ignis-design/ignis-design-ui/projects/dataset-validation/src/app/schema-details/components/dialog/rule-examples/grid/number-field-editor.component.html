@@ -1,0 +1,15 @@
+<mat-form-field>
+  <!--suppress HtmlFormInputWithoutLabel -->
+  <input
+    type="number"
+    matInput
+    [placeholder]="field.name"
+    [required]="!field.nullable"
+    step="1"
+    [(ngModel)]="exampleField.value"
+    #expected="ngModel"
+  />
+  <mat-error *ngIf="expected.invalid || exampleField.error">
+    {{ exampleField.error }}
+  </mat-error>
+</mat-form-field>

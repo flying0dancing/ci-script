@@ -1,0 +1,15 @@
+[Unit]
+Description=FCR Engine platform-tools %{APP_VER} service
+After=sshd.service
+
+[Service]
+Type=simple
+User=%{USER_NAME}
+WorkingDirectory=%{INSTALL_PATH}
+
+ExecStart=%{INSTALL_PATH}/bin/daemon.sh start all
+ExecStop=%{INSTALL_PATH}/bin/daemon.sh stop all
+RemainAfterExit=true
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,46 @@
+.expand-select-window-button {
+  right: 161px;
+  position: absolute;
+  top: 96px;
+}
+
+dv-pipeline-select-editor {
+  width: calc(100% - 107px);
+  display: inline-block;
+  vertical-align: top;
+  margin-right: 25px;
+}
+
+.is-window-checkbox {
+  display: inline-block;
+  vertical-align: top;
+  margin-top: 24px;
+}
+
+.expand-select-window-button {
+  right: 132px !important;
+  position: absolute;
+  top: 92px !important;
+}
+
+
+.error-list{
+  margin: -6px 0 0;
+  list-style: none;
+  color: red;
+  padding: 0;
+}
+
+::ng-deep .order-container > div {
+  min-height: 24px;
+}
+
+.hidden-order {
+  display: none;
+}
+
+.intermediate-container {
+  min-height: 24px;
+  display: flex;
+  justify-content: space-between;
+}

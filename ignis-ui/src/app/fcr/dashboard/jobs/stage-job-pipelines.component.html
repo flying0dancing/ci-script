@@ -1,0 +1,62 @@
+<div class="pipeline-title">Eligible Downstream Pipelines</div>
+<mat-list class="mat-list-class">
+  <span *ngFor="let pipeline of eligiblePipelines">
+    <mat-list-item
+      matTooltip="{{ pipeline.pipelineName }}"
+      [matTooltipDisabled]="isWithinGraphIcon"
+      (click)="selectPipeline(pipeline)"
+      [ngClass]="changePipelineSelection(pipeline)"
+      *ngIf="pipeline.enabled"
+    >
+      <h3 matLine>{{ pipeline.pipelineName }}</h3>
+      <button
+        type="button"
+        mat-mini-fab
+        (click)="viewPipelineGraph(pipeline)"
+        (mouseenter)="graphIconEnter()"
+        (mouseleave)="graphIconLeave()"
+        [ngClass]="changeButtonHighlight(pipeline)"
+        matTooltip="Click to view Graph of {{ pipeline.pipelineName }}"
+        [matTooltipDisabled]="!isWithinGraphIcon"
+      >
+        <mat-icon class="pipeline-button-icon">timeline</mat-icon>
+      </button>
+    </mat-list-item>
+  </span>
+</mat-list>
+<div class="pipeline-title-non-eligible">Non Eligible Downstream Pipelines</div>
+<mat-list>
+  <span *ngFor="let pipeline of eligiblePipelines">
+    <mat-list-item
+      [matTooltip]="
+        pipeline.requiredSchemas.length > 0
+          ? 'Pipeline \'' +
+            pipeline.pipelineName +
+            '\' does not contain some required schemas \' ' +
+            pipeline.requiredSchemas.join(', ') +
+            '\''
+          : 'Pipeline \'' +
+            pipeline.pipelineName +
+            '\' does not have any required schemas'
+      "
+      [matTooltipDisabled]="isWithinGraphIcon"
+      (click)="selectPipeline(pipeline)"
+      [ngClass]="changePipelineSelection(pipeline)"
+      *ngIf="!pipeline.enabled"
+    >
+      <h3 matLine>{{ pipeline.pipelineName }}</h3>
+      <button
+        type="button"
+        mat-mini-fab
+        (click)="viewPipelineGraph(pipeline)"
+        (mouseenter)="graphIconEnter()"
+        (mouseleave)="graphIconLeave()"
+        [ngClass]="changeButtonHighlight(pipeline)"
+        matTooltip="Click to view Graph of {{ pipeline.pipelineName }}"
+        [matTooltipDisabled]="!isWithinGraphIcon"
+      >
+        <mat-icon class="pipeline-button-icon">timeline</mat-icon>
+      </button>
+    </mat-list-item>
+  </span>
+</mat-list>

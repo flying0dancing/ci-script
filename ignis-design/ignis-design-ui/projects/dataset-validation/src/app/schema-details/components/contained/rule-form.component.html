@@ -1,0 +1,276 @@
+<div class="flex-row-spaced-between">
+  <h1 id="rule-form-title" class="mat-h2">{{ title }}</h1>
+
+  <button
+    id="rule-form-close"
+    class="e2e-rule-form-close"
+    mat-icon-button
+    (click)="closeSidenav()"
+    matTooltip="Close ({{ closeRuleFormShortcut }})"
+    matTooltipPosition="left"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+
+<form [formGroup]="form" autocomplete="off">
+  <div class="flex-row-spaced-between padding-bottom-2">
+    <mat-form-field
+      class="full-width margin-right-2"
+      hintLabel="Rule ID / Edit no."
+    >
+      <input
+        id="rule-form-id"
+        class="e2e-rule-form-reg-ref-input"
+        #firstInput
+        formControlName="ruleId"
+        matInput
+        placeholder="Regulator Reference"
+        required
+        spellcheck="false"
+      />
+      <mat-hint align="end"
+        >{{ ruleIdControl.value?.length || 0 }} / 100</mat-hint
+      >
+      <mat-error *ngIf="ruleIdControl.invalid">
+        {{ ruleIdControl.errors[fieldErrorsProp] }}
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field
+      class="full-width margin-right-2"
+      hintLabel="Technical name / MDRM code"
+    >
+      <input
+        id="rule-form-name"
+        class="e2e-rule-form-name-input"
+        formControlName="name"
+        matInput
+        placeholder="Name"
+        required
+        spellcheck="false"
+      />
+      <mat-hint align="end"
+        >{{ nameControl.value?.length || 0 }} / 100</mat-hint
+      >
+      <mat-error *ngIf="nameControl.invalid">
+        {{ nameControl.errors[fieldErrorsProp] }}
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="one-fifth-width" hintLabel="Version no.">
+      <input
+        id="rule-form-version"
+        class="e2e-rule-form-version-input"
+        type="number"
+        step="1"
+        [min]="minVersion"
+        formControlName="version"
+        matInput
+        placeholder="Version"
+        required
+      />
+      <mat-error *ngIf="versionControl.invalid">
+        {{ versionControl.errors[fieldErrorsProp] }}
+      </mat-error>
+    </mat-form-field>
+  </div>
+
+  <div class="flex-row-spaced-between">
+    <mat-form-field
+      id="rule-form-validation-type"
+      class="full-width margin-right-2"
+    >
+      <mat-select
+        placeholder="Validation Type"
+        formControlName="validationRuleType"
+        class="e2e-rule-form-type-input"
+
+        required
+      >
+        <mat-option
+          *ngFor="let validationType of validationRuleTypes"
+          [value]="validationType.value"
+          class="margin-right-2"
+        >
+          {{ validationType.label }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="validationRuleTypeControl.invalid">
+        {{ validationRuleTypeControl.errors[fieldErrorsProp] }}
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field id="rule-form-validation-severity" class="full-width">
+      <mat-select
+        placeholder="Validation Severity"
+        formControlName="validationRuleSeverity"
+        class="e2e-rule-form-severity-input"
+
+        required
+      >
+        <mat-option
+          *ngFor="let severity of validationRuleSeverities"
+          [value]="severity.value"
+        >
+          {{ severity.label }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="validationRuleSeverityControl.invalid">
+        {{ validationRuleSeverityControl.errors[fieldErrorsProp] }}
+      </mat-error>
+    </mat-form-field>
+  </div>
+
+  <mat-form-field class="full-width">
+    <textarea
+      id="rule-form-description"
+      class="e2e-rule-form-description-input"
+
+      formControlName="description"
+      matInput
+      placeholder="Description"
+      cdkTextareaAutosize
+      #autosize="cdkTextareaAutosize"
+      cdkAutosizeMinRows="2"
+      cdkAutosizeMaxRows="5"
+    ></textarea>
+    <mat-hint align="end"
+      >{{ descriptionControl.value?.length || 0 }}/2000</mat-hint
+    >
+    <mat-error *ngIf="descriptionControl.invalid">
+      {{ descriptionControl.errors[fieldErrorsProp] }}
+    </mat-error>
+  </mat-form-field>
+
+  <div class="flex-row-spaced-between flex-align-center">
+    <mat-form-field class="full-width margin-right-2" hintLabel="Enabled from">
+      <input
+        id="rule-form-start-date"
+        class="e2e-rule-form-start-input"
+
+        formControlName="startDate"
+        matInput
+        [matDatepicker]="startDatePicker"
+        placeholder="Start Date"
+        required
+      />
+      <mat-datepicker-toggle
+        matSuffix
+        [for]="startDatePicker"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #startDatePicker></mat-datepicker>
+      <mat-error *ngIf="startDateControl.invalid">
+        {{ startDateControl.errors[fieldErrorsProp] }}
+      </mat-error>
+    </mat-form-field>
+
+    <button
+      id="rule-form-always-enabled"
+      class="mini-fab-outline"
+      mat-mini-fab
+      type="button"
+      (click)="minMaxDates()"
+      matTooltip="Always Enabled"
+      [disabled]="form.disabled"
+    >
+      <mat-icon>all_inclusive</mat-icon>
+    </button>
+
+    <mat-form-field class="full-width margin-left-2" hintLabel="Disabled from">
+      <input
+        id="rule-form-end-date"
+        class="e2e-rule-form-end-input"
+        formControlName="endDate"
+        matInput
+        [matDatepicker]="endDatePicker"
+        placeholder="End Date"
+        required
+      />
+      <mat-datepicker-toggle
+        matSuffix
+        [for]="endDatePicker"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #endDatePicker></mat-datepicker>
+      <mat-error *ngIf="endDateControl.invalid">
+        {{ endDateControl.errors[fieldErrorsProp] }}
+      </mat-error>
+    </mat-form-field>
+  </div>
+</form>
+
+<div class="margin-top-3">
+  <p [ngClass]="{ disabled: form.disabled, warn: !!expressionError }">
+    <mat-label>Expression *</mat-label>
+    <button
+      mat-icon-button
+      class="disabled"
+      (click)="openHelpDialog()"
+      matTooltip="How to write rule expressions"
+    >
+      <mat-icon>help</mat-icon>
+    </button>
+  </p>
+
+  <ngx-monaco-editor
+    class="editor e2e-rule-form-expression-editor"
+
+    [options]="{}"
+    [(ngModel)]="expression"
+    (onInit)="onInit($event)"
+  >
+  </ngx-monaco-editor>
+  <div class="flex-row-spaced-between">
+    <div>
+      <mat-hint class="margin-right-3"
+        >{{ expression?.length || 0 }} / 1000</mat-hint
+      >
+    </div>
+    <mat-error *ngIf="expressionError">
+      {{ expressionError }}
+    </mat-error>
+  </div>
+</div>
+
+<div class="margin-top-3">
+  <dv-save-button
+    class="e2e-save-rule-button"
+
+    [displayText]="saveButtonText"
+    [disabled]="isFormInvalid()"
+    [loading]="loading$ | async"
+    [done]="(loaded$ | async) && form.disabled"
+    (save)="submit()"
+  >
+  </dv-save-button>
+
+  <button
+    mat-button
+    [disabled]="!isEditMode() || isFormInvalid()"
+    (click)="openExamplesDialog()"
+  >
+    Test Expression
+  </button>
+</div>
+
+<div class="margin-top-3" *ngIf="(errors$ | async).length > 0">
+  <h3>
+    <mat-error class="errors-title">
+      <span class="margin-right-1">
+        <i class="material-icons">error_outline</i>
+      </span>
+      Error<span *ngIf="(errors$ | async).length > 1">s</span>
+    </mat-error>
+  </h3>
+  <ul>
+    <li *ngFor="let err of globalErrors">
+      <mat-error>
+        <div *ngIf="err.errorCode">
+          <b>{{ err.errorCode }}</b>
+        </div>
+        <div class="margin-left-2">
+          <p>{{ err.errorMessage }}</p>
+        </div>
+      </mat-error>
+    </li>
+  </ul>
+</div>

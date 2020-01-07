@@ -1,0 +1,9 @@
+<mat-icon
+  *ngIf="icon"
+  aria-hidden="false"
+  [attr.aria-label]="icon.displayText"
+  [matTooltip]="icon.displayText"
+  [ngStyle]="{ color: icon.color }"
+>
+  {{ icon.name }}
+</mat-icon>

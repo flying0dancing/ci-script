@@ -1,0 +1,503 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--suppress ALL -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>ignis-design</artifactId>
+    <groupId>com.lombardrisk</groupId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>ignis-design-server</artifactId>
+  <packaging>jar</packaging>
+
+  <properties>
+    <flyway.archive>flyway-commandline-${flyway.version}.zip</flyway.archive>
+    <flyway.download.url>
+      https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/${flyway.version}/${flyway.archive}
+    </flyway.download.url>
+
+    <flyway.dir>flyway-${flyway.version}</flyway.dir>
+
+    <staging.path>${project.build.directory}</staging.path>
+    <staging.flyway.path>${project.build.directory}/${flyway.dir}</staging.flyway.path>
+    <staging.flyway.drivers.path>
+      ${project.build.directory}/flyway-${flyway.version}/drivers
+    </staging.flyway.drivers.path>
+    <staging.flyway.conf>${project.build.directory}/flyway-${flyway.version}/conf/flyway.conf</staging.flyway.conf>
+    <staging.db.scripts.path>../ignis-design-db/src/dbscript/</staging.db.scripts.path>
+    <staging.ui.dist.path>../ignis-design-ui/dist/dataset-validation</staging.ui.dist.path>
+    <maven.install.skip>true</maven.install.skip>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.lombardrisk</groupId>
+      <artifactId>ignis-design-field</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.lombardrisk</groupId>
+      <artifactId>ignis-design-rule</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-webflux</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-actuator</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-actuator-autoconfigure</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-devtools</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.tomcat</groupId>
+      <artifactId>tomcat-jdbc</artifactId>
+      <version>9.0.8</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.oracle</groupId>
+      <artifactId>ojdbc8</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jgrapht</groupId>
+      <artifactId>jgrapht-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.lombardrisk</groupId>
+      <artifactId>ignis-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.lombardrisk</groupId>
+      <artifactId>ignis-web-common</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.lombardrisk</groupId>
+      <artifactId>ignis-pipeline-step-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.lombardrisk</groupId>
+      <artifactId>ignis-pipeline-step-common</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.lombardrisk</groupId>
+      <artifactId>ignis-client-design</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-core</artifactId>
+      <version>${flyway.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.lombardrisk</groupId>
+      <artifactId>ignis-api</artifactId>
+      <version>${project.version}</version>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.lombardrisk</groupId>
+      <artifactId>ignis-common</artifactId>
+      <version>${project.version}</version>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.lombardrisk</groupId>
+      <artifactId>ignis-data-common</artifactId>
+      <version>${project.version}</version>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.lombardrisk</groupId>
+      <artifactId>ignis-client-design</artifactId>
+      <version>${project.version}</version>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.lombardrisk</groupId>
+      <artifactId>ignis-client-external</artifactId>
+      <version>${project.version}</version>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.lombardrisk</groupId>
+      <artifactId>ignis-client-internal</artifactId>
+      <version>${project.version}</version>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.lombardrisk</groupId>
+      <artifactId>ignis-web-common</artifactId>
+      <version>${project.version}</version>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>io.projectreactor</groupId>
+      <artifactId>reactor-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.lombardrisk</groupId>
+      <artifactId>ignis-pipeline</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.lombardrisk</groupId>
+      <artifactId>ignis-design-field</artifactId>
+      <version>${project.version}</version>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.spark</groupId>
+      <artifactId>spark-sql_2.11</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.janino</groupId>
+      <artifactId>janino</artifactId>
+      <version>${janino.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.scala-lang.modules</groupId>
+      <artifactId>scala-java8-compat_2.11</artifactId>
+      <version>0.9.0</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>${project.basedir}/src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <fork>false</fork>
+          <mainClass>com.lombardrisk.ignis.design.server.IgnisDesignApplication</mainClass>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>repackage</goal>
+            </goals>
+            <configuration>
+              <classifier>exec</classifier>
+              <attach>false</attach>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>com.googlecode.maven-download-plugin</groupId>
+        <artifactId>download-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>get-flyway</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>${flyway.download.url}</url>
+              <unpack>true</unpack>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>prepare ${flyway.dir}</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <copy file="${project.basedir}/src/assembly/conf/flyway.conf"
+                      tofile="${staging.flyway.conf}" />
+                <delete dir="${staging.flyway.drivers.path}" />
+                <mkdir dir="${staging.flyway.drivers.path}" />
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>enforce-license</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireFilesExist>
+                  <files>
+                    <file>${staging.db.scripts.path}</file>
+                  </files>
+                </requireFilesExist>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>archive</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>dist</id>
+                <phase>package</phase>
+                <inherited>false</inherited>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+                <configuration>
+                  <attach>false</attach>
+                  <appendAssemblyId>false</appendAssemblyId>
+                  <finalName>fcr-engine-design-studio-${project.version}</finalName>
+                  <descriptors>
+                    <descriptor>src/assembly/assembly.xml</descriptor>
+                  </descriptors>
+                  <formats>
+                    <format>zip</format>
+                  </formats>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>jenkins</id>
+      <properties>
+        <timestamp>${maven.build.timestamp}</timestamp>
+        <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
+        <spring.datasource.username>DESIGNSTUDIO_CI_${timestamp}</spring.datasource.username>
+
+        <spring.datasource.url>
+          jdbc:oracle:thin:@sd10ny685hsflu8.co8iag2st66q.eu-west-1.rds.amazonaws.com:1521:orcl
+        </spring.datasource.url>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>sql-maven-plugin</artifactId>
+            <dependencies>
+              <dependency>
+                <groupId>com.oracle</groupId>
+                <artifactId>ojdbc8</artifactId>
+                <version>${oracle.jdbc.version}</version>
+              </dependency>
+            </dependencies>
+            <executions>
+              <execution>
+                <id>create-oracle-database</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>execute</goal>
+                </goals>
+                <configuration>
+                  <url>${spring.datasource.url}</url>
+                  <driver>oracle.jdbc.driver.OracleDriver</driver>
+                  <sqlCommand>
+                  CREATE USER ${spring.datasource.username} IDENTIFIED BY password
+                  DEFAULT TABLESPACE users
+                  TEMPORARY TABLESPACE temp
+                  QUOTA UNLIMITED ON users;
+
+                  GRANT CREATE SESSION TO ${spring.datasource.username};
+                  GRANT CREATE TABLE TO ${spring.datasource.username};
+                  GRANT CREATE SEQUENCE TO ${spring.datasource.username};
+                  GRANT CREATE VIEW TO ${spring.datasource.username};
+                  GRANT CREATE TRIGGER to ${spring.datasource.username};
+                  GRANT CREATE PROCEDURE TO ${spring.datasource.username};
+                  GRANT SELECT ON SYS.pending_trans$ TO ${spring.datasource.username};
+                  GRANT SELECT ON SYS.dba_2pc_pending TO ${spring.datasource.username};
+                  GRANT SELECT ON SYS.dba_pending_transactions TO ${spring.datasource.username};
+                  </sqlCommand>
+                </configuration>
+              </execution>
+              <execution>
+                <id>drop-oracle-database</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>execute</goal>
+                </goals>
+                <configuration>
+                  <url>${spring.datasource.url}</url>
+                  <driver>oracle.jdbc.driver.OracleDriver</driver>
+                  <sqlCommand>DROP USER ${spring.datasource.username} CASCADE;</sqlCommand>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>echo-schema-name</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <echo>Using generated schema/database name [${spring.datasource.username}]</echo>
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>integration-test</id>
+                <phase>integration-test</phase>
+                <goals>
+                  <goal>integration-test</goal>
+                </goals>
+                <configuration>
+                  <excludes>
+                    <exclude>**/*RepositoryIT.java</exclude>
+                  </excludes>
+                </configuration>
+              </execution>
+              <execution>
+                <id>oracle-repository-integration-test</id>
+                <phase>integration-test</phase>
+                <goals>
+                  <goal>integration-test</goal>
+                </goals>
+                <configuration>
+                  <includes>
+                    <include>**/*RepositoryIT.java</include>
+                  </includes>
+                  <systemPropertyVariables>
+                    <spring.profiles.active>ci-oracle</spring.profiles.active>
+                    <spring.datasource.url>${spring.datasource.url}</spring.datasource.url>
+                    <spring.datasource.username>${spring.datasource.username}</spring.datasource.username>
+                  </systemPropertyVariables>
+                  <reportNameSuffix>oracle</reportNameSuffix>
+                  <summaryFile>${project.build.directory}/failsafe-reports/oracle-failsafe-summary.xml</summaryFile>
+                </configuration>
+              </execution>
+              <execution>
+                <id>verify</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>verify</goal>
+                </goals>
+                <configuration>
+                  <summaryFiles>
+                    <summaryFile>${project.build.directory}/failsafe-reports/failsafe-summary.xml</summaryFile>
+                    <summaryFile>${project.build.directory}/failsafe-reports/oracle-failsafe-summary.xml</summaryFile>
+                  </summaryFiles>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

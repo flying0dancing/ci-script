@@ -1,0 +1,16 @@
+$content-width: 400px;
+
+.error-body-container {
+  width: $content-width;
+}
+
+.correlationId {
+  margin-left: 13px;
+  margin-top: 3px;
+  font-style: italic;
+}
+
+.log-info-container {
+  width: $content-width;
+  margin-bottom: 13px;
+}

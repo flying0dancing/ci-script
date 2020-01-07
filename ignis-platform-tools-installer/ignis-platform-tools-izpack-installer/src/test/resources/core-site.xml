@@ -1,0 +1,21 @@
+<configuration>
+  <property>
+    <name>hadoop.tmp.dir</name>
+    <value>/fcr-engine/ignis/data/../tmp</value>
+  </property>
+  <property>
+    <name>fs.defaultFS</name>
+    <value>hdfs://platform.tools.docker:9000</value>
+    <description>namenode URI</description>
+  </property>
+
+  <property>
+    <name>hadoop.proxyuser.root.groups</name>
+    <value>*</value>
+  </property>
+
+  <property>
+    <name>hadoop.proxyuser.root.host</name>
+    <value>*</value>
+  </property>
+</configuration>

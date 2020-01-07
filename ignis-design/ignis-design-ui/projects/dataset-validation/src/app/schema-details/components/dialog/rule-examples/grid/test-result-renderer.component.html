@@ -1,0 +1,35 @@
+<ng-container
+  *ngIf="!actualResult; then noResultTemplate; else testResultTemplate"
+></ng-container>
+
+<ng-template #noResultTemplate>
+  <mat-icon matTooltip="No result. Test needs to be executed" class="no-result">
+    info_outline
+  </mat-icon>
+</ng-template>
+
+<ng-template #testResultTemplate>
+  <mat-icon
+    *ngIf="actualResult && actualResult === expectedResult"
+    matTooltip="Test Passed. Expected matched Actual"
+    class="pass-result"
+  >
+    check
+  </mat-icon>
+
+  <mat-icon
+    *ngIf="actualResult !== 'Error' && actualResult !== expectedResult"
+    matTooltip="Test failed. Expected did not match Actual"
+    class="fail-result"
+  >
+    warning
+  </mat-icon>
+
+  <mat-icon
+    *ngIf="actualResult === 'Error'"
+    [matTooltip]="unexpectedErrorTooltip"
+    class="error-result"
+  >
+    error
+  </mat-icon>
+</ng-template>

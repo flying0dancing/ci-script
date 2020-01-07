@@ -1,0 +1,12 @@
+<mat-icon>file_upload</mat-icon>
+
+<span class="instructions"
+  >Drag a file here, or
+  <a href="#" (click)="handleSelectFilesClick($event)" class="e2e-upload-file-select-text"
+    >select a file from your computer</a
+  ></span
+>
+
+<span class="allowed-file-types" *ngIf="allowedFileTypesText">{{
+  allowedFileTypesText
+}}</span>

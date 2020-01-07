@@ -1,0 +1,4 @@
+export enum IgnisFeature {
+  APPEND_DATASETS = 'APPEND_DATASETS',
+  RUN_PIPLINE_STEP = 'RUN_PIPLINE_STEP'
+}

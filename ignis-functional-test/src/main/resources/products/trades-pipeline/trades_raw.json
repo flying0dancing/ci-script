@@ -1,0 +1,44 @@
+{
+  "physicalTableName": "TRADES_RAW",
+  "displayName": "Raw Trades Data with ids and dates",
+  "period" : {
+    "startDate" : "2018-01-01",
+    "endDate" : "2020-01-01"
+  },
+  "version": 1,
+  "fields": [
+    {
+      "name": "TRADE_DATE",
+      "type": "int",
+      "nullable": false
+    },
+    {
+      "name": "SETTLEMENT_DATE",
+      "type": "int",
+      "nullable": false
+    },
+    {
+      "name": "STOCK_ID",
+      "type": "long",
+      "nullable": false
+    },
+    {
+      "name": "QUOTE_ID",
+      "type": "long",
+      "nullable": false
+    },
+    {
+      "name": "TradeType",
+      "type": "string",
+      "nullable": false
+    },
+    {
+      "name": "AMOUNT",
+      "type": "decimal",
+      "nullable": false,
+      "precision": 7,
+      "scale": 2
+    }
+  ],
+  "validationRules" : []
+}

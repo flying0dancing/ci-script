@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.lombardrisk</groupId>
+    <artifactId>ignis</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>ignis-design</artifactId>
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>ignis-design-ui</module>
+    <module>ignis-design-field</module>
+    <module>ignis-design-rule</module>
+    <module>ignis-design-server</module>
+    <module>ignis-design-db</module>
+  </modules>
+</project>

@@ -1,0 +1,11 @@
+<mat-toolbar color="primary">
+  <h3 mat-dialog-title><ng-content></ng-content></h3>
+  <button
+    mat-icon-button
+    mat-dialog-close
+    [ngClass]="{ 'disable-close': disableClose }"
+    *ngIf="showClose"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+</mat-toolbar>

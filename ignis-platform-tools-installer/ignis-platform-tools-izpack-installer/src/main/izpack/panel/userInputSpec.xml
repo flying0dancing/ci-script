@@ -1,0 +1,124 @@
+<izpack:userinput version="5.0"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xmlns:izpack="http://izpack.org/schema/userinput"
+                  xsi:schemaLocation="http://izpack.org/schema/userinput http://izpack.org/schema/5.1/izpack-userinput-5.1.xsd">
+
+  <panel id="panel.install.mode">
+    <field type="title" txt="Installation mode" bold="true" size="1" />
+    <field type="divider" align="top" />
+    <field type="radio" variable="distributed">
+      <description txt="Installation Mode" />
+      <spec>
+        <choice txt="Standalone" value="false" />
+        <choice txt="Full Distributed" value="true" />
+      </spec>
+    </field>
+  </panel>
+
+  <panel id="panel.allocate.hosts">
+    <field type="title" txt="Add hosts where FCR Engine should be installed" bold="true" size="1" />
+    <field maxRow="10" minRow="1" type="custom" variable="hosts.count">
+      <spec>
+        <col>
+          <field type="text" variable="hosts">
+            <spec default="" size="30" />
+          </field>
+        </col>
+      </spec>
+    </field>
+  </panel>
+
+  <panel id="panel.assign.master">
+    <field type="title" txt="Assign master host" bold="true" size="1" />
+    <field type="divider" align="top" />
+
+    <field type="combo" variable="hdfs.nn.host">
+      <spec txt="HDFS Name Node">
+        <choice processor="com.lombardrisk.ignis.platform.tools.izpack.panel.processor.LoadServerIpProcessor"
+                value="" />
+      </spec>
+    </field>
+
+    <field type="space" />
+
+    <field type="combo" variable="hdfs.sn.host">
+      <spec txt="HDFS Secondary Name Node">
+        <choice processor="com.lombardrisk.ignis.platform.tools.izpack.panel.processor.LoadServerIpProcessor"
+                value="" />
+      </spec>
+    </field>
+
+    <field type="space" />
+
+    <field type="combo" variable="yarn.rm.host">
+      <spec txt="Yarn Resource Manager">
+        <choice processor="com.lombardrisk.ignis.platform.tools.izpack.panel.processor.LoadServerIpProcessor"
+                value="" />
+      </spec>
+    </field>
+
+    <field type="space" />
+
+    <field type="combo" variable="history.server.host">
+      <spec txt="Yarn History Server">
+        <choice processor="com.lombardrisk.ignis.platform.tools.izpack.panel.processor.LoadServerIpProcessor"
+                value="" />
+      </spec>
+    </field>
+
+    <field type="space" />
+
+    <field type="combo" variable="hbase.master.host">
+      <spec txt="HBase Master">
+        <choice processor="com.lombardrisk.ignis.platform.tools.izpack.panel.processor.LoadServerIpProcessor"
+                value="" />
+      </spec>
+    </field>
+    <field type="combo" variable="spark.history.server.host">
+      <spec txt="Spark Job History Server">
+        <choice processor="com.lombardrisk.ignis.platform.tools.izpack.panel.processor.LoadServerIpProcessor"
+                value="" />
+      </spec>
+    </field>
+    <field type="space" />
+
+    <field type="text" variable="hbase.backup.master.hosts">
+      <spec txt="HBase Master Backup" size="30" />
+    </field>
+
+    <field type="space" />
+
+    <field type="text" variable="zookeeper.hosts">
+      <spec txt="Zookeeper" size="30" />
+    </field>
+  </panel>
+
+  <panel id="panel.assign.secondary">
+    <field type="title" txt="Assign secondary and client hosts" bold="true" size="1" />
+    <field type="divider" align="top" />
+
+    <field type="text" variable="yarn.nm.hosts">
+      <spec txt="Yarn Node Manager" size="30" />
+    </field>
+
+    <field type="space" />
+
+    <field type="text" variable="hdfs.dn.hosts">
+      <spec txt="HDFS Data Node" size="30" />
+    </field>
+
+    <field type="space" />
+
+    <field type="text" variable="hbase.regionserver.hosts">
+      <spec txt="HBase Region Server" size="30" />
+    </field>
+
+    <field type="space" />
+
+    <field type="text" variable="phoenix.qs.hosts">
+      <spec txt="Phoenix Query Server/s" size="30" />
+    </field>
+
+    <field type="space" />
+  </panel>
+</izpack:userinput>

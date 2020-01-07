@@ -1,0 +1,40 @@
+@import "../../../../core/_theme/variables";
+
+$green: mat-palette($mat-green);
+$orange: mat-palette($mat-orange);
+$red: mat-palette($mat-red);
+
+:host {
+  text-align: center;
+  display: block;
+}
+
+.fail {
+  color: mat-color($red);
+  cursor: default;
+}
+
+.warning {
+  color: mat-color($orange);
+  cursor: default;
+}
+
+.success {
+  color: mat-color($green);
+  cursor: default;
+}
+
+mat-icon {
+  vertical-align: middle;
+  margin-bottom: 3px;
+}
+
+.validation-status {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.grid-align {
+  margin-top: 2.5px;
+}

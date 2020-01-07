@@ -1,0 +1,24 @@
+[
+  {
+    "ruleId": "1",
+    "name": "STRING_FIELD Rule",
+    "description": "Check is STRING_FIELD",
+    "validationRuleType": "QUALITY",
+    "validationRuleSeverity": "CRITICAL",
+    "version": 1,
+    "startDate": "1970-01-10",
+    "endDate": "2070-01-10",
+    "expression": "STRING_FIELD != null"
+  },
+  {
+    "ruleId": "2",
+    "name": "DOUBLE_FIELD Rule",
+    "description": "Check is DOUBLE_FIELD",
+    "validationRuleType": "QUALITY",
+    "validationRuleSeverity": "CRITICAL",
+    "version": 1,
+    "startDate": "1970-01-10",
+    "endDate": "2070-01-10",
+    "expression": "DOUBLE_FIELD != null"
+  }
+]

@@ -1,0 +1,72 @@
+$selectsScrollContainer: 600px;
+
+.selects-scroll-container {
+  overflow-x: hidden;
+  display: inline;
+}
+
+.selects-scroll-union-container {
+  overflow-x: hidden;
+}
+
+.selects-scroll-joins-container {
+  padding-left: 6px;
+  padding-right: 6px;
+  max-height: 250px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.window-select-container {
+  padding: 3px;
+}
+
+.select-card-container {
+  height: 125px;
+}
+
+.expand-select-button {
+  right: calc(-100% + 50px);
+  position: relative;
+  top: -58px;
+}
+
+.expand-select-window-button {
+  right: 161px;
+  position: absolute;
+  top: 96px;
+}
+
+.autofill-button {
+  position: absolute;
+  right: 68px;
+  margin-top: 13px;
+  z-index: 2;
+}
+
+::ng-deep .mat-tab-body-content {
+  overflow-x: hidden !important;
+}
+
+.error-selects {
+  color: red;
+}
+
+.selects-filter-container {
+  display: flex;
+  margin: 13px;
+  justify-content: space-between;
+}
+
+.selects-filter-control {
+  flex-basis: auto;
+}
+
+.selects-filter-input {
+  width: 125px;
+}
+
+.selects-title-container {
+  display: flex;
+  justify-content: space-between;
+}

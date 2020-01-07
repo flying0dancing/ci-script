@@ -1,0 +1,3 @@
+CUSTOMER_NAME, OPENING_DATE,       ACCOUNT_TYPE, CURRENT_BALANCE, OTHER_FACILITIES,     INTERESTE_RATE, CLOSING_DATE
+"NEO"        , 11/06/1999 00:00:00,            , 1000          , "Being the one"     ,  100,            11/06/2000 00:00:00
+"AGENT SMITH", 11/06/1999 00:00:00,           0, 1000          , "Also being the one",  100,            11/06/2000 00:00:00

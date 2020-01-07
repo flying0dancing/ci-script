@@ -1,0 +1,46 @@
+<div class="action-buttons">
+  <button
+    mat-fab
+    class="action-buttons_button e2e-refresh-products-button"
+    (click)="refreshProducts()"
+    color="basic"
+    [matTooltip]="'Refresh products list'"
+    matTooltipPosition="left"
+  >
+    <mat-icon aria-label="Refresh product list">refresh</mat-icon>
+  </button>
+  <button
+    class="action-buttons_button e2e-upload-product-button"
+    mat-fab
+    (click)="handleUploadProductButtonClick()"
+    [matTooltip]="'Upload new product'"
+    matTooltipPosition="right"
+  >
+    <mat-icon aria-label="Upload new product">add</mat-icon>
+  </button>
+</div>
+
+<h2 class="unstaged-products">
+  <span>Unstaged Products</span>
+  <mat-icon
+    matTooltip="Products whose schemas do not have any staged datasets yet"
+    matTooltipPosition="after"
+    class="help-icon"
+  >
+    help_outline
+  </mat-icon>
+</h2>
+
+<app-unstaged-products
+  [products]="unstagedProducts$ | async"
+></app-unstaged-products>
+
+<h2>All Products</h2>
+
+<div>
+  <app-grouped-products-grid
+    [products]="productSchemas$ | async"
+    [loading]="productsGetLoading$ | async"
+  >
+  </app-grouped-products-grid>
+</div>

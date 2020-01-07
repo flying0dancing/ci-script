@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+flywayDb="^(h2|oracle|mssqlserver|mysql)$"
+flywayCmd="^(migrate|clean|info|validate|baseline|repair)$"
+
+if [[ $# -gt 1 && $1 =~ $flywayDb && $2 =~ $flywayCmd ]]; then
+    mvn -pl ignis-design/ignis-design-db -P flyway-$1-design clean compile flyway:$2 ${@:3}
+else
+	echo "params not recognised"
+	echo "  1st param needs to be one of: "${flywayDb:2:-2}
+	echo "  2nd param needs to be one of: "${flywayCmd:2:-2}
+	echo "  any other params to pass down to Flyway Maven plugin"
+fi

@@ -1,0 +1,44 @@
+<div [formGroup]="formGroup">
+
+  <div class="full-width">
+    <dv-auto-complete
+      class="e2e-pipeline-step-schema-out-input"
+      [options]="schemas"
+      [valueExtractor]="schemaDisplayNameFunction"
+      [initialValue]="formGroupControls.schemaOut.value"
+      [placeholder]="'Schema Out'"
+      [disabled]="formGroup.disabled"
+      [title]="'Schema Out'"
+      [formInputName]="'Schema Out'"
+      (valueChanged)="schemaOutValueChanged($event)"
+    ></dv-auto-complete>
+  </div>
+</div>
+<div class="form-container">
+  <div [formGroup]="formGroup" class="flex-form">
+    <dv-joins-form
+      [formControl]="formGroupControls.joins"
+      [schemas]="schemas"
+      (joinSchemas)="joinSchemaSelected($event)"
+      (joinSchemasMetadata)="joinSchemaMetadataSelected($event)"
+    >
+    </dv-joins-form>
+  </div>
+
+  <div [formGroup]="formGroup" class="flex-form">
+    <dv-selects-form
+      [formControl]="formGroupControls.selects"
+      [selectExecutionErrors]="selectExecutionErrors"
+      [showOrder]="false"
+      [inputSchemas]="joinSchemas"
+      [inputSchemasMetadata]="joinSchemasMetadata"
+      [outputFields]="
+        formGroupControls.schemaOut.value
+          ? formGroupControls.schemaOut.value.fields
+          : []
+      "
+    >
+      >
+    </dv-selects-form>
+  </div>
+</div>

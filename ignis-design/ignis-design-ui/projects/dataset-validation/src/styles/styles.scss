@@ -1,0 +1,172 @@
+@import 'fonts';
+@import 'normalize';
+@import 'material';
+@import './ag-grid-variables';
+@import '~ag-grid/src/styles/ag-grid.scss';
+@import '~ag-grid/src/styles/ag-theme-material.scss';
+
+// Global styles
+html,
+body {
+  height: 100%;
+  background-color: white !important;
+}
+
+body {
+  font-family: Roboto, Arial, sans-serif;
+  overflow-x: hidden;
+  min-width: 1200px;
+  background-color: #fafafa;
+}
+
+// padding-* and margin-* helpers
+$spaceamounts: (10, 20, 30, 40, 50);
+$sides: (top, bottom, left, right);
+
+@each $space in $spaceamounts {
+  @each $side in $sides {
+    .margin-#{$side}-#{str-slice('#{$space}', 0, 1)} {
+      margin-#{$side}: #{$space}px;
+    }
+    .padding-#{$side}-#{str-slice('#{$space}', 0, 1)} {
+      padding-#{$side}: #{$space}px;
+    }
+  }
+}
+
+// Material overrides
+.mat-toolbar {
+  font: 500 16px/32px Roboto, 'Helvetica Neue', sans-serif;
+}
+
+.mat-tooltip {
+  font-size: small;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.half-width-left {
+  width: calc(50% - 0.5em);
+  margin-right: 0.5em;
+}
+
+.half-width-right {
+  width: calc(50% - 0.5em);
+  margin-left: 0.5em;
+}
+
+.third-width {
+  width: calc(33% - 0.5em);
+  margin-left: 0.5em;
+}
+
+.input-full-width {
+  width: 100%;
+  margin-bottom: 1em;
+}
+
+.input-half-width {
+  width: calc(50% - 1em);
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+}
+
+.input-quarter-width {
+  width: calc(25% - 1em);
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+}
+
+.main-content {
+  padding: 40px 40px 20px 20px;
+}
+
+.main-table {
+  @include mat-elevation(3);
+
+  margin-top: 20px;
+  padding: 2px;
+}
+
+.flex-row-spaced-between {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.flex-inline {
+  display: inline-flex;
+}
+
+.flex-align-baseline {
+  align-items: baseline;
+}
+
+.flex-align-center {
+  align-items: center;
+}
+
+.flex-expand {
+  flex: 1 0 auto;
+}
+
+.uppercase {
+  text-transform: uppercase;
+}
+
+.monaco-editor {
+  border-bottom: 1px rgba(0, 0, 0, 0.42) solid;
+}
+
+.shortcut-text {
+  text-transform: uppercase;
+  opacity: 0.5;
+}
+
+.disabled {
+  color: rgba(0, 0, 0, 0.38);
+}
+
+.mono-font {
+  font-family: 'Roboto Mono', monospace;
+}
+
+.actions-header {
+  width: 200px !important;
+  opacity: 0.7;
+}
+
+// ag-grid overrides
+
+.ag-theme-material {
+  .ag-set-filter-list {
+    height: 120px !important;
+  }
+
+  .ag-menu-column-select-wrapper {
+    height: 200px !important;
+  }
+
+  .ag-cell-inline-editing {
+    height: 48px;
+    padding: 12px;
+  }
+
+  .ag-row {
+    .ag-icon {
+      vertical-align: middle;
+    }
+
+    .ag-icon-contracted {
+      margin-top: -4px;
+    }
+  }
+}
+
+.select-editor-dialog-panel .mat-dialog-container {
+  padding: 0;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}

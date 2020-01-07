@@ -1,0 +1,29 @@
+<div class="main-content">
+  <div class="flex-row-spaced-between flex-align-center">
+    <h1 class="mat-h1">Manage Product Configurations</h1>
+
+    <div>
+      <button
+        mat-fab
+        color="primary"
+        (click)="openUploadDialog()"
+        matTooltip="Import Product"
+        matTooltipPosition="below"
+      >
+        <mat-icon>publish</mat-icon>
+      </button>
+      <dv-add-fab-button
+        class="padding-left-2 e2e-add-product"
+        title="Create Product"
+        tooltipPosition="below"
+        (add)="addProductConfig()"
+      >
+      </dv-add-fab-button>
+    </div>
+  </div>
+
+  <dv-product-configs-grid
+    [productConfigs]="productConfigs$ | async"
+    [loading]="loading$ | async"
+  ></dv-product-configs-grid>
+</div>

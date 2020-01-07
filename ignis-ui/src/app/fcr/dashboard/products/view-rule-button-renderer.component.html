@@ -1,0 +1,22 @@
+<div *ngIf="isSchema">
+  <a
+    (click)="openRule()"
+    (mouseover)="hover = true"
+    (mouseleave)="hover = false"
+    class="mat-primary flex-row"
+    style="justify-content: left"
+  >
+    <div class="product-row-item-icon">
+      <mat-icon matTooltip="Schema">subject</mat-icon>
+    </div>
+
+    <div class="product-row-item-name">{{ name }}</div>
+  </a>
+</div>
+
+<div *ngIf="isPipeline" class="mat-primary flex-row">
+  <div class="product-row-item-icon">
+    <mat-icon matTooltip="Pipeline">timeline</mat-icon>
+  </div>
+  <div class="product-row-item-name">{{ name }}</div>
+</div>

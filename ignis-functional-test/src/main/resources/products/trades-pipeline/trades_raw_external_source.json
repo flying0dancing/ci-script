@@ -1,0 +1,49 @@
+{
+  "physicalTableName": "TRADES_EXTERNAL",
+  "displayName": "Raw Trades Data from another source",
+  "period" : {
+    "startDate" : "2018-01-01",
+    "endDate" : "2020-01-01"
+  },
+  "version": 1,
+  "fields": [
+    {
+      "name": "TDate",
+      "type": "int",
+      "nullable": false
+    },
+    {
+      "name": "S_Date",
+      "type": "int",
+      "nullable": false
+    },
+    {
+      "name": "StockQualifier",
+      "type": "long",
+      "nullable": false
+    },
+    {
+      "name": "StockPart",
+      "type": "long",
+      "nullable": false
+    },
+    {
+      "name": "QUOTE_ID",
+      "type": "long",
+      "nullable": false
+    },
+    {
+      "name": "TradeType",
+      "type": "string",
+      "nullable": false
+    },
+    {
+      "name": "Amount",
+      "type": "decimal",
+      "nullable": false,
+      "precision": 7,
+      "scale": 2
+    }
+  ],
+  "validationRules" : []
+}

@@ -1,0 +1,27 @@
+{
+	"displayName": "LARGE_EXPOSURES",
+	"physicalTableName": "DEREGA03",
+	"majorVersion": 1,
+	"startDate": 1531814761547,
+	"fields": 	
+	[	
+		{ "type":"decimal","name":"POREG06","nullable":true,"scale":10,"precision":38},
+		{ "type":"decimal","name":"POREG02","nullable":true,"scale":10,"precision":38},
+		{ "type":"decimal","name":"POREG03","nullable":true,"scale":10,"precision":38},
+		{ "type":"string","name":"ACCREG10","nullable":true,"maxLength":50},
+		{ "type":"string","name":"CCPREG02","nullable":true,"maxLength":100},
+		{ "type":"string","name":"CCPREG03","nullable":true,"maxLength":100},
+		{ "type":"string","name":"CPREG02","nullable":true,"maxLength":100},
+		{ "type":"string","name":"CPREG03","nullable":true,"maxLength":100},
+		{ "type":"string","name":"CCPREG04","nullable":true,"maxLength":100},
+		{ "type":"string","name":"CPREG10","nullable":true,"maxLength":20},
+		{ "type":"string","name":"INSTREG16","nullable":true,"maxLength":1000},
+		{ "type":"string","name":"INSTREG17","nullable":true,"maxLength":1000},
+		{ "type":"string","name":"INSTREG18","nullable":true,"maxLength":1000},
+		{ "type":"string","name":"DERREG02","nullable":true,"maxLength":2},
+		{ "type":"string","name":"ACCOUNTINGID","nullable":true,"maxLength":22},
+		{ "type":"string","name":"POSITIONID","nullable":true,"maxLength":22},
+		{ "type":"string","name":"COUNTERPARTYID","nullable":true,"maxLength":22},
+		{ "type":"string","name":"INSTRUMENTID","nullable":true,"maxLength":22}
+	]
+}

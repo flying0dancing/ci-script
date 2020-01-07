@@ -1,0 +1,26 @@
+<div [formGroup]="formGroup" class="full-width" style="display: flex">
+  <div class="half-width-left">
+    <dv-auto-complete class="e2e-create-pipeline-step-left-field-input"
+                      [options]="leftSchemaFields"
+                      [valueExtractor]="fieldNameFunction"
+                      [initialValue]="formGroupControls.leftField.value"
+                      [placeholder]="'Left Field'"
+                      [disabled]="formGroup.disabled"
+                      [title]="'Left Field'"
+                      [formInputName]="'Field'"
+                      (valueChanged)="leftFieldValueChanged($event)"
+    ></dv-auto-complete>
+  </div>
+  <div class="half-width-right">
+    <dv-auto-complete class="e2e-create-pipeline-step-right-schema-input"
+                      [options]="rightSchemaFields"
+                      [valueExtractor]="fieldNameFunction"
+                      [initialValue]="formGroupControls.rightField.value"
+                      [placeholder]="'Right Field'"
+                      [disabled]="formGroup.disabled"
+                      [title]="'Right Field'"
+                      [formInputName]="'Field'"
+                      (valueChanged)="rightFieldValueChanged($event)"
+    ></dv-auto-complete>
+  </div>
+</div>

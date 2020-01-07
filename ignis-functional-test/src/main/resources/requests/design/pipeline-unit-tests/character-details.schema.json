@@ -1,0 +1,15 @@
+{
+  "physicalTableName": "CHAR_DETLS",
+  "displayName": "Character Details",
+  "startDate": "1970-01-01",
+  "majorVersion": 1,
+  "fields": [
+    {
+      "type": "string",
+      "name": "FIRST_NAME"
+    }, {
+      "type": "string",
+      "name": "LAST_NAME"
+    }
+  ]
+}

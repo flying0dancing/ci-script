@@ -1,0 +1,70 @@
+mat-card-title {
+  font-weight: bold;
+}
+
+.validate-action-buttons-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.validations-container {
+  overflow-y: scroll;
+  height: 350px;
+  margin-bottom: 5px;
+}
+
+.validation-tree-invisible {
+  display: none;
+}
+
+.validation-tree ul,
+.validation-tree li {
+  margin-top: 0;
+  margin-bottom: 0;
+  list-style-type: none;
+}
+
+.error {
+  color: red;
+  cursor: default;
+}
+
+.success {
+  color: green;
+  cursor: default;
+}
+
+.pending {
+  color: grey;
+  cursor: default;
+}
+
+.step-container {
+  display: flex;
+}
+
+.step-container span {
+  vertical-align: middle;
+}
+
+.step-container .step-name {
+  padding-top: 5px;
+  padding-left: 10px;
+}
+
+.mat-tree-node {
+  min-height: 38px;
+}
+
+.pipeline-icon-space {
+  padding-right: 10px;
+}
+
+.selected-pipeline-checkbox {
+  padding-right: 10px;
+}
+
+.select-all-pipelines-checkbox {
+  padding-left: 40px;
+}

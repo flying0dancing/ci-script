@@ -1,0 +1,102 @@
+<div class="flex-row-spaced-between">
+  <h5 mat-dialog-title>
+    Examples for Rule
+    <span class="mat-h1 mono-font padding-left-1"
+      >{{ rule.ruleId }} ({{ rule.name }})</span
+    >
+  </h5>
+
+  <button
+    mat-icon-button
+    (click)="close()"
+    matTooltip="Close"
+    matTooltipPosition="left"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+
+<div mat-dialog-content style="width:100%">
+  <ngx-monaco-editor
+    [options]="{}"
+    (onInit)="initEditor($event)"
+    [(ngModel)]="rule.expression"
+  >
+  </ngx-monaco-editor>
+  <div class="flex-row-spaced-between">
+    <button
+      mat-button
+      (click)="undoExpressionChanges()"
+      [disabled]="isInitialExpression()"
+    >
+      Undo
+    </button>
+    <div>
+      <small>
+        <span class="padding-right-1">line</span>
+        <span class="padding-right-3 mono-font">{{ lineNumber }}</span>
+        <span class="padding-right-1">column</span>
+        <span class="mono-font">{{ columnNumber }}</span>
+      </small>
+    </div>
+  </div>
+
+  <div *ngIf="(errors$ | async).length > 0">
+    <h3>
+      <mat-error>
+        <span class="margin-right-1">
+          <i class="material-icons">error_outline</i>
+        </span>
+        Error<span *ngIf="(errors$ | async).length > 1">s</span>
+      </mat-error>
+    </h3>
+    <ul>
+      <li *ngFor="let err of errors$ | async">
+        <mat-error>
+          <div *ngIf="err.errorCode">
+            <b>{{ err.errorCode }}</b>
+          </div>
+          <div class="margin-left-2">
+            <p>{{ err.errorMessage }}</p>
+          </div>
+        </mat-error>
+      </li>
+    </ul>
+  </div>
+
+  <dv-examples-grid
+    [ruleExamples]="ruleExamples"
+    (deleteExampleEvent)="removeExample($event)"
+    [gotoLastExamplePageEvent]="addEmptyExampleEvent"
+    [contextFields$]="contextFields$"
+  >
+  </dv-examples-grid>
+
+  <div class="add-example">
+    <dv-add-fab-button
+      mini="true"
+      [disabled]="
+        !examplesLoaded || (ruleLoading$ | async) || isExampleFieldInvalid()
+      "
+      title="Add Empty Example"
+      (add)="addEmptyExample()"
+    >
+    </dv-add-fab-button>
+  </div>
+</div>
+
+<div mat-dialog-actions class="margin-top-3">
+  <dv-save-button
+    displayText="Save & Run"
+    tooltip="Save changes and run all examples"
+    [disabled]="
+      !examplesLoaded || (ruleLoading$ | async) || isExampleFieldInvalid()
+    "
+    (save)="saveExamples()"
+  >
+  </dv-save-button>
+
+  <button mat-button (click)="close()">
+    Close
+  </button>
+</div>

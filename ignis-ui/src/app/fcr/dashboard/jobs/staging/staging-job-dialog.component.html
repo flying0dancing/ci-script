@@ -1,0 +1,39 @@
+<app-dialog-header [showClose]="true"
+  >Staging Job #{{ jobExecution.id }} Details</app-dialog-header
+>
+<mat-dialog-content *ngIf="jobExecution">
+  <p><b>Job name:</b> {{ jobExecution.name }}</p>
+  <p>
+    <b>Started:</b> {{ jobExecution.startTime | localeTime }}
+    <span *ngIf="jobIsFinished"
+      >- <b>Finished:</b> {{ jobExecution.endTime | localeTime }}</span
+    >
+  </p>
+
+  <p *ngIf="jobExecution.yarnApplicationTrackingUrl">
+    <a target="_blank" href="{{ jobExecution.yarnApplicationTrackingUrl }}"
+      >View job details on yarn</a
+    >
+  </p>
+
+  <p><b>Datasets:</b></p>
+  <app-spinner
+    *ngIf="stagingGetDetailsLoading"
+    size="medium"
+    text="Fetching job details"
+  ></app-spinner>
+  <ng-container
+    *ngIf="!getByIdLoading && !stagingGetDetailsLoading && stagingGetJobDatasets; else loading"
+  >
+    <div class="staging-datasets-container">
+      <div *ngFor="let dataset of stagingGetJobDatasets">
+        <app-staging-job-dialog-dataset
+          [dataset]="dataset"
+        ></app-staging-job-dialog-dataset>
+      </div>
+    </div>
+  </ng-container>
+  <ng-template #loading>
+    <app-spinner size="medium" text="Fetching details"></app-spinner>
+  </ng-template>
+</mat-dialog-content>

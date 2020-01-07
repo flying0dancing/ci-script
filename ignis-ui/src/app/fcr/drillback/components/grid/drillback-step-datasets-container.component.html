@@ -1,0 +1,52 @@
+<div class="drillback-container">
+  <div class="drillback-dataset-grid-container">
+    <mat-tab-group animationDuration="0ms">
+      <mat-tab
+        *ngFor="let datasetIdAndSchema of inputDatasetsAndSchema"
+        style="height: 100%"
+      >
+        <div class="drillback-body">
+          <ng-template mat-tab-label>
+            <mat-icon
+              *ngIf="isInputDatasetOutdated(datasetIdAndSchema)"
+              class="tab-icon"
+              matTooltip="Outdated dataset">
+              warning
+            </mat-icon>
+            {{datasetIdAndSchema.dataset.table}}
+          </ng-template>
+
+          <app-drillback-dataset-grid
+            [datasetId]="datasetIdAndSchema.dataset.id"
+            [datasetSchema]="datasetIdAndSchema.datasetSchema"
+            [isSourceDataset]="true"
+            [dataset]="datasetIdAndSchema.dataset"
+            [drillbackMapping]="
+              schemaToDrillbackMapping[datasetIdAndSchema.dataset.name]
+            "
+            [datasetRunOutdated]="isInputDatasetOutdated(datasetIdAndSchema)"
+            [pipelineStep]="pipelineStep"
+            [pipelineId]="pipelineId"
+          ></app-drillback-dataset-grid>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+
+  <div class="drillback-dataset-grid-container">
+    <mat-tab-group animationDuration="0ms">
+      <mat-tab
+        *ngFor="let datasetIdAndSchema of outputDatasetsAndSchema"
+        [label]="datasetIdAndSchema.dataset.table"
+      >
+        <div class="drillback-body">
+          <app-drillback-dataset-grid
+            [datasetId]="datasetIdAndSchema.dataset.id"
+            [datasetSchema]="datasetIdAndSchema.datasetSchema"
+            [dataset]="datasetIdAndSchema.dataset"
+          ></app-drillback-dataset-grid>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>

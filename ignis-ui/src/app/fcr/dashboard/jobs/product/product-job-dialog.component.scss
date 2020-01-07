@@ -1,0 +1,20 @@
+@import "../../../../core/_theme/variables";
+
+$red: mat-palette($mat-red);
+
+:host {
+  display: block;
+}
+
+.fail {
+  color: mat-color($red);
+  cursor: default;
+}
+
+.errors {
+  padding-top: 10px;
+}
+
+ul {
+  margin-top: 2px;
+}

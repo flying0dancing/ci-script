@@ -1,0 +1,9 @@
+// Stage FRY14Q CIL Datasets
+POST {{context-path}}/api/v1/jobs
+     ?type=staging
+Authorization: Basic {{user-pass}}
+Content-Type: application/json
+
+< ./../../ignis-functional-test/src/main/resources/requests/staging/DEADJ001/FRY14Q_CIL-DEADJ001.staging.json
+
+###

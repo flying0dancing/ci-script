@@ -1,0 +1,54 @@
+@import "../../../core/_theme/variables";
+@import "../../_theme/variables";
+
+$config: mat-typography-config();
+
+:host {
+  display: block;
+  height: $header-height;
+}
+
+.mat-toolbar {
+  height: $header-height;
+  background-color: map-get($mat-grey, 300);
+}
+
+:host ::ng-deep .mat-toolbar-row {
+  height: $header-height;
+}
+
+.logo {
+  display: block;
+  height: 40px;
+}
+
+h1 {
+  font-size: mat-font-size($config, subheading-2) !important;
+  line-height: 1 !important;
+  text-transform: uppercase;
+  padding: 0;
+}
+
+.name {
+  font-size: mat-font-size($config, subheading-2);
+  margin: 0;
+}
+
+.spacer {
+  flex: 1 0 auto;
+}
+
+.divider {
+  width: 1px;
+  height: $header-height / 3;
+  background: rgba(0, 0, 0, 0.3);
+  margin: 0 $gutter-width;
+  border-right: 1px solid rgba(255, 255, 255, 0.75);
+}
+
+.active {
+  opacity: 0.5;
+  font-weight: bolder;
+  font-size: 16px;
+  margin-top: -1px;
+}

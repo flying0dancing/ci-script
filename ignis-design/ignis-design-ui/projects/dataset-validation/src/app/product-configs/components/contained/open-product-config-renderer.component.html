@@ -1,0 +1,15 @@
+<div>
+  <a
+    [routerLink]="['/product-configs', params.data.id]"
+    (mouseover)="hover = true"
+    (mouseleave)="hover = false"
+    title="Open {{ cellValue }}"
+    class="mat-primary flex-row-spaced-between flex-inline e2e-open-product-button"
+  >
+    <span>{{ cellValue }}</span>
+
+    <span [hidden]="!hover">
+      <mat-icon>launch</mat-icon>
+    </span>
+  </a>
+</div>

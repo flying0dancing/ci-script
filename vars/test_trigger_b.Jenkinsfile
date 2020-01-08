@@ -18,10 +18,10 @@ pipeline {
 			steps{
 				echo "start job B ${JOB_URL}"
 				echo "branch number: ${env.BUILD_NUMBER}"
-				echo "${TEST_WORKSPACE}"
-				echo "${S3BUCKET}"
-				echo "${S3DOWNPATH}"
-				echo "${DOWNLOADFILENAMES}"
+				//echo "${TEST_WORKSPACE}"
+				//echo "${S3BUCKET}"
+				//echo "${S3DOWNPATH}"
+				//echo "${DOWNLOADFILENAMES}"
 				sh 'pwd'
 				//checkoutIgnis()
 				

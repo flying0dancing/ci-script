@@ -30,7 +30,8 @@ pipeline {
         stage('test external groovy'){
             steps{
                 script{
-                    hello 'baby'
+                    def zzz=load 'hello.groovy'
+                    zzz 'baby'
                 }
             }
         }

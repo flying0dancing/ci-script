@@ -31,7 +31,7 @@ pipeline {
             steps{
                 script{
                     def zzz=load 'vars/hello.groovy'
-                    zzz 'baby'
+                    zzz.nihao 'baby'
                 }
             }
         }

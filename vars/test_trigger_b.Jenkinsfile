@@ -1,4 +1,5 @@
-@Library('pipeline-libs') _
+@Library('pipeline-libs') 
+import static com.lombardrisk.pipeline.Credentials.AWS
 
  SELECTED_ENV = [
                 homeDir  : '/home/test',
@@ -26,6 +27,13 @@ pipeline {
 				
 			}
 		}
+        stage('test external groovy'){
+            steps{
+                script{
+                    hello 'baby'
+                }
+            }
+        }
         stage('Copy Installers') {
             // This stage is only executed as a workaround for environments that have been closed off from AWS
             when {
@@ -157,7 +165,7 @@ private String extractDirectoryFromPath(String path) {
 }
 private def execute(String cmd) {
     withCredentials([usernamePassword(
-            credentialsId: 'aws',
+            credentialsId: AWS,
             usernameVariable: 'AWS_ACCESS_KEY_ID',
             passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
 

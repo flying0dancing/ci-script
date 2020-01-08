@@ -1,2 +1,0 @@
-alter table PIPELINE_STEP_TEST
-	add STATUS VARCHAR2(255);

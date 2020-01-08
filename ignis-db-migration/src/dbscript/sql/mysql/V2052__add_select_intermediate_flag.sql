@@ -1,2 +1,0 @@
-alter table PIPELINE_STEP_SELECT
-	add IS_INTERMEDIATE BIT default 0;

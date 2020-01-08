@@ -30,7 +30,7 @@ pipeline {
         stage('test external groovy'){
             steps{
                 script{
-                    def zzz=load 'hello.groovy'
+                    def zzz=load 'vars/hello.groovy'
                     zzz 'baby'
                 }
             }

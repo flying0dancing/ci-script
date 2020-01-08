@@ -1,6 +1,19 @@
 @Library('pipeline-libs') 
 import static com.lombardrisk.pipeline.Credentials.AWS
-
+stage('setup'){
+    node{
+        loadLocalSteps()
+    }
+}
+private void loadLocalSteps(){
+    library identifier: 'ci-script@awsTest', 
+            retriever: modernSCM([
+                $class: 'GitSCMSource', 
+                credentialsId: '46afdff1-cdd3-4098-b8af-d904b4d298aa', 
+                id: 'a58b1061-f557-46f6-ba36-b53cfdb77d43', 
+                remote: 'ssh://git@bitbucket.lombardrisk.com:7999/cprod/ci-script.git', 
+                traits: [[$class: 'BranchDiscoveryTrait']]])
+}
  SELECTED_ENV = [
                 homeDir  : '/home/test',
                 configDir: 'scripts/sha-qa2-env',
@@ -30,8 +43,9 @@ pipeline {
         stage('test external groovy'){
             steps{
                 script{
-                    def zzz=load 'vars/hello.groovy'
-                    zzz.nihao 'baby'
+                    //def zzz=load 'vars/hello.groovy'
+                    //zzz.nihao 'baby'
+                    hello 'baby'
                 }
             }
         }

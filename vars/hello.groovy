@@ -1,3 +1,3 @@
-def nihao(String name='human'){
+def call(String name='human'){
     echo "hello, ${name}."
 }

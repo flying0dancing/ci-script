@@ -44,9 +44,9 @@ pipeline {
             steps{
                 script{
                     hello 'baby'
-                    def props=readProperty.getSomeProperties 'env.properties'
-                    echo "app :props[app.install.path]"
-                    echo "app host:${appHost}"
+                    def props=readProperties file: 'env.properties'
+                    echo "app :props['app.install.path']"
+                    
                 }
             }
         }

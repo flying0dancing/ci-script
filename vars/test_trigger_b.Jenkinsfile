@@ -44,7 +44,7 @@ pipeline {
             steps{
                 script{
                     hello 'baby'
-                    def props=readProperties file: 'env.properties'
+                    def props=readProperties file: 'vars/env.properties'
                     echo "app :props['app.install.path']"
                     
                 }

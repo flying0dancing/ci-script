@@ -16,7 +16,7 @@ String getARRepo(){
 }
 
 
-Boolean downloadFromLocal(){
+Boolean downloadFromLocal(props){
     Boolean flag=false
     if(!defaultUseRepo || defaultUseRepo.equalsIgnoreCase('local')){
         flag=true
@@ -31,9 +31,7 @@ def getAppHostAndUser(){
 //final String defaultUseRepo=getSomeProperties(propertiesFileFullName,'database.host')
 //final String defaultUseRepo=getSomeProperties(propertiesFileFullName,'database.user')
 //final String defaultUseRepo=getSomeProperties(propertiesFileFullName,'database.backup.path')
-final def props=getSomeProperties(propFile)
-final String appHost=props['app.host']
-final String appUser=props['app.user']
+
 //final String appInstallPath=getSomeProperties(propertiesFileFullName,'app.install.path')
 
 
@@ -42,9 +40,12 @@ final String appUser=props['app.user']
 //final String s3Bucket=getSomeProperties(propertiesFileFullName,'s3.bucket')
 //final String defaultUseRepo=getSomeProperties(propertiesFileFullName,'default.use.repo')
 
-
-def getSomeProperties(String propFile){
-    def props=new Properties();
-    new File(propFile).withInputStream{stream->props.load(stream)}
-    return props
+Boolean downloadFromLocal(props){
+    Boolean flag=false
+    def defaultUseRepo=props['default.use.repo']
+    echo "${defaultUseRepo}"
+    if(!defaultUseRepo || defaultUseRepo.equalsIgnoreCase('local')){
+        flag=true
+    }
+    return flag
 }

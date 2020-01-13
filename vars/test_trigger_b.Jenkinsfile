@@ -20,6 +20,7 @@ private void loadLocalSteps(){
                 cluster  : false,
                 skipS3DeployDownload: true
         ]
+def props
 pipeline {
     agent { label 'PRODUCT-CI-SHA-LOCAL1' }
     options {
@@ -44,9 +45,9 @@ pipeline {
             steps{
                 script{
                     hello 'baby'
-                    def props=readProperties file: 'vars/env.properties'
+                    props=readProperties file: 'vars/env.properties'
                     echo props['app.install.path']
-                    
+                    readProperty.downloadFromLocal(props)
                 }
             }
         }

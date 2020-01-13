@@ -44,7 +44,7 @@ pipeline {
             steps{
                 script{
                     hello 'baby'
-                    readProperty.props 'env.properties'
+                    def props=readProperty.getSomeProperties 'env.properties'
                     echo "app host:${appHost}"
                 }
             }

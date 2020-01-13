@@ -43,9 +43,9 @@ pipeline {
         stage('test external groovy'){
             steps{
                 script{
-                    //def zzz=load 'vars/hello.groovy'
-                    //zzz.nihao 'baby'
                     hello 'baby'
+                    readProperty.props 'env.properties'
+                    echo "app host:${appHost}"
                 }
             }
         }

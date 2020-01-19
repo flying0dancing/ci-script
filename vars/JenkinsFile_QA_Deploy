@@ -109,7 +109,12 @@ def getValidFolders(folders){
     return allFolders
 }
 
-
+def copyScripts(propertiesSet){
+	def app_hostuser=propertiesSet['app.user']+'@'+propertiesSet['app.host']
+	def downloadPath='/home/'+propertiesSet['app.user']+'/'
+	sh( returnStatus: true, script: '''scp scripts/Remote*.sh '''+app_hostuser+''':'''+downloadPath)
+	sh(returnStdout: true, script: '''ssh '''+app_hostuser+''' 'chmod u+x Remote*.sh ' ''')
+}
 def installersJson(projectFolder,deployFolder){
 	
     def jsonFileName='deployment.json'
@@ -124,6 +129,7 @@ def installersJson(projectFolder,deployFolder){
 	gado=readJSON file: files[0].path
 		installers=gado.installers
 		if(installers){
+			copyScripts(propertiesSet)
 			createDisplayHeadline('Install Ocelot and Products','3')
 			for(int i=0;i<installers.size();i++){
 				installPrefix=installers[i].prefix

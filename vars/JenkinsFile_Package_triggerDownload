@@ -31,9 +31,12 @@ pipeline {
     stages {
         stage('checkout'){
 			steps{
-				echo "start job ${JOB_URL}"
-				echo "branch number: ${env.BUILD_NUMBER}"
-				productPackage.checkoutARProduct(ARProject_Prefix)
+				script{
+					echo "start job ${JOB_URL}"
+					echo "branch number: ${env.BUILD_NUMBER}"
+					productPackage.checkoutARProduct(ARProject_Prefix)
+				}
+
 			}
 		}
 		stage('validate'){
@@ -49,8 +52,10 @@ pipeline {
 		}
 		stage('upload package'){
            steps{
-			   echo "upload all packages"
-			   productPackage.uploadARProduct(ARProject_Prefix,'b'+env.BUILD_NUMBER)
+			   script{
+				   echo "upload all packages"
+				   productPackage.uploadARProduct(ARProject_Prefix,'b'+env.BUILD_NUMBER)
+			   }
 			} 
         }
 		
@@ -60,9 +65,11 @@ pipeline {
             echo 'This will always run'
         }
         success {
-            echo 'This will run only if successful'
-			productPackage.updateBuild(ARProject_Prefix,'b'+env.BUILD_NUMBER)
-			productPackage.triggerOtherJob(ARProject_Prefix,'b'+env.BUILD_NUMBER)
+			script{
+				echo 'This will run only if successful'
+				productPackage.updateBuild(ARProject_Prefix,'b'+env.BUILD_NUMBER)
+				productPackage.triggerOtherJob(ARProject_Prefix,'b'+env.BUILD_NUMBER)
+			}
         }
         failure {
             echo 'This will run only if failed'

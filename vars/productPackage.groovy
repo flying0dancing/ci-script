@@ -203,7 +203,7 @@ def getFileNames(projectFolder){
 def triggerOtherJob(projectFolder,packageBuildNumber){
     println "run another job for download to local......"
     def productVersionFolder=getProductVersionFolder(projectFolder)
-    def S3_DOWNPATH='arproduct/'+projectFolder+'/CandidateReleases/'+productVersionFolder+'/'+packageBuildNumber+'/'
+    def S3_DOWNPATH='ARProduct/'+projectFolder+'/CandidateReleases/'+productVersionFolder+'/'+packageBuildNumber+'/'
     def props=getProps(projectFolder)
     def S3_BUCKET=props['s3.bucket']
     def DOWNLOADFILENAMES=getFileNames(projectFolder)

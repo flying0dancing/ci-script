@@ -23,13 +23,13 @@ BUILD_INFO = maven.newBuildInfo()
 MVN.deployer.deployArtifacts = false // Disable artifacts deployment during Maven run
 
 pipeline {
-    agent { label 'PRODUCT-CI-TEST' }
-    options {
-        timeout(time: 60, unit: 'MINUTES') 
-    }
-    
-    stages {
-        stage('checkout'){
+	agent { label 'PRODUCT-CI-TEST' }
+	options {
+		timeout(time: 60, unit: 'MINUTES')
+	}
+
+	stages {
+		stage('checkout'){
 			steps{
 				script{
 					echo "start job ${JOB_URL}"
@@ -51,37 +51,37 @@ pipeline {
 			}
 		}
 		stage('upload package'){
-           steps{
-			   script{
-				   echo "upload all packages"
-				   productPackage.uploadARProduct(ARProject_Prefix,'b'+env.BUILD_NUMBER)
-			   }
-			} 
-        }
-		
-    }
+			steps{
+				script{
+					echo "upload all packages"
+					productPackage.uploadARProduct(ARProject_Prefix,'b'+env.BUILD_NUMBER)
+				}
+			}
+		}
+
+	}
 	post {
-        always {
-            echo 'This will always run'
-        }
-        success {
+		always {
+			echo 'This will always run'
+		}
+		success {
 			script{
 				echo 'This will run only if successful'
 				productPackage.updateBuild(ARProject_Prefix,'b'+env.BUILD_NUMBER)
 				productPackage.triggerOtherJob(ARProject_Prefix,'b'+env.BUILD_NUMBER)
 			}
-        }
-        failure {
-            echo 'This will run only if failed'
-        }
-        unstable {
-            echo 'This will run only if the run was marked as unstable'
-        }
-        changed {
-            echo 'This will run only if the state of the Pipeline has changed'
-            echo 'For example, if the Pipeline was previously failing but is now successful'
-        }
-    }
+		}
+		failure {
+			echo 'This will run only if failed'
+		}
+		unstable {
+			echo 'This will run only if the run was marked as unstable'
+		}
+		changed {
+			echo 'This will run only if the state of the Pipeline has changed'
+			echo 'For example, if the Pipeline was previously failing but is now successful'
+		}
+	}
 }
 
 String getprojectFolder(jobName){
@@ -92,18 +92,7 @@ String getprojectFolder(jobName){
  * package all products in projectFolder, packageBuildNumber like b1,b2,b3...,b290,..
  */
 void packageARProduct(projectFolder,packageBuildNumber){
-    dir(projectFolder){
-        MVN.run pom: 'pom.xml', goals: 'clean package -U -DskipITs -DskipTests -Dproduct.build.number='+packageBuildNumber, buildInfo: BUILD_INFO
-    }
+	dir(projectFolder){
+		MVN.run pom: 'pom.xml', goals: 'clean package -U -DskipITs -DskipTests -Dproduct.build.number='+packageBuildNumber, buildInfo: BUILD_INFO
+	}
 }
-
-
-
-
-
-
-
-
-
-
-

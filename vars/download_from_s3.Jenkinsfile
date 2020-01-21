@@ -12,31 +12,31 @@ pipeline {
 			steps{
 				echo "start job B ${JOB_URL}"
 				echo "branch number: ${env.BUILD_NUMBER}"
-				echo "${S3BUCKET}"
-				echo "${S3DOWNPATH}"
-				echo "${DOWNLOADFILENAMES}"
+				echo "download from which: ${S3BUCKET}"
+				echo "download from S3: ${S3DOWNPATH}"
+				echo "download installers name: ${DOWNLOADFILENAMES}"
+				echo "local archived path: ${ARCHIVEDPATH}"
 				sh 'pwd'
 			}
 		}
 		stage('download package'){
 			steps{
-				echo "download all package"
-                downloadProductPackage(S3BUCKET,S3DOWNPATH,DOWNLOADFILENAMES)
+				echo "download all packages"
+                downloadProductPackage(S3BUCKET,S3DOWNPATH,DOWNLOADFILENAMES,ARCHIVEDPATH)
 			}
 		}
-		
+
     }
 
 }
 
 
 
-void downloadProductPackage(s3bucket,s3repo,packageNames){
-
+void downloadProductPackage(s3bucket,s3repo,packageNames,localrepo){
     String[] packageNameArr=packageNames.split(':')
     for(String packageName in packageNameArr){
-        println packageName
-        execute('s3 cp s3://'+s3bucket+'/'+s3repo+packageName+' /home/test/repository/'+s3repo+ packageName+' --no-progress ') //ssl error  --no-verify-ssl
+        println "downloading installer[ $packageName ]"
+        execute('s3 cp s3://'+s3bucket+'/'+s3repo+packageName+' /home/test/repository/'+localrepo+ packageName+' --no-progress ') //ssl error  --no-verify-ssl
     }
     
 }

@@ -18,9 +18,6 @@ private void loadLocalSteps(){
 
 ARProject_Prefix=getprojectFolder(env.JOB_NAME)
 
-//MVN = maven.initialiseMvn()
-//BUILD_INFO = maven.newBuildInfo()
-//MVN.deployer.deployArtifacts = false // Disable artifacts deployment during Maven run
 
 pipeline {
 	agent { label 'PRODUCT-CI-TEST' }
@@ -46,8 +43,11 @@ pipeline {
 		}
 		stage('build package'){
 			steps{
-				echo "build all packages"
-				productPackage.packageARProduct(ARProject_Prefix,'b'+env.BUILD_NUMBER)
+				script{
+					echo "build all packages"
+					productPackage.packageARProduct(ARProject_Prefix,'b'+env.BUILD_NUMBER)
+				}
+				
 			}
 		}
 		stage('upload package'){
@@ -88,11 +88,3 @@ String getprojectFolder(jobName){
 	return jobName[0..jobName.indexOf("_")-1]
 }
 
-/**
- * package all products in projectFolder, packageBuildNumber like b1,b2,b3...,b290,..
- */
-//void packageARProduct(projectFolder,packageBuildNumber){
-	//dir(projectFolder){
-		//MVN.run pom: 'pom.xml', goals: 'clean package -U -DskipITs -DskipTests -Dproduct.build.number='+packageBuildNumber, buildInfo: BUILD_INFO
-	//}
-//}

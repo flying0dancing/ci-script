@@ -18,9 +18,9 @@ private void loadLocalSteps(){
 
 ARProject_Prefix=getprojectFolder(env.JOB_NAME)
 
-MVN = maven.initialiseMvn()
-BUILD_INFO = maven.newBuildInfo()
-MVN.deployer.deployArtifacts = false // Disable artifacts deployment during Maven run
+//MVN = maven.initialiseMvn()
+//BUILD_INFO = maven.newBuildInfo()
+//MVN.deployer.deployArtifacts = false // Disable artifacts deployment during Maven run
 
 pipeline {
 	agent { label 'PRODUCT-CI-TEST' }
@@ -47,7 +47,7 @@ pipeline {
 		stage('build package'){
 			steps{
 				echo "build all packages"
-				packageARProduct(ARProject_Prefix,'b'+env.BUILD_NUMBER)
+				productPackage.packageARProduct(ARProject_Prefix,'b'+env.BUILD_NUMBER)
 			}
 		}
 		stage('upload package'){
@@ -68,7 +68,7 @@ pipeline {
 			script{
 				echo 'This will run only if successful'
 				productPackage.updateBuild(ARProject_Prefix,'b'+env.BUILD_NUMBER)
-				productPackage.triggerOtherJob(ARProject_Prefix,'b'+env.BUILD_NUMBER)
+				productPackage.triggerOtherJobWithJobName(ARProject_Prefix,'b'+env.BUILD_NUMBER,'download_from_s3')
 			}
 		}
 		failure {
@@ -91,8 +91,8 @@ String getprojectFolder(jobName){
 /**
  * package all products in projectFolder, packageBuildNumber like b1,b2,b3...,b290,..
  */
-void packageARProduct(projectFolder,packageBuildNumber){
-	dir(projectFolder){
-		MVN.run pom: 'pom.xml', goals: 'clean package -U -DskipITs -DskipTests -Dproduct.build.number='+packageBuildNumber, buildInfo: BUILD_INFO
-	}
-}
+//void packageARProduct(projectFolder,packageBuildNumber){
+	//dir(projectFolder){
+		//MVN.run pom: 'pom.xml', goals: 'clean package -U -DskipITs -DskipTests -Dproduct.build.number='+packageBuildNumber, buildInfo: BUILD_INFO
+	//}
+//}

@@ -1,4 +1,17 @@
 
+/**
+ * package all products in projectFolder, packageBuildNumber like b1,b2,b3...,b290,..
+ */
+void packageARProduct(projectFolder,packageBuildNumber){
+    def mvn = maven.initialiseMvn()
+    def build_info = maven.newBuildInfo()
+    mvn.deployer.deployArtifacts = false // Disable artifacts deployment during Maven run
+
+	dir(projectFolder){
+		mvn.run pom: 'pom.xml', goals: 'clean package -U -DskipITs -DskipTests -Dproduct.build.number='+packageBuildNumber, buildInfo: build_info
+	}
+}
+
 def getProps(projectFolder){
     def files =findFiles(glob: '**/'+projectFolder+'/package.properties')
     def props
@@ -209,5 +222,17 @@ def triggerOtherJob(projectFolder,packageBuildNumber){
     def S3_BUCKET=props['s3.bucket']
     def DOWNLOADFILENAMES=getFileNames(projectFolder)
     jobB = build job: 'download_from_s3', parameters: [string(name: 'S3BUCKET', value: "$S3_BUCKET"), string(name: 'S3DOWNPATH', value: "$S3_DOWNPATH"), string(name: 'ARCHIVEDPATH', value: "$LOCAL_ARCHIVED_PATH"), string(name: 'DOWNLOADFILENAMES', value: "$DOWNLOADFILENAMES")]
+    println jobB.getResult()
+}
+
+def triggerOtherJobWithJobName(projectFolder,packageBuildNumber,downloadJobName){
+    println "run another job for download to local......"
+    def productVersionFolder=getProductVersionFolder(projectFolder)
+    def S3_DOWNPATH='arproduct/'+projectFolder+'/CandidateReleases/'+productVersionFolder+'/'+packageBuildNumber+'/'
+    def LOCAL_ARCHIVED_PATH=S3_DOWNPATH.replace('arproduct/','ARProduct/').replace('CandidateReleases/','candidate-release/')
+    def props=getProps(projectFolder)
+    def S3_BUCKET=props['s3.bucket']
+    def DOWNLOADFILENAMES=getFileNames(projectFolder)
+    jobB = build job:downloadJobName , parameters: [string(name: 'S3BUCKET', value: "$S3_BUCKET"), string(name: 'S3DOWNPATH', value: "$S3_DOWNPATH"), string(name: 'ARCHIVEDPATH', value: "$LOCAL_ARCHIVED_PATH"), string(name: 'DOWNLOADFILENAMES', value: "$DOWNLOADFILENAMES")]
     println jobB.getResult()
 }

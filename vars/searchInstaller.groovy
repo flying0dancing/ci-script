@@ -1,5 +1,5 @@
 
-String searchLatestProduct(projectFolder,props,productPrefix,productVersion,buildNumber){
+String searchLatestProduct(projectName,props,productPrefix,productVersion,buildNumber){
     def downloadFileName
     def repo
     def nameSuffix='.lrm'
@@ -8,7 +8,7 @@ String searchLatestProduct(projectFolder,props,productPrefix,productVersion,buil
         repo=props['product.local.repo']
         downloadFileName=searchLatestFromLocal(repo,props,content)
     }else{
-        repo='arproduct/'+projectFolder+'/CandidateReleases/'
+        repo='arproduct/'+projectName+'/CandidateReleases/'
         downloadFileName=searchLatestFromS3(repo,props,content)
         if(!downloadFileName){
             repo='arproduct/'+productPrefix.toLowerCase()+'/CandidateReleases/'
@@ -45,19 +45,19 @@ String searchLatestOcelot(props,productPrefix,productVersion,buildNumber){
 String searchContent(productPrefixAndVersion,buildNumber,productSuffix){
     def searchContent
     if(buildNumber){
-        searchContent=productPrefixAndVersion+'*'+buildNumber+'*'+productSuffix
+        searchContent=productPrefixAndVersion+'*'+buildNumber+'*'+productSuffix //like cd_dbp_v1.0.0*b9*.lrm
     }else{
-        searchContent=productPrefixAndVersion+'*'+productSuffix
+        searchContent=productPrefixAndVersion+'*'+productSuffix //like CE_DPB_v*.lrm
     }
     return searchContent
 }
-/**search installer from s3
- * @s3repo: test.properties, get property s3.bucket, local.linux from it
- * @projectFolder like hkma, mas
- * @propertiesFileFullName: test.properties, get property s3.bucket, local.linux from it
- * @productPrefixAndVersion like CE_DPB_v1.0.0-b9_sign.lrm's CE_DPB_v1.0.0
- * @buildNumber: like CE_DPB_v1.0.0-b9_sign.lrm's b9
- * @productSuffix: .lrm .jar
+
+/**
+ * search installer name from s3
+ * @param s3repo: like arproduct/hkma/CandidateReleases/ or AgileREPORTER/Releases/CandidateReleases/
+ * @param props: get value from deploy folder's env.properties
+ * @param searchContent: like cd_dbp_v1.0.0*b9*.lrm, CE_DPB_v*.lrm
+ * @return
  */
 String searchLatestFromS3(s3repo,props,searchContent){
     def downloadFileName
@@ -90,11 +90,18 @@ String searchLatestFromS3(s3repo,props,searchContent){
     return downloadFileName
 }
 
+/**
+ * get latest file full name in local server, like repository/ARProduct/hkma/candidate-release/5.32.0/b96/CE_DPB_v5.32.0-b96_sign.lrm
+ * @param localRepo: get value of ar.local.repo or product.local.repo in env.properties, like repository/ARProduct
+ * @param props: get value from deploy folder's env.properties
+ * @param searchContent: like cd_dbp_v1.0.0*b9*.lrm, CE_DPB_v*.lrm
+ * @return
+ */
 String searchLatestFromLocal(localRepo,props,searchContent){
 
     def app_hostuser=props['app.user']+'@'+props['app.host']
-    def flag=sh( returnStdout: true, script: '''ssh '''+app_hostuser+'''  'find '''+localRepo+''' -iname '''+searchContent+''' -print0|xargs -0 stat -c'%Y:%n'|sort -nr|cut -d ':' -f 2|head -n 1' ''')
-    return flag
+    def lastestFileFullname=sh( returnStdout: true, script: '''ssh '''+app_hostuser+'''  'find '''+localRepo+''' -iname '''+searchContent+''' -print0|xargs -0 stat -c'%Y:%n'|sort -nr|cut -d ':' -f 2|head -n 1' ''')
+    return lastestFileFullname
 }
 
 

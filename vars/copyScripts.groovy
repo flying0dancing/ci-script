@@ -1,3 +1,8 @@
+/**
+ * copy scripts for installing agile reporter and product installers
+ * @param propertiesSet
+ * @return
+ */
 def call(propertiesSet){
     def app_hostuser=propertiesSet['app.user']+'@'+propertiesSet['app.host']
     def downloadPath='/home/'+propertiesSet['app.user']+'/'

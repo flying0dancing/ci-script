@@ -1,4 +1,5 @@
-def call(repoFolder,projectFolder,branch){
+
+def call(qaRepoName,projectFolder,branch='master'){
     checkout([$class: 'GitSCM',
               branches: [[name: "*/${branch}"]],
               doGenerateSubmoduleConfigurations: false,
@@ -9,7 +10,7 @@ def call(repoFolder,projectFolder,branch){
               submoduleCfg: [],
               userRemoteConfigs: [
                       [credentialsId: '46afdff1-cdd3-4098-b8af-d904b4d298aa',
-                       url: "ssh://git@bitbucket.lombardrisk.com:7999/cprod/${repoFolder}.git"]
+                       url: "ssh://git@bitbucket.lombardrisk.com:7999/cprod/${qaRepoName}.git"]
               ]
     ])
 }

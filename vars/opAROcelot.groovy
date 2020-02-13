@@ -1,20 +1,20 @@
-/***
- *new install or upgrade ar platform part, use @ocelotPropFileName ocelot.user.password= to judged new install or upgrade
- * @projectFolder like hkma, mas
- * @propertiesFileFullName: env.properties, get property app.host app.user default.use.repo database.driver database.host database.user ar.local.repo from it
- * @installerName: like AgileREPORTER-19.3.0-b207.jar
- * @ocelotPropFileName: ocelot properties's name like 'hkma_upgrade_ocelot.properties' 'hkma_new_ocelot.properties'
+/**
+ * new install or upgrade agile reporter, use ocelot.user.password set to null to new install, others upgrade
+ * @param projectName: like hkma, mas...
+ * @param propertiesSet: get value from deploy folder's env.properties
+ * @param installerFullName: full name if already in local server, installerName if in S3
+ * @param installerName
+ * @param ocelotPropFileName: ocelot properties's name like 'hkma_upgrade_ocelot.properties' 'hkma_new_ocelot.properties'
+ * @return
  */
-def call(projectFolder,propertiesSet,installerFullName,installerName,ocelotPropFileName){
-    def local_linux=propertiesSet['app.host']
-    def app_user=propertiesSet['app.user']
+def call(projectName,propertiesSet,installerFullName,installerName,ocelotPropFileName){
 
-    def app_hostuser=app_user+'@'+local_linux
+    def app_hostuser=propertiesSet['app.user']+'@'+propertiesSet['app.host']
     def ocelotPath=propertiesSet['app.install.path']
     def downloadPath=ocelotPath+'/deploys/'
 
     //transfer ocelot properties to workspace for getting properties
-    def ocelotPropFilePath=env.WORKSPACE+'/'+projectFolder+'/src/main/resources/properties/'
+    def ocelotPropFilePath=env.WORKSPACE+'/'+projectName+'/src/main/resources/properties/'
     def ocelotProps=readProperties file: ocelotPropFilePath+ocelotPropFileName
     def ocleot_user_password=ocelotProps['ocelot.user.password']
     //def ocelotPath=getAROcelotProperty(ocelotPropFileName,'ocelot.install.path')
@@ -43,17 +43,16 @@ def call(projectFolder,propertiesSet,installerFullName,installerName,ocelotPropF
 
     //copy ocelot.properties to local ocelot folder
     def stepInfo='find and copy '+ocelotPropFileName
-    def flag=sh( returnStatus: true, script: '''scp `find '''+env.WORKSPACE+'''/'''+projectFolder+'''/src/main/resources/properties/ -type f -name "'''+ocelotPropFileName+'''"` '''+app_hostuser+''':'''+downloadPath)
+    def flag=sh( returnStatus: true, script: '''scp `find '''+env.WORKSPACE+'''/'''+projectName+'''/src/main/resources/properties/ -type f -name "'''+ocelotPropFileName+'''"` '''+app_hostuser+''':'''+downloadPath)
     if(flag==0){
         createHtmlContent('stepline',stepInfo+' pass')
         stepInfo='download ocelot '
-        if(installerFullName && installerFullName.contains('/')){
+        if(installerFullName.contains('/')){
             createHtmlContent('stepline',stepInfo+'from local')
         }else{
             //download from remote server
             createHtmlContent('stepline',stepInfo+'from remote')
-            downloadInstaller.downloadOcelot(propertiesSet,installerName,downloadPath)
-            installerFullName=downloadPath+installerName
+            installerFullName=downloadInstaller.downloadOcelot(propertiesSet,installerName)
         }
         sh( returnStatus: true, script: '''ssh '''+app_hostuser+'''  'sh RemoteInstall.sh -help' ''')
         //sh( returnStatus: true, script: '''ssh '''+app_hostuser+'''  'sh RemoteInstall.sh '''+ocelotPath+''' 0 '''+installerFullName+''' '''+downloadPath+ocelotPropFileName+''' ' ''')

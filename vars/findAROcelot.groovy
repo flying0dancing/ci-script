@@ -1,32 +1,34 @@
-def call(ocelotInstaller,projectFolder,propertiesSet){
-    def installVer=ocelotInstaller.version
-    createHtmlContent('headline',' * ['+ocelotInstaller.prefix+', '+installVer+']')
+def call(installer,projectName,propertiesSet){
+    def iVersion=installer.version
+    def iPrefix=installer.prefix
+    def needInstall=installer.needInstall
+    createHtmlContent('headline',' * ['+iPrefix+', '+iVersion+']')
     createHtmlContent('stepStartFlag')
-    if(!ocelotInstaller.needInstall || !ocelotInstaller.needInstall.equalsIgnoreCase("no")){
-        echo 'install '+ocelotInstaller.prefix+'...'
-        def downloadFileFullName=searchInstaller.searchLatestOcelot(propertiesSet,ocelotInstaller.prefix,helper.getInstallerMainVersion(installVer),helper.getInstallerBuildNumber(installVer))
+    if(!(needInstall && needInstall.equalsIgnoreCase("no"))){
+        echo 'install '+iPrefix+'...'
+        def downloadFileFullName=searchInstaller.searchLatestOcelot(propertiesSet,iPrefix,helper.getInstallerMainVersion(iVersion),helper.getInstallerBuildNumber(iVersion))
         def downloadFileName=helper.getFileName(downloadFileFullName)
         if(downloadFileName){
             //InstallerCheck and installOcelot
             def flag=searchInstaller.remoteInstallercheck(propertiesSet,downloadFileName)
             if(flag==0){
                 createHtmlContent('stepline','install ocelot: '+downloadFileName)
-                def props=ocelotInstaller.props
+                def props=installer.props
                 if(props){
                     echo props[0].filename
-                    opAROcelot(projectFolder,propertiesSet,downloadFileFullName,downloadFileName,props[0].filename)
+                    opAROcelot(projectName,propertiesSet,downloadFileFullName,downloadFileName,props[0].filename)
                 }
             }else{
-                echo "no need to install ["+ocelotInstaller.prefix+", "+installVer+" ]"
+                echo "no need to install ["+iPrefix+", "+iVersion+" ]"
                 createHtmlContent('stepline','install ocelot: no need, skip')
             }
         }else{
-            echo "cannot find install ocelot["+ocelotInstaller.prefix+", "+installVer+" ]"
+            echo "cannot find install ocelot["+iPrefix+", "+iVersion+" ]"
             createHtmlContent('stepline','install ocelot: cannot find, skip')
         }
 
     }else{
-        echo "no need to install ["+ocelotInstaller.prefix+", "+installVer+" ]"
+        echo "no need to install ["+iPrefix+", "+iVersion+" ]"
         createHtmlContent('stepline','install ocelot: no need, skip')
     }
     createHtmlContent('stepEndFlag')

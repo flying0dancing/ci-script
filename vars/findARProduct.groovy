@@ -1,55 +1,61 @@
-def call(productInstaller,projectFolder,propertiesSet){
-    def installVer=productInstaller.version
-    def buildNumber=helper.getInstallerBuildNumber(installVer)
-    def downloadFileFullName
-    def downloadFileName
-    createHtmlContent('headline',' * ['+productInstaller.prefix+', '+installVer+']')
+def call(installer,projectName,propertiesSet){
+    def iVersion=installer.version
+    def iPrefix=installer.prefix
+    def needInstall=installer.needInstall
+
+    def buildNumber=helper.getInstallerBuildNumber(iVersion)
+    def downloadFileFullName=searchInstaller.searchLatestProduct(projectName,propertiesSet,iPrefix.toUpperCase(),helper.getInstallerMainVersion(iVersion),buildNumber)
+    def downloadFileName=helper.getFileName(downloadFileFullName)
+
+    createHtmlContent('headline',' * ['+iPrefix+', '+iVersion+']')
     createHtmlContent('stepStartFlag')
-    if(!productInstaller.needInstall || !productInstaller.needInstall.equalsIgnoreCase("no")){
-        echo 'install Product '+productInstaller.prefix+'...'
-        installVer=helper.getInstallerMainVersion(installVer)
-        downloadFileFullName=searchInstaller.searchLatestProduct(projectFolder,propertiesSet,productInstaller.prefix.toUpperCase(),installVer,buildNumber)
-        downloadFileName=helper.getFileName(downloadFileFullName)
+    if(needInstall && needInstall.equalsIgnoreCase("no")){
+        echo "no need to install product ["+iPrefix+", "+iVersion+" ]"
+        createHtmlContent('stepline','install product: no need, skip')
+    }else{
+        echo 'install Product '+iPrefix+'...'
         if(downloadFileName){
             def flag=searchInstaller.remoteInstallercheck(propertiesSet,downloadFileName)
             if(flag==0){
                 createHtmlContent('stepline','install product: '+downloadFileName)
-                installARProduct(projectFolder,propertiesSet,downloadFileFullName,downloadFileName)
+                installARProduct(projectName,propertiesSet,downloadFileFullName,downloadFileName)
             }else{
-                echo "no need to install product ["+productInstaller.prefix+", "+installVer+" ]"
+                echo "no need to install product ["+iPrefix+", "+iVersion+" ]"
                 createHtmlContent('stepline','install product: no need, skip')
             }
         }else{
-            echo "cannot find install product ["+productInstaller.prefix+", "+installVer+" ]"
+            echo "cannot find install product ["+iPrefix+", "+iVersion+" ]"
             createHtmlContent('stepline','install product: cannot find, skip')
         }
-
-
-    }else{
-        echo "no need to install product ["+productInstaller.prefix+", "+installVer+" ]"
-        createHtmlContent('stepline','install product: no need, skip')
     }
+    def props=installer.props
+    handleConfigProps(props,projectName,propertiesSet,iPrefix,downloadFileName)
+    createHtmlContent('stepEndFlag')
+}
 
-    buildNumber=helper.getInstallerRealBuildNumber(downloadFileName,buildNumber)
-    def props=productInstaller.props
-    if(props){
+def handleConfigProps(props,projectName,propertiesSet,iPrefix,downloadFileName){
+    def installVersion=helper.getInstallerVersion(downloadFileName)
+    if(props && installVersion){
         for(int j=0;j<props.size();j++){
+            def propy=props[j]
+            def needConfig=propy.needConfig
             echo "=================================config index[${j}]============================================"
-            if(!props[j].needConfig || !props[j].needConfig.equalsIgnoreCase("no")){
-                def eaFlag='1'
-                if(props[j].REPORTERMetadata.equalsIgnoreCase("yes")){
-                    echo "config REPORTER metadata ${props[j]}"
-                }else{
-                    echo "config PRODUCT ${props[j]}"
-                    eaFlag='2'
-                }
-                createHtmlContent('stepline','config '+props[j])
-                linkARprojectDID(projectFolder,propertiesSet,productInstaller.prefix,installVer+'-'+buildNumber,props[j].filename,props[j].aliases,eaFlag)
+            if(needConfig && needConfig.equalsIgnoreCase("no")){
+                echo "no need to config ${propy}"
+                createHtmlContent('stepline','config '+propy+': no need, skip')
             }else{
-                echo "no need to config ${props[j]}"
-                createHtmlContent('stepline','config '+props[j]+': no need, skip')
+                def metaData=propy.REPORTERMetadata
+                def eaFlag='1' //1 means config argument is -ea
+                if(metaData && metaData.equalsIgnoreCase("yes")){
+                    echo "config REPORTER metadata ${propy}"
+                    eaFlag='2' //2 means config argument is -da and -aa
+                }else{
+                    echo "config PRODUCT ${propy}"
+                }
+                createHtmlContent('stepline','config '+propy)
+
+                linkARprojectDID(projectName,propertiesSet,iPrefix,installVersion,propy.filename,propy.aliases,eaFlag)
             }
         }
     }
-    createHtmlContent('stepEndFlag')
 }

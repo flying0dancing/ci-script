@@ -1,29 +1,23 @@
-/***
- *install arproduct packages part, if RemoteInstall_0.tmp contains fail, it will terminate.
- * @projectFolder like hkma, mas
- * @propertiesFileFullName: test.properties, get property local.linux local.oracle ar.repo.linux from it
- * @downloadFileName like CE_DPB_v1.0.0-b9_sign.lrm under <projectFolder>/candidate-release/<productVersionFolder>/
- * @downloadFromLocalServer: null means download from remote
- * @ocelotPath: install path
+/**
+ * install agile reporter product package, if result in RemoteInstall_1.tmp contains fail, it will terminate.
+ * @param projectName: like hkma, mas...
+ * @param propertiesSet: get value from deploy folder's env.properties
+ * @param installerFullName: full name if already in local server, installerName if in S3
+ * @param installerName
+ * @return
  */
-def call(projectFolder,propertiesSet,installerFullName,installerName){
-    def local_linux=propertiesSet['app.host']
-    def app_user=propertiesSet['app.user']
+def call(projectName,propertiesSet,installerFullName,installerName){
+
+    def app_hostuser=propertiesSet['app.user']+'@'+propertiesSet['app.user']
+    def ocelotPath=propertiesSet['app.install.path']
 
     def stepInfo='download product package'
-    def app_hostuser=app_user+'@'+local_linux
-    def ocelotPath=propertiesSet['app.install.path']
-    def downloadPath=ocelotPath+'/deploys/'
-
-    //create download folder deploys
-    sh( returnStatus: true, script: '''ssh '''+app_hostuser+''' 'mkdir '''+downloadPath+''' 2>/dev/null ' ''')
-    if(installerFullName && installerFullName.contains('/')){
+    if(installerFullName.contains('/')){
         //download from local server
         createHtmlContent('stepline',stepInfo+' from local')
     }else{
-        createHtmlContent('stepline',stepInfo+' from local')
-        downloadInstaller.downloadARProduct(projectFolder,propertiesSet,installerName,downloadPath)
-        installerFullName=downloadPath+installerName
+        createHtmlContent('stepline',stepInfo+' from remote')
+        installerFullName=downloadInstaller.downloadARProduct(projectName,propertiesSet,installerName)
     }
     sh( returnStatus: true, script: '''ssh '''+app_hostuser+'''  'sh RemoteInstall.sh -help' ''')
     //sh( returnStatus: true, script: '''ssh '''+app_hostuser+'''  'sh RemoteInstall.sh '''+ocelotPath+''' 1 '''+installerFullName+''' ' ''')

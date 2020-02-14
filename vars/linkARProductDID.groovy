@@ -21,8 +21,8 @@ def call(projectName,propertiesSet,productPrefix,productVersion,productPropFileN
     if(flag==0){
         createHtmlContent('stepline',stepInfo+' pass')
         sh( returnStatus: true, script: '''ssh '''+app_hostuser+'''  'sh RemoteInstall.sh '''+ocelotPath+''' '''+eaFlag+''' '''+downloadPath+productPropFileName+''' '''+productPrefix.toUpperCase()+''' '''+ productVersion+''' \"'''+productPropAliases+'''\" ' ''')
-        def continue_status1='RemoteInstall_'+eaFlag+'.tmp'
-        def allstatus=sh(returnStdout: true, script: '''ssh '''+app_hostuser+''' 'cat '''+ocelotPath+'''/'''+continue_status1+''' ' ''').trim()
+        def continue_status='RemoteInstall_'+eaFlag+'.tmp'
+        def allstatus=sh(returnStdout: true, script: '''ssh '''+app_hostuser+''' 'cat '''+ocelotPath+'''/'''+continue_status+''' ' ''').trim()
         if(allstatus){
             createHtmlContent('stepline','config DID: '+allstatus.replaceAll('configure','<br />configure'))
             if(allstatus.contains('fail')){

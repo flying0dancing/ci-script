@@ -54,7 +54,7 @@ def handleConfigProps(props,projectName,propertiesSet,iPrefix,downloadFileName){
                 }
                 createHtmlContent('stepline','config '+propy)
 
-                linkARprojectDID(projectName,propertiesSet,iPrefix,installVersion,propy.filename,propy.aliases,eaFlag)
+                linkARProductDID(projectName,propertiesSet,iPrefix,installVersion,propy.filename,propy.aliases,eaFlag)
             }
         }
     }

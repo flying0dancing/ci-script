@@ -17,6 +17,9 @@ def call(installer,projectName,propertiesSet){
         buildNumber=helper.getInstallerBuildNumber(iVersion)
         downloadFileFullName=searchInstaller.searchLatestProduct(projectName,propertiesSet,iPrefix.toUpperCase(),helper.getInstallerMainVersion(iVersion),buildNumber)
         downloadFileName=helper.getFileName(downloadFileFullName)
+        echo 'buildNumber:'+buildNumber
+        echo 'downloadFileFullName:'+downloadFileFullName
+        echo 'downloadFileName:'+downloadFileName
         if(downloadFileName){
             def flag=searchInstaller.remoteInstallercheck(propertiesSet,downloadFileName)
             if(flag==0){

@@ -11,6 +11,9 @@ def call(installer,projectName,propertiesSet){
         echo 'install '+iPrefix+'...'
         def downloadFileFullName=searchInstaller.searchLatestOcelot(propertiesSet,iPrefix,helper.getInstallerMainVersion(iVersion),helper.getInstallerBuildNumber(iVersion))
         def downloadFileName=helper.getFileName(downloadFileFullName)
+
+        echo 'downloadFileFullName:'+downloadFileFullName
+        echo 'downloadFileName:'+downloadFileName
         if(downloadFileName){
             //InstallerCheck and installOcelot
             def flag=searchInstaller.remoteInstallercheck(propertiesSet,downloadFileName)

@@ -66,7 +66,7 @@ String searchContent(productPrefixAndVersion,buildNumber,productSuffix){
  * @param props: get value from deploy folder's env.properties
  * @param searchContent: like cd_dbp_v1.0.0*b9*.lrm, CE_DPB_v*.lrm
  * @param local_repo: local server's path
- * @return
+ * @return null or full local path
  */
 String searchLatestFromS3(s3repo,props,searchContent,local_repo){
     def sFilePath
@@ -97,11 +97,12 @@ String searchLatestFromS3(s3repo,props,searchContent,local_repo){
         String cmd = "s3 cp s3://$s3_bucket/$s3repo$sFilePath $local_repo$sFilePath  --no-progress "
         execute(cmd)
         echo "downloaded Agile Reporter Product completely."
+        return local_repo+sFilePath
     }else{
         error "there is no packages existed in bucket server, name like "+searchContent
     }
     echo "Latest installer name "+sFilePath
-    return local_repo+sFilePath
+    return
 }
 
 /**

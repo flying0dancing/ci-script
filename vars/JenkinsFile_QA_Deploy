@@ -1,5 +1,5 @@
 #!groovy
-@Library('pipeline-libs') 
+@Library('pipeline-libs') _
 
 stage('setup'){
     node{

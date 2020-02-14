@@ -19,16 +19,15 @@ def call(projectName,propertiesSet,installerFullName,installerName){
         createHtmlContent('stepline',stepInfo+' from remote')
         installerFullName=downloadInstaller.downloadARProduct(projectName,propertiesSet,installerName)
     }
-    sh( returnStatus: true, script: '''ssh '''+app_hostuser+'''  'sh RemoteInstall.sh -help' ''')
+    def allstatus=sh( returnStatus: true, script: '''ssh '''+app_hostuser+'''  'sh RemoteInstall.sh -help' ''')
     //sh( returnStatus: true, script: '''ssh '''+app_hostuser+'''  'sh RemoteInstall.sh '''+ocelotPath+''' 1 '''+installerFullName+''' ' ''')
-    def allstatus=sh(returnStdout: true, script: '''ssh '''+app_hostuser+''' 'cat '''+ocelotPath+'''/RemoteInstall_1.tmp ' ''').trim()
-    if(allstatus){
-        createHtmlContent('stepline',allstatus)
-        if(allstatus.contains('fail')){
-            createHtmlContent('stepEndFlag')
-            error "install or upgrade product contains fail."
-        }else{
-            echo "install or upgrade product pass."
-        }
+    //sh(returnStdout: true, script: '''ssh '''+app_hostuser+''' 'cat '''+ocelotPath+'''/RemoteInstall_1.tmp ' ''').trim()
+    if(allstatus==0){
+        createHtmlContent('stepline',"install or upgrade product pass.")
+        echo "install or upgrade product pass."
+    }else{
+        createHtmlContent('stepline',"install or upgrade product contains fail.")
+        createHtmlContent('stepEndFlag')
+        error "install or upgrade product contains fail."
     }
 }

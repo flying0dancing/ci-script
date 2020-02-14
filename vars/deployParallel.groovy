@@ -65,7 +65,7 @@ def installersJson(projectFolder,deployFolder){
     def propertiesFileName='env.properties'
     def files=findFiles(glob: '**/'+projectFolder+'/**/'+deployFolder+'/'+jsonFileName)
     def propertiesFiles=findFiles(glob: '**/'+projectFolder+'/**/'+deployFolder+'/'+propertiesFileName)
-    def propertiesSet=readProperties file: propertiesFiles[0]
+    def propertiesSet=readProperties file: propertiesFiles[0].path
     def gado
     def installers
     def installPrefix

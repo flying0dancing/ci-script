@@ -45,22 +45,22 @@ def call(projectName,propertiesSet,installerFullName,installerName,ocelotPropFil
     def stepInfo='find and copy '+ocelotPropFileName
     def flag=sh( returnStatus: true, script: '''scp `find '''+env.WORKSPACE+'''/'''+projectName+'''/src/main/resources/properties/ -type f -name "'''+ocelotPropFileName+'''"` '''+app_hostuser+''':'''+downloadPath)
     if(flag==0){
-        createHtmlContent('stepline',stepInfo+' pass')
-        
+        createHtmlContent('stepline',stepInfo+' pass.')
+
         def allstatus=sh( returnStatus: true, script: '''ssh '''+app_hostuser+'''  'sh RemoteInstall.sh -help' ''')
         //sh( returnStatus: true, script: '''ssh '''+app_hostuser+'''  'sh RemoteInstall.sh '''+ocelotPath+''' 0 '''+installerFullName+''' '''+downloadPath+ocelotPropFileName+''' ' ''')
         //sh(returnStdout: true, script: '''ssh '''+app_hostuser+''' 'cat '''+ocelotPath+'''/RemoteInstall_0.tmp ' ''').trim()
-
+        stepInfo='install or upgrade ocelot '
         if(allstatus==0){
-            createHtmlContent('stepline',"install or upgrade ocelot pass.")
-            echo "install or upgrade ocelot pass."
+            createHtmlContent('stepline',stepInfo+'pass.')
+            echo stepInfo+'pass.'
         }else{
-            createHtmlContent('stepline',"install or upgrade ocelot contains fail.")
+            createHtmlContent('stepline',stepInfo+'contains fail.')
             createHtmlContent('stepEndFlag')
-            error "install or upgrade ocelot contains fail."
+            error stepInfo+'contains fail.'
         }
     }else{
-        createHtmlContent('stepline',stepInfo+' fail')
+        createHtmlContent('stepline',stepInfo+' fail.')
         createHtmlContent('stepEndFlag')
         error "fail to copy properties file from slave"
     }

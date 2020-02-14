@@ -14,12 +14,13 @@ def call(projectName,propertiesSet,installerFullName,installerName){
     def allstatus=sh( returnStatus: true, script: '''ssh '''+app_hostuser+'''  'sh RemoteInstall.sh -help' ''')
     //sh( returnStatus: true, script: '''ssh '''+app_hostuser+'''  'sh RemoteInstall.sh '''+ocelotPath+''' 1 '''+installerFullName+''' ' ''')
     //sh(returnStdout: true, script: '''ssh '''+app_hostuser+''' 'cat '''+ocelotPath+'''/RemoteInstall_1.tmp ' ''').trim()
+    def stepInfo='install or upgrade product '
     if(allstatus==0){
-        createHtmlContent('stepline',"install or upgrade product pass.")
-        echo "install or upgrade product pass."
+        createHtmlContent('stepline',stepInfo+'pass.')
+        echo stepInfo+'pass.'
     }else{
-        createHtmlContent('stepline',"install or upgrade product contains fail.")
+        createHtmlContent('stepline',stepInfo+'contains fail.')
         createHtmlContent('stepEndFlag')
-        error "install or upgrade product contains fail."
+        error stepInfo+'contains fail.'
     }
 }

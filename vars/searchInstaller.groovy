@@ -93,7 +93,7 @@ String searchLatestFromS3(s3repo,props,searchContent,local_repo){
             }
         }
         echo "Latest installer name Method1:"+sFilePath
-
+        echo "Latest installer path in s3: "+sFilePath
         String cmd = "s3 cp s3://$s3_bucket/$s3repo$sFilePath $local_repo$sFilePath  --no-progress "
         execute(cmd)
         echo "downloaded Agile Reporter Product completely."
@@ -101,7 +101,6 @@ String searchLatestFromS3(s3repo,props,searchContent,local_repo){
     }else{
         error "there is no packages existed in bucket server, name like "+searchContent
     }
-    echo "Latest installer name "+sFilePath
     return
 }
 

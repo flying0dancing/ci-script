@@ -4,7 +4,10 @@ def call(installer,projectName,propertiesSet){
     def needInstall=installer.needInstall
     createHtmlContent('headline',' * ['+iPrefix+', '+iVersion+']')
     createHtmlContent('stepStartFlag')
-    if(!(needInstall && needInstall.equalsIgnoreCase("no"))){
+    if(needInstall && needInstall.equalsIgnoreCase("no")){
+        echo "no need to install ["+iPrefix+", "+iVersion+" ]"
+        createHtmlContent('stepline','install ocelot: no need, skip')
+    }else{
         echo 'install '+iPrefix+'...'
         def downloadFileFullName=searchInstaller.searchLatestOcelot(propertiesSet,iPrefix,helper.getInstallerMainVersion(iVersion),helper.getInstallerBuildNumber(iVersion))
         def downloadFileName=helper.getFileName(downloadFileFullName)
@@ -26,10 +29,6 @@ def call(installer,projectName,propertiesSet){
             echo "cannot find install ocelot["+iPrefix+", "+iVersion+" ]"
             createHtmlContent('stepline','install ocelot: cannot find, skip')
         }
-
-    }else{
-        echo "no need to install ["+iPrefix+", "+iVersion+" ]"
-        createHtmlContent('stepline','install ocelot: no need, skip')
     }
     createHtmlContent('stepEndFlag')
 }

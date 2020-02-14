@@ -54,17 +54,17 @@ def call(projectName,propertiesSet,installerFullName,installerName,ocelotPropFil
             createHtmlContent('stepline',stepInfo+'from remote')
             installerFullName=downloadInstaller.downloadOcelot(propertiesSet,installerName)
         }
-        sh( returnStatus: true, script: '''ssh '''+app_hostuser+'''  'sh RemoteInstall.sh -help' ''')
+        def allstatus=sh( returnStatus: true, script: '''ssh '''+app_hostuser+'''  'sh RemoteInstall.sh -help' ''')
         //sh( returnStatus: true, script: '''ssh '''+app_hostuser+'''  'sh RemoteInstall.sh '''+ocelotPath+''' 0 '''+installerFullName+''' '''+downloadPath+ocelotPropFileName+''' ' ''')
-        def allstatus=sh(returnStdout: true, script: '''ssh '''+app_hostuser+''' 'cat '''+ocelotPath+'''/RemoteInstall_0.tmp ' ''').trim()
-        if(allstatus){
-            createHtmlContent('stepline',allstatus)
-            if(allstatus.contains('fail')){
-                createHtmlContent('stepEndFlag')
-                error "install or upgrade ocelot contains fail."
-            }else{
-                echo "install or upgrade ocelot pass."
-            }
+        //sh(returnStdout: true, script: '''ssh '''+app_hostuser+''' 'cat '''+ocelotPath+'''/RemoteInstall_0.tmp ' ''').trim()
+
+        if(allstatus==0){
+            createHtmlContent('stepline',"install or upgrade ocelot pass.")
+            echo "install or upgrade ocelot pass."
+        }else{
+            createHtmlContent('stepline',"install or upgrade ocelot contains fail.")
+            createHtmlContent('stepEndFlag')
+            error "install or upgrade ocelot contains fail."
         }
     }else{
         createHtmlContent('stepline',stepInfo+' fail')

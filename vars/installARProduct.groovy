@@ -19,6 +19,7 @@ def call(projectName,propertiesSet,installerFullName,installerName){
         createHtmlContent('stepline',stepInfo+' from remote')
         installerFullName=downloadInstaller.downloadARProduct(projectName,propertiesSet,installerName)
     }
+    echo "installerFullName:$installerFullName"
     def allstatus=sh( returnStatus: true, script: '''ssh '''+app_hostuser+'''  'sh RemoteInstall.sh -help' ''')
     //sh( returnStatus: true, script: '''ssh '''+app_hostuser+'''  'sh RemoteInstall.sh '''+ocelotPath+''' 1 '''+installerFullName+''' ' ''')
     //sh(returnStdout: true, script: '''ssh '''+app_hostuser+''' 'cat '''+ocelotPath+'''/RemoteInstall_1.tmp ' ''').trim()

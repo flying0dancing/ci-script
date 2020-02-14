@@ -1,3 +1,4 @@
+import static com.lombardrisk.pipeline.Credentials.AWS
 
 String searchLatestProduct(projectName,props,productPrefix,productVersion,buildNumber){
     def downloadFileName
@@ -9,10 +10,15 @@ String searchLatestProduct(projectName,props,productPrefix,productVersion,buildN
         downloadFileName=searchLatestFromLocal(repo,props,content)
     }else{
         repo='arproduct/'+projectName+'/CandidateReleases/'
-        downloadFileName=searchLatestFromS3(repo,props,content)
+        def homePath='/home/'+props['app.user']+'/'+props['product.local.repo']
+        def local_repo=homePath+projectName+'/candidate-release/'
+        downloadFileName=searchLatestFromS3(repo,props,content,local_repo)
+
         if(!downloadFileName){
-            repo='arproduct/'+productPrefix.toLowerCase()+'/CandidateReleases/'
-            downloadFileName=searchLatestFromS3(repo,props,content)
+            productPrefix=productPrefix.toLowerCase()
+            repo='arproduct/'+productPrefix+'/CandidateReleases/'
+            local_repo=homePath+productPrefix+'/candidate-release/'
+            downloadFileName=searchLatestFromS3(repo,props,content,local_repo)
         }
     }
 
@@ -24,12 +30,14 @@ String searchLatestOcelot(props,productPrefix,productVersion,buildNumber){
     def repo
     def nameSuffix='.jar'
     def content=searchContent(productPrefix+'-'+productVersion,buildNumber,nameSuffix)
+
     if(readProperty.downloadFromLocal(props)){
         repo=props['ar.local.repo']
         downloadFileName=searchLatestFromLocal(repo,props,content)
     }else{
         repo='AgileREPORTER/Releases/CandidateReleases/'
-        downloadFileName=searchLatestFromS3(repo,props,content)
+        def local_repo='/home/'+props['app.user']+'/'+props['ar.local.repo']
+        downloadFileName=searchLatestFromS3(repo,props,content,local_repo)
     }
 
     return downloadFileName
@@ -57,37 +65,43 @@ String searchContent(productPrefixAndVersion,buildNumber,productSuffix){
  * @param s3repo: like arproduct/hkma/CandidateReleases/ or AgileREPORTER/Releases/CandidateReleases/
  * @param props: get value from deploy folder's env.properties
  * @param searchContent: like cd_dbp_v1.0.0*b9*.lrm, CE_DPB_v*.lrm
+ * @param local_repo: local server's path
  * @return
  */
-String searchLatestFromS3(s3repo,props,searchContent){
-    def downloadFileName
-    def downfiles
+String searchLatestFromS3(s3repo,props,searchContent,local_repo){
+    def sFilePath
+    def sfiles
     def s3_bucket=props['s3.bucket']
     withAWS(credentials: 'aws') {
-        downfiles=s3FindFiles(bucket:s3_bucket, path:s3repo, glob:"**/${searchContent}")
+        sfiles=s3FindFiles(bucket:s3_bucket, path:s3repo, glob:"**/${searchContent}")
     }
-    if(downfiles){
-        //downfiles.each{print "${it.name},${it.path},${it.length},${it.lastModified}"}
+    if(sfiles){
+        //sfiles.each{print "${it.name},${it.path},${it.length},${it.lastModified}"}
         def lastIndex=0
-        def lastBuildNumber=downfiles[0].lastModified
-        downloadFileName=downfiles[0].name
+        def lastBuildNumber=sfiles[0].lastModified
+        sFilePath=sfiles[0].path
         //start
-        def newestLastModified=downfiles.collect{return it.lastModified}.max()
-        downloadFileName=downfiles.find{return itlastModified==newestLastModified}
+        def newestLastModified=sfiles.collect{return it.lastModified}.max()
+        sFilePath=sfiles.find{return itlastModified==newestLastModified}
         //end
-        echo "Latest installer name Method2:"+downloadFileName
-        for(int index=0;index<downfiles.size();index++){
-            if(lastBuildNumber<downfiles[index].lastModified){
-                lastBuildNumber=downfiles[index].lastModified
+        echo "Latest installer name Method2:"+sFilePath
+        for(int index=0;index<sfiles.size();index++){
+            if(lastBuildNumber<sfiles[index].lastModified){
+                lastBuildNumber=sfiles[index].lastModified
                 lastIndex=index
-                downloadFileName=downfiles[index].name
+                sFilePath=sfiles[index].path
             }
         }
-        echo "Latest installer name Method1:"+downloadFileName
+        echo "Latest installer name Method1:"+sFilePath
 
+        String cmd = "s3 cp s3://$s3_bucket/$s3repo$sFilePath $local_repo$sFilePath  --no-progress "
+        execute(cmd)
+        echo "downloaded Agile Reporter Product completely."
+    }else{
+        error "there is no packages existed in bucket server, name like "+searchContent
     }
-    echo "Latest installer name "+downloadFileName
-    return downloadFileName
+    echo "Latest installer name "+sFilePath
+    return local_repo+sFilePath
 }
 
 /**
@@ -117,4 +131,19 @@ int remoteInstallercheck(props,installerName){
 
     def flag=sh( returnStatus: true, script: '''ssh '''+app_hostuser+'''  'sh RemoteProductInstallerCheck.sh '''+ocelotPath+''' '''+installerName+''' ' ''')
     return flag
+}
+
+
+private def execute(String cmd) {
+    withCredentials([usernamePassword(
+            credentialsId: AWS,
+            usernameVariable: 'AWS_ACCESS_KEY_ID',
+            passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+
+        String localBin = "${env.HOME}/.local/bin"
+
+        withEnv(["PATH+LOCAL_BIN=$localBin"]) {
+            sh "aws $cmd"
+        }
+    }
 }

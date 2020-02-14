@@ -47,13 +47,14 @@ def call(projectName,propertiesSet,installerFullName,installerName,ocelotPropFil
     if(flag==0){
         createHtmlContent('stepline',stepInfo+' pass')
         stepInfo='download ocelot '
-        if(installerFullName.contains('/')){
-            createHtmlContent('stepline',stepInfo+'from local')
-        }else{
+        //if(installerFullName.contains('/')){
+            //createHtmlContent('stepline',stepInfo+'from local')
+        //}else{
             //download from remote server
-            createHtmlContent('stepline',stepInfo+'from remote')
-            installerFullName=downloadInstaller.downloadOcelot(propertiesSet,installerName)
-        }
+            //createHtmlContent('stepline',stepInfo+'from remote')
+            //installerFullName=downloadInstaller.downloadOcelot(propertiesSet,installerName)
+        //}
+        echo "installerFullName:$installerFullName"
         def allstatus=sh( returnStatus: true, script: '''ssh '''+app_hostuser+'''  'sh RemoteInstall.sh -help' ''')
         //sh( returnStatus: true, script: '''ssh '''+app_hostuser+'''  'sh RemoteInstall.sh '''+ocelotPath+''' 0 '''+installerFullName+''' '''+downloadPath+ocelotPropFileName+''' ' ''')
         //sh(returnStdout: true, script: '''ssh '''+app_hostuser+''' 'cat '''+ocelotPath+'''/RemoteInstall_0.tmp ' ''').trim()

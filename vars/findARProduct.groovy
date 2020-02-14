@@ -3,9 +3,9 @@ def call(installer,projectName,propertiesSet){
     def iPrefix=installer.prefix
     def needInstall=installer.needInstall
 
-    def buildNumber=helper.getInstallerBuildNumber(iVersion)
-    def downloadFileFullName=searchInstaller.searchLatestProduct(projectName,propertiesSet,iPrefix.toUpperCase(),helper.getInstallerMainVersion(iVersion),buildNumber)
-    def downloadFileName=helper.getFileName(downloadFileFullName)
+    def buildNumber
+    def downloadFileFullName
+    def downloadFileName
 
     createHtmlContent('headline',' * ['+iPrefix+', '+iVersion+']')
     createHtmlContent('stepStartFlag')
@@ -14,6 +14,9 @@ def call(installer,projectName,propertiesSet){
         createHtmlContent('stepline','install product: no need, skip')
     }else{
         echo 'install Product '+iPrefix+'...'
+        buildNumber=helper.getInstallerBuildNumber(iVersion)
+        downloadFileFullName=searchInstaller.searchLatestProduct(projectName,propertiesSet,iPrefix.toUpperCase(),helper.getInstallerMainVersion(iVersion),buildNumber)
+        downloadFileName=helper.getFileName(downloadFileFullName)
         if(downloadFileName){
             def flag=searchInstaller.remoteInstallercheck(propertiesSet,downloadFileName)
             if(flag==0){

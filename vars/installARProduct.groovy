@@ -11,6 +11,7 @@ def call(projectName,propertiesSet,installerFullName){
     def ocelotPath=propertiesSet['app.install.path']
 
     def allstatus=sh( returnStatus: true, script: '''ssh '''+app_hostuser+'''  'sh RemoteInstall.sh -help' ''')
+    echo 'sh RemoteInstall.sh '+ocelotPath+' 1 '+installerFullName
     //sh( returnStatus: true, script: '''ssh '''+app_hostuser+'''  'sh RemoteInstall.sh '''+ocelotPath+''' 1 '''+installerFullName+''' ' ''')
     //sh(returnStdout: true, script: '''ssh '''+app_hostuser+''' 'cat '''+ocelotPath+'''/RemoteInstall_1.tmp ' ''').trim()
     def stepInfo='install or upgrade product '

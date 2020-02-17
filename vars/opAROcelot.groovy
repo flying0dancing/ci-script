@@ -47,6 +47,7 @@ def call(projectName,propertiesSet,installerFullName,ocelotPropFileName){
         createHtmlContent('stepline',stepInfo+' pass.')
 
         def allstatus=sh( returnStatus: true, script: '''ssh '''+app_hostuser+'''  'sh RemoteInstall.sh -help' ''')
+        echo 'sh RemoteInstall.sh '+ocelotPath+' 0 '+installerFullName+' '+downloadPath+ocelotPropFileName
         //sh( returnStatus: true, script: '''ssh '''+app_hostuser+'''  'sh RemoteInstall.sh '''+ocelotPath+''' 0 '''+installerFullName+''' '''+downloadPath+ocelotPropFileName+''' ' ''')
         //sh(returnStdout: true, script: '''ssh '''+app_hostuser+''' 'cat '''+ocelotPath+'''/RemoteInstall_0.tmp ' ''').trim()
         stepInfo='install or upgrade ocelot '

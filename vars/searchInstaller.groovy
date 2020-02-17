@@ -78,27 +78,15 @@ String searchLatestFromS3(s3repo,props,searchContent,local_repo,downloadFlag=tru
     }
     if(sfiles){
         //sfiles.each{print "${it.name},${it.path},${it.length},${it.lastModified}"}
-        def lastIndex=0
-        def lastBuildNumber=sfiles[0].lastModified
-        sFilePath=sfiles[0].path
-        //start
         def newestLastModified=sfiles.collect{return it.lastModified}.max()
         sFilePath=sfiles.find{return it.lastModified==newestLastModified}
-        //end
-        echo "Latest installer name Method2:"+sFilePath
-        for(int index=0;index<sfiles.size();index++){
-            if(lastBuildNumber<sfiles[index].lastModified){
-                lastBuildNumber=sfiles[index].lastModified
-                lastIndex=index
-                sFilePath=sfiles[index].path
-            }
-        }
-        echo "Latest installer name Method1:"+sFilePath
         echo "Latest installer path in s3: "+sFilePath
         echo 'localFullPath:'+local_repo+sFilePath
         if(downloadFlag){
             def flag=installerExistsInLocal(props,local_repo+sFilePath)
-            if(flag!=0){
+            if(flag==0){
+                echo "download installer already exists in local server."
+            }else{
                 String cmd = "s3 cp s3://$s3_bucket/$s3repo$sFilePath $local_repo$sFilePath  --no-progress "
                 execute(cmd)
                 echo "download installer completely."

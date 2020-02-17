@@ -21,7 +21,7 @@ def call(installer,projectName,propertiesSet){
             def flag=searchInstaller.checkNeedInstallOrNot(propertiesSet,downloadFileName)
             if(flag==0){
                 createHtmlContent('stepline','install ocelot: '+downloadFileName)
-                if(!readProperty.downloadFromLocal(props)){
+                if(!readProperty.downloadFromLocal(propertiesSet)){
                     downloadFileFullName=searchInstaller.searchLatestOcelot(propertiesSet,iPrefix,mainVersion,buildNumber,true)
                 }
                 def props=installer.props

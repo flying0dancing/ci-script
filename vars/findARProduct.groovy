@@ -24,7 +24,7 @@ def call(installer,projectName,propertiesSet){
             def flag=searchInstaller.checkNeedInstallOrNot(propertiesSet,downloadFileName)
             if(flag==0){
                 createHtmlContent('stepline','install product: '+downloadFileName)
-                if(!readProperty.downloadFromLocal(props)){
+                if(!readProperty.downloadFromLocal(propertiesSet)){
                     downloadFileFullName=searchInstaller.searchLatestProduct(projectName,propertiesSet,iPrefix.toUpperCase(),mainVersion,buildNumber,true)
                 }
                 installARProduct(projectName,propertiesSet,downloadFileFullName)

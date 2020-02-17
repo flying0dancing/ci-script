@@ -2,11 +2,10 @@
  * install agile reporter product package, if result in RemoteInstall_1.tmp contains fail, it will terminate.
  * @param projectName: like hkma, mas...
  * @param propertiesSet: get value from deploy folder's env.properties
- * @param installerFullName: full name if already in local server, installerName if in S3
- * @param installerName
+ * @param installerFullName: full name in local server
  * @return
  */
-def call(projectName,propertiesSet,installerFullName,installerName){
+def call(projectName,propertiesSet,installerFullName){
 
     def app_hostuser=propertiesSet['app.user']+'@'+propertiesSet['app.user']
     def ocelotPath=propertiesSet['app.install.path']

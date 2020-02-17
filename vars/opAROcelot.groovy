@@ -2,12 +2,11 @@
  * new install or upgrade agile reporter, use ocelot.user.password set to null to new install, others upgrade
  * @param projectName: like hkma, mas...
  * @param propertiesSet: get value from deploy folder's env.properties
- * @param installerFullName: full name if already in local server, installerName if in S3
- * @param installerName
+ * @param installerFullName: full name in local server
  * @param ocelotPropFileName: ocelot properties's name like 'hkma_upgrade_ocelot.properties' 'hkma_new_ocelot.properties'
  * @return
  */
-def call(projectName,propertiesSet,installerFullName,installerName,ocelotPropFileName){
+def call(projectName,propertiesSet,installerFullName,ocelotPropFileName){
 
     def app_hostuser=propertiesSet['app.user']+'@'+propertiesSet['app.host']
     def ocelotPath=propertiesSet['app.install.path']

@@ -48,7 +48,7 @@ def getInstallerBuildNumber(installVer){
  * @param downloadFileName
  * @return
  */
-def getInstallerVersion(downloadFileName){
+def getInstallerRealVersion(downloadFileName){
     def productVerion
     if(downloadFileName){
         productVerion=downloadFileName.replaceAll('(_sign)?\\.[a-z]+','')

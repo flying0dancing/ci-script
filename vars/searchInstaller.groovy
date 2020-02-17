@@ -1,6 +1,6 @@
 import static com.lombardrisk.pipeline.Credentials.AWS
 
-String searchLatestProduct(projectName,props,productPrefix,productVersion,buildNumber){
+String searchLatestProduct(projectName,props,productPrefix,productVersion,buildNumber,remoteDownload=false){
     def downloadFileName
     def repo
     def nameSuffix='.lrm'
@@ -12,20 +12,20 @@ String searchLatestProduct(projectName,props,productPrefix,productVersion,buildN
         repo='arproduct/'+projectName+'/CandidateReleases/'
         def homePath='/home/'+props['app.user']+'/'+props['product.local.repo']
         def local_repo=homePath+projectName+'/candidate-release/'
-        downloadFileName=searchLatestFromS3(repo,props,content,local_repo)
+        downloadFileName=searchLatestFromS3(repo,props,content,local_repo,remoteDownload)
 
         if(!downloadFileName){
             productPrefix=productPrefix.toLowerCase()
             repo='arproduct/'+productPrefix+'/CandidateReleases/'
             local_repo=homePath+productPrefix+'/candidate-release/'
-            downloadFileName=searchLatestFromS3(repo,props,content,local_repo)
+            downloadFileName=searchLatestFromS3(repo,props,content,local_repo,remoteDownload)
         }
     }
-
     return downloadFileName
 }
 
-String searchLatestOcelot(props,productPrefix,productVersion,buildNumber){
+
+String searchLatestOcelot(props,productPrefix,productVersion,buildNumber,remoteDownload=false){
     def downloadFileName
     def repo
     def nameSuffix='.jar'
@@ -37,7 +37,7 @@ String searchLatestOcelot(props,productPrefix,productVersion,buildNumber){
     }else{
         repo='AgileREPORTER/Releases/CandidateReleases/'
         def local_repo='/home/'+props['app.user']+'/'+props['ar.local.repo']
-        downloadFileName=searchLatestFromS3(repo,props,content,local_repo)
+        downloadFileName=searchLatestFromS3(repo,props,content,local_repo,remoteDownload)
     }
 
     return downloadFileName
@@ -66,9 +66,10 @@ String searchContent(productPrefixAndVersion,buildNumber,productSuffix){
  * @param props: get value from deploy folder's env.properties
  * @param searchContent: like cd_dbp_v1.0.0*b9*.lrm, CE_DPB_v*.lrm
  * @param local_repo: local server's path
+ * @param downloadFlag: default is true, download; false is no need download
  * @return null or full local path
  */
-String searchLatestFromS3(s3repo,props,searchContent,local_repo){
+String searchLatestFromS3(s3repo,props,searchContent,local_repo,downloadFlag=true){
     def sFilePath
     def sfiles
     def s3_bucket=props['s3.bucket']
@@ -94,9 +95,15 @@ String searchLatestFromS3(s3repo,props,searchContent,local_repo){
         }
         echo "Latest installer name Method1:"+sFilePath
         echo "Latest installer path in s3: "+sFilePath
-        String cmd = "s3 cp s3://$s3_bucket/$s3repo$sFilePath $local_repo$sFilePath  --no-progress "
-        execute(cmd)
-        echo "downloaded Agile Reporter Product completely."
+        echo 'localFullPath:'+local_repo+sFilePath
+        if(downloadFlag){
+            def flag=installerExistsInLocal(props,local_repo+sFilePath)
+            if(flag!=0){
+                String cmd = "s3 cp s3://$s3_bucket/$s3repo$sFilePath $local_repo$sFilePath  --no-progress "
+                execute(cmd)
+                echo "download installer completely."
+            }
+        }
         return local_repo+sFilePath
     }else{
         error "there is no packages existed in bucket server, name like "+searchContent
@@ -114,7 +121,11 @@ String searchLatestFromS3(s3repo,props,searchContent,local_repo){
 String searchLatestFromLocal(localRepo,props,searchContent){
 
     def app_hostuser=props['app.user']+'@'+props['app.host']
-    def lastestFileFullname=sh( returnStdout: true, script: '''ssh '''+app_hostuser+'''  'find '''+localRepo+''' -iname '''+searchContent+''' -print0|xargs -0 stat -c'%Y:%n'|sort -nr|cut -d ':' -f 2|head -n 1' ''')
+    def flag=sh( returnStatus: true, script: '''ssh '''+app_hostuser+'''  'find '''+localRepo+''' -iname '''+searchContent+''' -print0|xargs -0 stat -c'%Y:%n'|sort -nr|cut -d ':' -f 2|head -n 1' ''')
+    def lastestFileFullname
+    if(flag==0){
+        lastestFileFullname=sh( returnStdout: true, script: '''ssh '''+app_hostuser+'''  'find '''+localRepo+''' -iname '''+searchContent+''' -print0|xargs -0 stat -c'%Y:%n'|sort -nr|cut -d ':' -f 2|head -n 1' ''')
+    }
     return lastestFileFullname
 }
 
@@ -125,11 +136,23 @@ String searchLatestFromLocal(localRepo,props,searchContent){
  * @param installerName
  * @return
  */
-int remoteInstallercheck(props,installerName){
+int checkNeedInstallOrNot(props,installerName){
     def ocelotPath=props['app.install.path']
     def app_hostuser=props['app.user']+'@'+props['app.host']
 
     def flag=sh( returnStatus: true, script: '''ssh '''+app_hostuser+'''  'sh RemoteProductInstallerCheck.sh '''+ocelotPath+''' '''+installerName+''' ' ''')
+    return flag
+}
+/**
+ * check installFullName exists or not, return 0 means exists, return others means no exists
+ * @param props
+ * @param installerFullName
+ * @return
+ */
+int installerExistsInLocal(props,installerFullName){
+    def app_hostuser=props['app.user']+'@'+props['app.host']
+
+    def flag=sh( returnStatus: true, script: '''ssh '''+app_hostuser+'''  '[ -f "'''+installerFullName+'''" ]' ''')
     return flag
 }
 

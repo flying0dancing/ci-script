@@ -3,9 +3,15 @@ def call(installer,projectName,propertiesSet){
     def iPrefix=installer.prefix
     def needInstall=installer.needInstall
 
-    def buildNumber
+    def mainVersion=helper.getInstallerMainVersion(iVersion)
+    def buildNumber=helper.getInstallerBuildNumber(iVersion)
     def downloadFileFullName
     def downloadFileName
+    downloadFileFullName=searchInstaller.searchLatestProduct(projectName,propertiesSet,iPrefix.toUpperCase(),mainVersion,buildNumber)
+    downloadFileName=helper.getFileName(downloadFileFullName)
+    echo 'buildNumber:'+buildNumber
+    echo 'downloadFileFullName:'+downloadFileFullName
+    echo 'downloadFileName:'+downloadFileName
 
     createHtmlContent('headline',' * ['+iPrefix+', '+iVersion+']')
     createHtmlContent('stepStartFlag')
@@ -14,17 +20,14 @@ def call(installer,projectName,propertiesSet){
         createHtmlContent('stepline','install product: no need, skip')
     }else{
         echo 'install Product '+iPrefix+'...'
-        buildNumber=helper.getInstallerBuildNumber(iVersion)
-        downloadFileFullName=searchInstaller.searchLatestProduct(projectName,propertiesSet,iPrefix.toUpperCase(),helper.getInstallerMainVersion(iVersion),buildNumber)
-        downloadFileName=helper.getFileName(downloadFileFullName)
-        echo 'buildNumber:'+buildNumber
-        echo 'downloadFileFullName:'+downloadFileFullName
-        echo 'downloadFileName:'+downloadFileName
         if(downloadFileName){
-            def flag=searchInstaller.remoteInstallercheck(propertiesSet,downloadFileName)
+            def flag=searchInstaller.checkNeedInstallOrNot(propertiesSet,downloadFileName)
             if(flag==0){
                 createHtmlContent('stepline','install product: '+downloadFileName)
-                installARProduct(projectName,propertiesSet,downloadFileFullName,downloadFileName)
+                if(!readProperty.downloadFromLocal(props)){
+                    downloadFileFullName=searchInstaller.searchLatestProduct(projectName,propertiesSet,iPrefix.toUpperCase(),mainVersion,buildNumber,true)
+                }
+                installARProduct(projectName,propertiesSet,downloadFileFullName)
             }else{
                 echo "no need to install product ["+iPrefix+", "+iVersion+" ]"
                 createHtmlContent('stepline','install product: no need, skip')
@@ -40,7 +43,7 @@ def call(installer,projectName,propertiesSet){
 }
 
 def handleConfigProps(props,projectName,propertiesSet,iPrefix,downloadFileName){
-    def installVersion=helper.getInstallerVersion(downloadFileName)
+    def installVersion=helper.getInstallerRealVersion(downloadFileName)
     if(props && installVersion){
         for(int j=0;j<props.size();j++){
             def propy=props[j]
@@ -59,8 +62,7 @@ def handleConfigProps(props,projectName,propertiesSet,iPrefix,downloadFileName){
                     echo "config PRODUCT ${propy}"
                 }
                 createHtmlContent('stepline','config '+propy)
-
-                linkARProductDID(projectName,propertiesSet,iPrefix,installVersion,propy.filename,propy.aliases,eaFlag)
+                linkARProductDID(projectName,propertiesSet,iPrefix,installVersion,propy,eaFlag)
             }
         }
     }

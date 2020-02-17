@@ -83,7 +83,7 @@ String searchLatestFromS3(s3repo,props,searchContent,local_repo,downloadFlag=tru
         sFilePath=sfiles[0].path
         //start
         def newestLastModified=sfiles.collect{return it.lastModified}.max()
-        sFilePath=sfiles.find{return itlastModified==newestLastModified}
+        sFilePath=sfiles.find{return it.lastModified==newestLastModified}
         //end
         echo "Latest installer name Method2:"+sFilePath
         for(int index=0;index<sfiles.size();index++){

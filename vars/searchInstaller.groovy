@@ -6,7 +6,7 @@ String searchLatestProduct(projectName,props,productPrefix,productVersion,buildN
     def nameSuffix='.lrm'
     def content=searchContent(productPrefix+'_v'+productVersion,buildNumber,nameSuffix)
     if(readProperty.downloadFromLocal(props)){
-        repo=props['product.local.repo']
+        repo='/home/'+props['app.user']+'/'+props['product.local.repo']
         downloadFileName=searchLatestFromLocal(repo,props,content)
     }else{
         repo='arproduct/'+projectName+'/CandidateReleases/'
@@ -32,7 +32,7 @@ String searchLatestOcelot(props,productPrefix,productVersion,buildNumber,remoteD
     def content=searchContent(productPrefix+'-'+productVersion,buildNumber,nameSuffix)
 
     if(readProperty.downloadFromLocal(props)){
-        repo=props['ar.local.repo']
+        repo='/home/'+props['app.user']+'/'+props['ar.local.repo']
         downloadFileName=searchLatestFromLocal(repo,props,content)
     }else{
         repo='AgileREPORTER/Releases/CandidateReleases/'

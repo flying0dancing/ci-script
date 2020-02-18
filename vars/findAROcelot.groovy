@@ -10,7 +10,7 @@ def call(installer,projectName,propertiesSet){
         echo "no need to install ["+iPrefix+", "+iVersion+" ]"
         createHtmlContent('stepline','install ocelot: no need, skip')
     }else{
-        echo 'install '+iPrefix+'...'
+        echo '=============================== install '+iPrefix+' =================================='
         def downloadFileFullName=searchInstaller.searchLatestOcelot(propertiesSet,iPrefix,mainVersion,buildNumber)
         def downloadFileName=helper.getFileName(downloadFileFullName)
 
@@ -21,7 +21,7 @@ def call(installer,projectName,propertiesSet){
             def flag=searchInstaller.checkNeedInstallOrNot(propertiesSet,downloadFileName)
             if(flag==0){
                 createHtmlContent('stepline','install ocelot: '+downloadFileName)
-                if(!readProperty.downloadFromLocal(propertiesSet)){
+                if(!readProperty.downloadFromLocal(propertiesSet) && searchInstaller.existsInLocal(propertiesSet,downloadFileFullName)!=0){
                     downloadFileFullName=searchInstaller.searchLatestOcelot(propertiesSet,iPrefix,mainVersion,buildNumber,true)
                 }
                 def props=installer.props

@@ -81,20 +81,14 @@ String searchLatestFromS3(s3repo,props,searchContent,local_repo,downloadFlag=tru
         def newestLastModified=sfiles.collect{return it.lastModified}.max()
         sFilePath=sfiles.find{return it.lastModified==newestLastModified}
         echo "Latest installer path in s3: "+sFilePath
-        echo 'localFullPath:'+local_repo+sFilePath
         if(downloadFlag){
-            def flag=installerExistsInLocal(props,local_repo+sFilePath)
-            if(flag==0){
-                echo "download installer already exists in local server."
-            }else{
-                String cmd = "s3 cp s3://$s3_bucket/$s3repo$sFilePath $local_repo$sFilePath  --no-progress "
-                execute(cmd)
-                echo "download installer completely."
-            }
+            String cmd = "s3 cp s3://$s3_bucket/$s3repo$sFilePath $local_repo$sFilePath  --no-progress "
+            execute(cmd)
+            echo "download installer completely."
         }
         return local_repo+sFilePath
     }else{
-        error "there is no packages existed in bucket server, name like "+searchContent
+        echo "there is no packages existed in bucket server, name like "+searchContent
     }
     return
 }
@@ -137,9 +131,8 @@ int checkNeedInstallOrNot(props,installerName){
  * @param installerFullName
  * @return
  */
-int installerExistsInLocal(props,installerFullName){
+int existsInLocal(props,installerFullName){
     def app_hostuser=props['app.user']+'@'+props['app.host']
-
     def flag=sh( returnStatus: true, script: '''ssh '''+app_hostuser+'''  '[ -f "'''+installerFullName+'''" ]' ''')
     return flag
 }

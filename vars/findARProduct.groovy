@@ -19,12 +19,12 @@ def call(installer,projectName,propertiesSet){
         echo "no need to install product ["+iPrefix+", "+iVersion+" ]"
         createHtmlContent('stepline','install product: no need, skip')
     }else{
-        echo 'install Product '+iPrefix+'...'
+        echo '=============================== install '+iPrefix+' =================================='
         if(downloadFileName){
             def flag=searchInstaller.checkNeedInstallOrNot(propertiesSet,downloadFileName)
             if(flag==0){
                 createHtmlContent('stepline','install product: '+downloadFileName)
-                if(!readProperty.downloadFromLocal(propertiesSet)){
+                if(!readProperty.downloadFromLocal(propertiesSet) && searchInstaller.existsInLocal(propertiesSet,downloadFileFullName)!=0){
                     downloadFileFullName=searchInstaller.searchLatestProduct(projectName,propertiesSet,iPrefix.toUpperCase(),mainVersion,buildNumber,true)
                 }
                 installARProduct(projectName,propertiesSet,downloadFileFullName)

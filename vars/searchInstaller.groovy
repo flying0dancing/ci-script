@@ -103,7 +103,7 @@ String searchLatestFromS3(s3repo,props,searchContent,local_repo,downloadFlag=tru
 String searchLatestFromLocal(localRepo,props,searchContent){
 
     def app_hostuser=props['app.user']+'@'+props['app.host']
-    def flag=sh( returnStatus: true, script: '''ssh '''+app_hostuser+'''  'find '''+localRepo+''' -iname '''+searchContent+''' -print0|xargs -0 stat -c'%Y:%n'|sort -nr|cut -d ':' -f 2|head -n 1' ''')
+    def flag=sh( returnStatus: true, script: '''ssh '''+app_hostuser+'''  'find '''+localRepo+''' -iname '''+searchContent+''' -print0|xargs -0 stat -c'%Y:%n'' ''')
     def lastestFileFullname
     if(flag==0){
         lastestFileFullname=sh( returnStdout: true, script: '''ssh '''+app_hostuser+'''  'find '''+localRepo+''' -iname '''+searchContent+''' -print0|xargs -0 stat -c'%Y:%n'|sort -nr|cut -d ':' -f 2|head -n 1' ''').trim()

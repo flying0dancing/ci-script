@@ -4,13 +4,13 @@ def call(installer,projectName,propertiesSet){
     def needInstall=installer.needInstall
     def mainVersion=helper.getInstallerMainVersion(iVersion)
     def buildNumber=helper.getInstallerBuildNumber(iVersion)
+    echo '=============================== install '+iPrefix+' =================================='
     createHtmlContent('headline',' * ['+iPrefix+', '+iVersion+']')
     createHtmlContent('stepStartFlag')
     if(needInstall && needInstall.equalsIgnoreCase("no")){
         echo "no need to install ["+iPrefix+", "+iVersion+" ]"
         createHtmlContent('stepline','install ocelot: no need, skip')
     }else{
-        echo '=============================== install '+iPrefix+' =================================='
         def downloadFileFullName=searchInstaller.searchLatestOcelot(propertiesSet,iPrefix,mainVersion,buildNumber)
         def downloadFileName=helper.getFileName(downloadFileFullName)
 

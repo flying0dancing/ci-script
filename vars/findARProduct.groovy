@@ -2,11 +2,11 @@ def call(installer,projectName,propertiesSet){
     def iVersion=installer.version
     def iPrefix=installer.prefix
     def needInstall=installer.needInstall
-
     def mainVersion=helper.getInstallerMainVersion(iVersion)
     def buildNumber=helper.getInstallerBuildNumber(iVersion)
     def downloadFileFullName
     def downloadFileName
+    echo '=============================== install '+iPrefix+' =================================='
     downloadFileFullName=searchInstaller.searchLatestProduct(projectName,propertiesSet,iPrefix.toUpperCase(),mainVersion,buildNumber)
     downloadFileName=helper.getFileName(downloadFileFullName)
     echo 'buildNumber:'+buildNumber
@@ -19,7 +19,6 @@ def call(installer,projectName,propertiesSet){
         echo "no need to install product ["+iPrefix+", "+iVersion+" ]"
         createHtmlContent('stepline','install product: no need, skip')
     }else{
-        echo '=============================== install '+iPrefix+' =================================='
         if(downloadFileName){
             def flag=searchInstaller.checkNeedInstallOrNot(propertiesSet,downloadFileName)
             if(flag==0){
@@ -37,18 +36,17 @@ def call(installer,projectName,propertiesSet){
             createHtmlContent('stepline','install product: cannot find, skip')
         }
     }
-    def props=installer.props
-    handleConfigProps(props,projectName,propertiesSet,iPrefix,downloadFileName)
+    handleConfigProps(installer.props,projectName,propertiesSet,iPrefix,downloadFileName)
     createHtmlContent('stepEndFlag')
 }
 
 def handleConfigProps(props,projectName,propertiesSet,iPrefix,downloadFileName){
-    def installVersion=helper.getInstallerRealVersion(downloadFileName)
-    if(props && installVersion){
+    if(props && downloadFileName){
+        def installVersion=helper.getInstallerRealVersion(downloadFileName)
         for(int j=0;j<props.size();j++){
             def propy=props[j]
             def needConfig=propy.needConfig
-            echo "=================================config index[${j}]============================================"
+            echo "=============================== DID configure $propy.filename =================================="
             if(needConfig && needConfig.equalsIgnoreCase("no")){
                 echo "no need to config ${propy}"
                 createHtmlContent('stepline','config '+propy+': no need, skip')

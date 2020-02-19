@@ -7,7 +7,7 @@
  */
 def call(projectName,propertiesSet,installerFullName){
 
-    def app_hostuser=props['app.user']+'@'+props['app.host']
+    def app_hostuser=propertiesSet['app.user']+'@'+propertiesSet['app.host']
     def ocelotPath=propertiesSet['app.install.path']
 
     def allstatus=sh( returnStatus: true, script: '''ssh '''+app_hostuser+'''  'sh RemoteInstall.sh -help' ''')

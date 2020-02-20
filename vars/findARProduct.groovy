@@ -46,7 +46,7 @@ def handleConfigProps(props,projectName,propertiesSet,iPrefix,downloadFileName){
         for(int j=0;j<props.size();j++){
             def propy=props[j]
             def needConfig=propy.needConfig
-            echo "=============================== DID configure $propy.filename =================================="
+            echo "========= DID configure $propy.filename ========="
             if(needConfig && needConfig.equalsIgnoreCase("no")){
                 echo "no need to config ${propy}"
                 createHtmlContent('stepline','config '+propy+': no need, skip')

@@ -105,7 +105,7 @@ String searchLatestFromLocal(localRepo,props,searchContent){
     def app_hostuser=props['app.user']+'@'+props['app.host']
     def path=sh( returnStdout: true, script: '''ssh '''+app_hostuser+'''  'find '''+localRepo+''' -iname '''+searchContent+''' -print0|xargs -0 stat -c'%Y:%n'|sort -nr|cut -d ':' -f 2|head -n 1' ''')
     def lastestFileFullname
-    if(path.contains(localRepo)){
+    if(path && path.contains(localRepo)){
         lastestFileFullname=path.trim()
     }
     return lastestFileFullname

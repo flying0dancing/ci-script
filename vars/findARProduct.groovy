@@ -59,7 +59,7 @@ def handleConfigProps(props,projectName,propertiesSet,iPrefix,downloadFileName){
                 }else{
                     echo "config PRODUCT ${propy}"
                 }
-                createHtmlContent('stepline','config '+propy)
+                createHtmlContent('steplineP1','config '+propy)
                 linkARProductDID(projectName,propertiesSet,iPrefix,installVersion,propy,eaFlag)
             }
         }

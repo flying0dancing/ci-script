@@ -167,7 +167,7 @@ else
                     ((i++))
                     if [ "${type}" = "2" ];then
                         eaFlag=-aa
-                        ./bin/config.sh -da "${DIDprefix}" -iv "${DIDimplementationVersion}" -alias "${split}"
+                        ./bin/config.sh -da "${DIDprefix}" -iv "${DIDimplementationVersion}" -alias "${split}" >>$detaillog
                     fi
                     echo "${split}"
                     echo "./bin/config.sh ${eaFlag} ${DIDprefix} -iv ${DIDimplementationVersion} -alias \"${split}\" -aif \"${properties}\"" >>$detaillog
@@ -184,7 +184,7 @@ else
                 elif [ "$split" != "" -a "$split" = "${DIDaliasName}" ];then
                     if [ "${type}" = "2" ];then
                         eaFlag=-aa
-                        ./bin/config.sh -da "${DIDprefix}" -iv "${DIDimplementationVersion}" -alias "${split}"
+                        ./bin/config.sh -da "${DIDprefix}" -iv "${DIDimplementationVersion}" -alias "${split}" >>$detaillog
                     fi
                     echo "${split}"
                     echo "./bin/config.sh ${eaFlag} ${DIDprefix} -iv ${DIDimplementationVersion} -alias \"${split}\" -aif \"${properties}\"" >>$detaillog

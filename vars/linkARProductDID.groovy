@@ -17,17 +17,14 @@ def call(projectName,propertiesSet,productPrefix,productVersion,productProp,eaFl
     def propyFile=productProp.filename
     def propyAliases=productProp.aliases
     //copy aliasinfo.properties to local ocelot folder
-    createHtmlContent('stepStartFlag')
-    stepInfo='find and copy '+propyFile
     flag=sh( returnStatus: true, script: '''scp `find '''+env.WORKSPACE+'''/'''+projectName+'''/src/main/resources/properties/ -type f -name "'''+propyFile+'''"` '''+app_hostuser+''':'''+downloadPath)
     if(flag==0){
-        createHtmlContent('stepline',stepInfo+' pass')
         sh( returnStatus: true, script: '''ssh '''+app_hostuser+'''  'sh RemoteInstall.sh '''+ocelotPath+''' '''+eaFlag+''' '''+downloadPath+propyFile+''' '''+productPrefix.toUpperCase()+''' '''+ productVersion+''' \"'''+propyAliases+'''\" ' ''')
         def continue_status='RemoteInstall_'+eaFlag+'.tmp'
-        def allstatus=sh(returnStdout: true, script: '''ssh '''+app_hostuser+''' 'cat '''+ocelotPath+'''/'''+continue_status+''' ' ''').trim()
+        def allstatus=sh(returnStdout: true, script: '''ssh '''+app_hostuser+''' 'cat '''+ocelotPath+'''/'''+continue_status+''' ' ''')
         if(allstatus){
-            createHtmlContent('stepline','config DID: '+allstatus.replaceAll('configure','<br />configure'))
-            createHtmlContent('stepEndFlag')
+            allstatus=allstatus.trim()
+            createHtmlContent('steplineP1','config DID: '+allstatus.replaceAll('configure','<br />configure'))
             if(allstatus.contains('fail')){
                 createHtmlContent('stepEndFlag')
                 error "config properties contains fail."
@@ -36,8 +33,6 @@ def call(projectName,propertiesSet,productPrefix,productVersion,productProp,eaFl
             }
         }
     }else{
-        createHtmlContent('stepline',stepInfo+' fail')
-        createHtmlContent('stepEndFlag')
         createHtmlContent('stepEndFlag')
         error "fail to copy properties file from slave"
     }

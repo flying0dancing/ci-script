@@ -24,7 +24,7 @@ def call(projectName,propertiesSet,productPrefix,productVersion,productProp,eaFl
         def allstatus=sh(returnStdout: true, script: '''ssh '''+app_hostuser+''' 'cat '''+ocelotPath+'''/'''+continue_status+''' ' ''')
         if(allstatus){
             allstatus=allstatus.trim()
-            createHtmlContent('steplineP1','config DID: '+allstatus.replaceAll('configure','<br />configure'))
+            createHtmlContent('steplineP2','config DID: '+allstatus.replaceAll('configure','<br />configure'))
             if(allstatus.contains('fail')){
                 createHtmlContent('stepEndFlag')
                 error "config properties contains fail."

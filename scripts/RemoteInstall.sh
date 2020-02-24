@@ -161,18 +161,20 @@ else
             i=1
             while((1==1))
             do
-               echo "================================================================================"
+               echo "============================================================================"
                split=`echo ${DIDaliasName}|cut -d ":" -f$i`
                 if [ "$split" != ""  -a "$split" != "${DIDaliasName}" ];then
                     ((i++))
                     if [ "${type}" = "2" ];then
                         eaFlag=-aa
-                        ./bin/config.sh -da "${DIDprefix}" -iv "${DIDimplementationVersion}" -alias "${split}" >>$detaillog
+                        echo "===========================================================================" 2>&1 |tee -a $detaillog
+                        echo "./bin/config.sh -da ${DIDprefix} -iv ${DIDimplementationVersion} -alias \"${split}\"" 2>&1 |tee -a  $detaillog
+                        ./bin/config.sh -da "${DIDprefix}" -iv "${DIDimplementationVersion}" -alias "${split}" 2>&1 |tee -a $detaillog
                     fi
                     echo "${split}"
-                    echo "./bin/config.sh ${eaFlag} ${DIDprefix} -iv ${DIDimplementationVersion} -alias \"${split}\" -aif \"${properties}\"" >>$detaillog
-                    echo "================================================================================" >>$detaillog
-                    ./bin/config.sh ${eaFlag} "${DIDprefix}" -iv "${DIDimplementationVersion}" -alias "${split}" -aif "${properties}"  2>&1 | tee -a $detaillog
+                    echo "================================================================================" 2>&1 |tee -a $detaillog
+                    echo "./bin/config.sh ${eaFlag} ${DIDprefix} -iv ${DIDimplementationVersion} -alias \"${split}\" -aif ${properties}" 2>&1 |tee -a $detaillog
+                    ./bin/config.sh ${eaFlag} "${DIDprefix}" -iv "${DIDimplementationVersion}" -alias "${split}" -aif "${properties}"  2>&1 |tee -a $detaillog
                     tail -5 $detaillog | grep -i "successfully"
                     if [ "$?" = "0" ]; then
                         echo "${split} configuration successfully."
@@ -184,11 +186,13 @@ else
                 elif [ "$split" != "" -a "$split" = "${DIDaliasName}" ];then
                     if [ "${type}" = "2" ];then
                         eaFlag=-aa
-                        ./bin/config.sh -da "${DIDprefix}" -iv "${DIDimplementationVersion}" -alias "${split}" >>$detaillog
+                        echo "===========================================================================" 2>&1 |tee -a $detaillog
+                        echo "./bin/config.sh -da ${DIDprefix} -iv ${DIDimplementationVersion} -alias \"${split}\"" 2>&1 |tee -a $detaillog
+                        ./bin/config.sh -da "${DIDprefix}" -iv "${DIDimplementationVersion}" -alias "${split}" 2>&1 |tee -a $detaillog
                     fi
                     echo "${split}"
-                    echo "./bin/config.sh ${eaFlag} ${DIDprefix} -iv ${DIDimplementationVersion} -alias \"${split}\" -aif \"${properties}\"" >>$detaillog
-                    echo "================================================================================" >>$detaillog
+                    echo "================================================================================" 2>&1 |tee -a $detaillog
+                    echo "./bin/config.sh ${eaFlag} ${DIDprefix} -iv ${DIDimplementationVersion} -alias \"${split}\" -aif ${properties}" 2>&1 |tee -a $detaillog
                     ./bin/config.sh ${eaFlag} "${DIDprefix}" -iv "${DIDimplementationVersion}" -alias "${split}" -aif "${properties}" 2>&1 | tee -a $detaillog
                     tail -5 $detaillog | grep -i "successfully"
                     if [ "$?" = "0" ]; then

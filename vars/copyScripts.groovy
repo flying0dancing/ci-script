@@ -7,6 +7,7 @@ def call(propertiesSet){
     shallowCheckout('sshTest')
 
     def envLabel=propertiesSet['app.user']+'-'+propertiesSet['app.host']
+    echo "envLabel $envLabel"
     def selectedEnv=envVars.get(envLabel)
     envVars.check(envLabel,selectedEnv)
     def app_hostuser=selectedEnv.host

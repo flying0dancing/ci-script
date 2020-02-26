@@ -25,15 +25,18 @@ Map get(String label){
                     configDir: 'impdp_and_expdp_shell/',
                     host : 'oracle@sha-oracle-01',
                     credentials: 'product-ci-sha-db1-user-oracle'
-            ]
+            ],
     ]
     def SELECTED_ENV = [:]
-    return SELECTED_ENV=ENVS[label]
+    if(label){
+        SELECTED_ENV=ENVS[label]
+    }
+    return SELECTED_ENV
 }
 
 void check(String envLabel, Map selectedEnv) {
     if (!selectedEnv) {
-        error "Parameter 'ENV_LABEL' must not be blank"
+        error "Parameter 'envLabel' must not be blank"
     }
     echo "Release to environment ${envLabel}:${selectedEnv}"
 }

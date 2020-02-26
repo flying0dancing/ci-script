@@ -34,7 +34,15 @@ def call(propertiesSet){
     }
     sshagent(credentials: ['product-ci-sha-local2-user-test']) {
         def flag1=sh(returnStatus: true, script: "ssh -o StrictHostKeyChecking=no test@172.20.30.89 'hostname' ")
-        echo "prod test flag:$flag1"
+        echo "prod test flag11:$flag1"
+        flag1=sh( returnStatus: true, script: "scp -o StrictHostKeyChecking=no ${env.WORKSPACE}/scripts/RemoteInstall.sh test@172.20.30.89:/home/test")
+        echo "prod test flag12:$flag1"
+    }
+    sshagent(credentials: ['product-ci-sha-local2-user-test']) {
+        def flag2=sh(returnStatus: true, script: "ssh -o StrictHostKeyChecking=no test@sha-prod-001 'hostname' ")
+        echo "prod test flag21:$flag2"
+        flag2=sh( returnStatus: true, script: "scp -o StrictHostKeyChecking=no ${env.WORKSPACE}/scripts/RemoteProduct*.sh test@sha-prod-001:/home/test")
+        echo "prod test flag22:$flag2"
     }
 
 }

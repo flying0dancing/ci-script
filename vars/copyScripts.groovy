@@ -23,7 +23,18 @@ def call(propertiesSet){
     def dbserver_hostuser=selectedDB.host
     downloadPath=selectedDB.homeDir
     sshagent(credentials: [selectedDB.credentials]) {
-        sh( returnStatus: true, script: "scp -o StrictHostKeyChecking=no -r ${env.WORKSPACE}/scripts/${selectedDB.configDir} $dbserver_hostuser:$downloadPath")
-        sh(returnStatus: true, script: "ssh -o StrictHostKeyChecking=no $dbserver_hostuser 'chmod u+x ${selectedDB.configDir}*.sh ' ")
+        def flag1=sh( returnStatus: true, script: "scp -o StrictHostKeyChecking=no -r ${env.WORKSPACE}/scripts/${selectedDB.configDir} $dbserver_hostuser:$downloadPath")
+        echo "flag:$flag1"
+        flag1=sh(returnStatus: true, script: "ssh -o StrictHostKeyChecking=no $dbserver_hostuser 'chmod u+x ${selectedDB.configDir}*.sh ' ")
+        echo "flag:$flag1"
     }
+    sshagent(credentials: ['product-ci-sha-db1-user-oracle']) {
+        def flag1=sh(returnStatus: true, script: "ssh -o StrictHostKeyChecking=no oracle@sha-oracle-01 'hostname' ")
+        echo "oracle flag:$flag1"
+    }
+    sshagent(credentials: ['product-ci-sha-local2-user-test']) {
+        def flag1=sh(returnStatus: true, script: "ssh -o StrictHostKeyChecking=no test@172.20.30.89 'hostname' ")
+        echo "prod test flag:$flag1"
+    }
+
 }

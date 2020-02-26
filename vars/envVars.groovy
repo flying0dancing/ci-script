@@ -26,6 +26,16 @@ Map get(String label){
                     host : 'oracle@sha-oracle-01',
                     credentials: 'product-ci-sha-db1-user-oracle'
             ],
+            'test-172.20.30.89' : [
+                    homeDir  : '/home/test',
+                    host: 'test@172.20.30.89',
+                    credentials: 'product-ci-sha-local2-user-test'
+            ],
+            'test-sha-prod-001' : [
+                      homeDir :   '/home/test',
+                      host: 'test@sha-prod-001',
+                      credentials: 'product-ci-sha-local2-user-test'
+            ],
     ]
     def SELECTED_ENV = [:]
     if(label){

@@ -56,6 +56,31 @@ def getInstallerRealVersion(downloadFileName){
     }
     return productVerion
 }
+
+def resetProps(props){
+    props['app.install.path']=removeLastSlash(props['app.install.path'])
+    props['ar.local.repo']=addLastSlash(props['ar.local.repo'])
+    props['product.local.repo']=addLastSlash(props['product.local.repo'])
+    return props
+}
+def removeLastSlash(String str){
+    if(str){
+        str=str.trim()
+        if(str && str[-1].equals('/')){
+            str=str[0..-2]
+        }
+    }
+    return str
+}
+def addLastSlash(String str){
+    if(str){
+        str=str.trim()
+        if(str && !str[-1].equals('/')){
+            str=str+'/'
+        }
+    }
+    return str
+}
 /*
 println getFileName('AgileREPORTER-19.4.2-b162.jar')
 println getFileName('E:\\home\\AgileREPORTER\\19.4.2\\AgileREPORTER-19.4.2-b162.jar')

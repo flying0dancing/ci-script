@@ -101,9 +101,14 @@ String searchLatestFromS3(s3repo,props,searchContent,local_repo,downloadFlag=tru
  * @return
  */
 String searchLatestFromLocal(localRepo,props,searchContent){
-
-    def app_hostuser=props['app.user']+'@'+props['app.host']
-    def path=sh( returnStdout: true, script: '''ssh '''+app_hostuser+'''  'find '''+localRepo+''' -iname '''+searchContent+''' -print0|xargs -0 stat -c'%Y:%n'|sort -nr|cut -d ':' -f 2|head -n 1' ''')
+    def envLabel=props['app.user']+'-'+props['app.host']
+    def selectedEnv=envVars.get(envLabel)
+    def app_hostuser=selectedEnv.host
+    //def app_hostuser=props['app.user']+'@'+props['app.host']
+    def path
+    sshagent(credentials: [selectedEnv.credentials]) {
+        path=sh( returnStdout: true, script: "ssh -o StrictHostKeyChecking=no $app_hostuser  'find $localRepo -iname $searchContent -print0|xargs -0 stat -c'%Y:%n'|sort -nr|cut -d ':' -f 2|head -n 1' ")
+    }
     def lastestFileFullname
     if(path && path.contains(localRepo)){
         lastestFileFullname=path.trim()
@@ -120,9 +125,14 @@ String searchLatestFromLocal(localRepo,props,searchContent){
  */
 int checkNeedInstallOrNot(props,installerName){
     def ocelotPath=props['app.install.path']
-    def app_hostuser=props['app.user']+'@'+props['app.host']
-
-    def flag=sh( returnStatus: true, script: '''ssh '''+app_hostuser+'''  'sh RemoteProductInstallerCheck.sh '''+ocelotPath+''' '''+installerName+''' ' ''')
+    //def app_hostuser=props['app.user']+'@'+props['app.host']
+    def envLabel=props['app.user']+'-'+props['app.host']
+    def selectedEnv=envVars.get(envLabel)
+    def app_hostuser=selectedEnv.host
+    def flag
+    sshagent(credentials: [selectedEnv.credentials]) {
+        flag=sh( returnStatus: true, script: "ssh -o StrictHostKeyChecking=no $app_hostuser  'sh RemoteProductInstallerCheck.sh $ocelotPath $installerName ' ")
+    }
     return flag
 }
 /**
@@ -132,8 +142,14 @@ int checkNeedInstallOrNot(props,installerName){
  * @return
  */
 int existsInLocal(props,installerFullName){
-    def app_hostuser=props['app.user']+'@'+props['app.host']
-    def flag=sh( returnStatus: true, script: '''ssh '''+app_hostuser+'''  '[ -f "'''+installerFullName+'''" ]' ''')
+    def envLabel=props['app.user']+'-'+props['app.host']
+    def selectedEnv=envVars.get(envLabel)
+    def app_hostuser=selectedEnv.host
+    //def app_hostuser=props['app.user']+'@'+props['app.host']
+    def flag
+    sshagent(credentials: [selectedEnv.credentials]) {
+        flag=sh( returnStatus: true, script: "ssh -o StrictHostKeyChecking=no $app_hostuser  '[ -f \"$installerFullName\" ]' ")
+    }
     return flag
 }
 

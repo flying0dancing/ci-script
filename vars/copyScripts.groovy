@@ -4,17 +4,25 @@
  * @return
  */
 def call(propertiesSet){
-    shallowCheckout()
-    def app_hostuser=propertiesSet['app.user']+'@'+propertiesSet['app.host']
-    def downloadPath='/home/'+propertiesSet['app.user']+'/'
-    //sh( returnStatus: true, script: '''scp '''+env.WORKSPACE+'''/scripts/Remote*.sh '''+app_hostuser+''':'''+downloadPath)
-    //sh(returnStdout: true, script: '''ssh '''+app_hostuser+''' 'chmod u+x Remote*.sh ' ''')
+    shallowCheckout('sshTest')
 
-    sshagent(credentials: ['product-ci-sha-local1-user-test']) {
-        hello('girl')
-        def flag1=sh( returnStatus: true, script: "scp -o StrictHostKeyChecking=no ${env.WORKSPACE}/scripts/Remote*.sh $app_hostuser:$downloadPath")
-        def flag2=sh(returnStatus: true, script: "ssh -o StrictHostKeyChecking=no $app_hostuser 'chmod u+x Remote*.sh ' ")
-        echo "flag1=$flag1"
-        echo "flag2=$flag2"
+    def envLabel=propertiesSet['app.user']+'-'+propertiesSet['app.host']
+    def selectedEnv=envVars.get(envLabel)
+    envVars.check(envLabel,selectedEnv)
+    def app_hostuser=selectedEnv.host
+    def downloadPath=selectedEnv.homeDir
+
+    sshagent(credentials: [selectedEnv.credentials]) {
+        sh( returnStatus: true, script: "scp -o StrictHostKeyChecking=no ${env.WORKSPACE}/scripts/Remote*.sh $app_hostuser:$downloadPath")
+        sh(returnStatus: true, script: "ssh -o StrictHostKeyChecking=no $app_hostuser 'chmod u+x Remote*.sh ' ")
+    }
+    def dbLabel=propertiesSet['database.user']+'-'+propertiesSet['database.host']
+    def selectedDB=envVars.get(dbLabel)
+    envVars.check(dbLabel,selectedDB)
+    def dbserver_hostuser=selectedDB.host
+    downloadPath=selectedDB.homeDir
+    sshagent(credentials: [selectedDB.credentials]) {
+        sh( returnStatus: true, script: "scp -o StrictHostKeyChecking=no -r ${env.WORKSPACE}/scripts/${selectedDB.configDir} $dbserver_hostuser:$downloadPath")
+        sh(returnStatus: true, script: "ssh -o StrictHostKeyChecking=no $dbserver_hostuser 'chmod u+x ${selectedDB.configDir}*.sh ' ")
     }
 }

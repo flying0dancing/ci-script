@@ -13,7 +13,6 @@ def call(projectName,propertiesSet,installerFullName){
     def ocelotPath=propertiesSet['app.install.path']
 
     sshagent(credentials: [selectedEnv.credentials]) {
-
         def allstatus=sh( returnStatus: true, script: "ssh -o StrictHostKeyChecking=no $app_hostuser  'sh RemoteInstall.sh -help' ")
         echo 'sh RemoteInstall.sh '+ocelotPath+' 1 '+installerFullName
         //sh( returnStatus: true, script: "ssh -o StrictHostKeyChecking=no $app_hostuser  'sh RemoteInstall.sh $ocelotPath 1 $installerFullName ' ")

@@ -25,7 +25,8 @@ def call(projectName,propertiesSet,productPrefix,productVersion,productProp,eaFl
         //flag=sh( returnStatus: true, script: '''scp  -o StrictHostKeyChecking=no `find '''+env.WORKSPACE+'''/'''+projectName+'''/src/main/resources/properties/ -type f -name "'''+propyFile+'''"` '''+app_hostuser+''':'''+downloadPath)
         flag=sh( returnStatus: true, script: "scp  -o StrictHostKeyChecking=no `find ${env.WORKSPACE}/$projectName/src/main/resources/properties/ -type f -name \"$propyFile\"` $app_hostuser:$downloadPath")
         if(flag==0){
-            sh( returnStatus: true, script: "ssh -o StrictHostKeyChecking=no $app_hostuser  'sh RemoteInstall.sh $ocelotPath $eaFlag $downloadPath$propyFile $productPrefix.toUpperCase() $productVersion \"$propyAliases\" ' ")
+            productPrefix=productPrefix.toUpperCase()
+            sh( returnStatus: true, script: "ssh -o StrictHostKeyChecking=no $app_hostuser  'sh RemoteInstall.sh $ocelotPath $eaFlag $downloadPath$propyFile $productPrefix $productVersion \"$propyAliases\" ' ")
             def continue_status="RemoteInstall_${eaFlag}.tmp"
             def allstatus=sh(returnStdout: true, script: "ssh -o StrictHostKeyChecking=no $app_hostuser 'cat $ocelotPath/$continue_status ' ")
             if(allstatus){

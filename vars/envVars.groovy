@@ -18,8 +18,14 @@ Map get(String label){
                     homeDir  : '/home/oracle',
                     configDir: 'impdp_and_expdp_shell/',
                     host : 'oracle@172.20.20.49',
-                    credentials: 'product-ci-sha-local1-user-test'
+                    credentials: 'product-ci-sha-db1-user-oracle'
             ],
+            'oracle-sha-oracle-01' : [
+                    homeDir  : '/home/oracle',
+                    configDir: 'impdp_and_expdp_shell/',
+                    host : 'oracle@sha-oracle-01',
+                    credentials: 'product-ci-sha-db1-user-oracle'
+            ]
     ]
     def SELECTED_ENV = [:]
     return SELECTED_ENV=ENVS[label]

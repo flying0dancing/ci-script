@@ -11,7 +11,7 @@ Map get(String label){
             ],
             'test-sha-com-qa-3' : [
                     homeDir :   '/home/test',
-                    host: 'test@sha-com-qa-3',
+                    host: 'test@172.20.31.7',
                     credentials: 'product-ci-sha-local1-user-test'
             ],
             'oracle-172.20.20.49' : [
@@ -23,7 +23,7 @@ Map get(String label){
             'oracle-sha-oracle-01' : [
                     homeDir  : '/home/oracle',
                     configDir: 'impdp_and_expdp_shell/',
-                    host : 'oracle@sha-oracle-01',
+                    host : 'oracle@172.20.20.49',
                     credentials: 'product-ci-sha-db1-user-oracle'
             ],
             'test-172.20.30.89' : [
@@ -33,7 +33,7 @@ Map get(String label){
             ],
             'test-sha-prod-001' : [
                       homeDir :   '/home/test',
-                      host: 'test@sha-prod-001',
+                      host: 'test@172.20.30.89',
                       credentials: 'product-ci-sha-local2-user-test'
             ],
     ]

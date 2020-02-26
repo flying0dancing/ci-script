@@ -26,7 +26,7 @@ def call(installer,projectName,propertiesSet){
                 if(!readProperty.downloadFromLocal(propertiesSet) && searchInstaller.existsInLocal(propertiesSet,downloadFileFullName)!=0){
                     downloadFileFullName=searchInstaller.searchLatestProduct(projectName,propertiesSet,iPrefix.toUpperCase(),mainVersion,buildNumber,true)
                 }
-                installARProduct(projectName,propertiesSet,downloadFileFullName)
+                installARProduct(propertiesSet,downloadFileFullName)
             }else{
                 echo "no need to install product ["+iPrefix+", "+iVersion+" ]"
                 createHtmlContent('stepline','install product: no need, skip')

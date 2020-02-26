@@ -7,7 +7,6 @@ def call(propertiesSet){
     shallowCheckout('sshTest')
 
     def envLabel=propertiesSet['app.user']+'-'+propertiesSet['app.host']
-    echo "envLabel $envLabel"
     def selectedEnv=envVars.get(envLabel)
     envVars.check(envLabel,selectedEnv)
     def app_hostuser=selectedEnv.host
@@ -17,6 +16,7 @@ def call(propertiesSet){
         sh( returnStatus: true, script: "scp -o StrictHostKeyChecking=no ${env.WORKSPACE}/scripts/Remote*.sh $app_hostuser:$downloadPath")
         sh(returnStatus: true, script: "ssh -o StrictHostKeyChecking=no $app_hostuser 'chmod u+x Remote*.sh ' ")
     }
+    /*
     def dbLabel=propertiesSet['database.user']+'-'+propertiesSet['database.host']
     def selectedDB=envVars.get(dbLabel)
     envVars.check(dbLabel,selectedDB)
@@ -56,5 +56,6 @@ def call(propertiesSet){
         flag2=sh( returnStatus: true, script: "scp -o StrictHostKeyChecking=no ${env.WORKSPACE}/vars/helper.groovy test@sha-com-qa-3:/home/test")
         echo "prod test flag42:$flag2"
     }
+     */
 
 }

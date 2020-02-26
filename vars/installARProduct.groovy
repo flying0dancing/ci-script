@@ -5,7 +5,7 @@
  * @param installerFullName: full name in local server
  * @return
  */
-def call(projectName,propertiesSet,installerFullName){
+def call(propertiesSet,installerFullName){
 
     def envLabel=propertiesSet['app.user']+'-'+propertiesSet['app.host']
     def selectedEnv=envVars.get(envLabel)

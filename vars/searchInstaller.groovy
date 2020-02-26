@@ -82,8 +82,9 @@ String searchLatestFromS3(s3repo,props,searchContent,local_repo,downloadFlag=tru
         sFilePath=sfiles.find{return it.lastModified==newestLastModified}
         echo "Latest installer path in s3: "+sFilePath
         if(downloadFlag){
-            String cmd = "s3 cp s3://$s3_bucket/$s3repo$sFilePath $local_repo$sFilePath  --no-progress "
-            execute(cmd)
+            //String cmd = "s3 cp s3://$s3_bucket/$s3repo$sFilePath $local_repo$sFilePath  --no-progress "
+            //execute(cmd)
+            executeWrapper("$s3_bucket/$s3repo$sFilePath",sFilePath)
             echo "download installer completely."
         }
         return local_repo+sFilePath
@@ -153,6 +154,26 @@ int existsInLocal(props,installerFullName){
     return flag
 }
 
+private def executeWrapper(s3path,filePath){
+    def envLabel='test-172.20.31.7'
+    def selectedEnv=envVars.get(envLabel)
+    def app_hostuser=selectedEnv.host
+    String cmd = "s3 cp s3://$s3path ${selectedEnv.homeDir}/$filePath  --no-progress "
+    sshagent(credentials: [selectedEnv.credentials]) {
+        withCredentials([usernamePassword(
+                credentialsId: AWS,
+                usernameVariable: 'AWS_ACCESS_KEY_ID',
+                passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+
+            String localBin = "${env.HOME}/.local/bin"
+
+            withEnv(["PATH+LOCAL_BIN=$localBin"]) {
+                //sh "aws $cmd"
+                sh( returnStatus: true, script: "ssh -o StrictHostKeyChecking=no $app_hostuser  'aws $cmd' ")
+            }
+        }
+    }
+}
 
 private def execute(String cmd) {
     withCredentials([usernamePassword(

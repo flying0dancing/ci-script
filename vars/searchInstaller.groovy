@@ -166,11 +166,12 @@ private def executeWrapper2(filePath,local_repo,user){
     def selectedEnv=envVars.get(envLabel)
     def app_hostuser=selectedEnv.host
     def localPath=local_repo.replaceFirst('/home/'+user+'/','')
-    def filePathWithoutName=helper.getFilePath(filePath)
+    def filePathWithoutName=helper.removeLastSlash(helper.getFilePath(filePath))
     echo "executeWrapper2 localPath:$localPath"
+    echo "$env.NODE_NAME"
     echo "executeWrapper2 filePathWithoutName:$filePathWithoutName"
     sshagent(credentials: [selectedEnv.credentials]) {
-        sh( returnStatus: true, script: "scp -o StrictHostKeyChecking=no ${env.WORKSPACE}/$filePath $app_hostuser:${selectedEnv.homeDir}/$localPath/$filePathWithoutName")
+        sh( returnStatus: true, script: "scp -o StrictHostKeyChecking=no ${env.WORKSPACE}/$filePath $app_hostuser:${selectedEnv.homeDir}/$localPath$filePathWithoutName")
     }
 }
 

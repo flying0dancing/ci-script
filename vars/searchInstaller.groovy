@@ -82,9 +82,9 @@ String searchLatestFromS3(s3repo,props,searchContent,local_repo,downloadFlag=tru
         sFilePath=sfiles.find{return it.lastModified==newestLastModified}
         echo "Latest installer path in s3: "+sFilePath
         if(downloadFlag){
-            //String cmd = "s3 cp s3://$s3_bucket/$s3repo$sFilePath $local_repo$sFilePath  --no-progress "
-            //execute(cmd)
-            executeWrapper("$s3_bucket/$s3repo$sFilePath",sFilePath)
+            String cmd = "s3 cp s3://$s3_bucket/$s3repo$sFilePath $local_repo$sFilePath  --no-progress "
+            execute(cmd)
+            //executeWrapper("$s3_bucket/$s3repo$sFilePath",sFilePath)
             echo "download installer completely."
         }
         return local_repo+sFilePath

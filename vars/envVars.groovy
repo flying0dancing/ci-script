@@ -48,5 +48,5 @@ void check(String envLabel, Map selectedEnv) {
     if (!selectedEnv) {
         error "Parameter 'envLabel' must not be blank"
     }
-    echo "Release to environment ${envLabel}:${selectedEnv}"
+    echo "Deploy to environment ${envLabel}:${selectedEnv}"
 }

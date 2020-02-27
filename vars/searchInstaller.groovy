@@ -88,7 +88,7 @@ String searchLatestFromS3(s3repo,props,searchContent,local_repo,downloadFlag=tru
                 withAWS(credentials: AWS) {
                     s3Download(bucket:s3_bucket, path:s3repo+sFilePath.path,file:sFilePath.path,force:true)
                 }
-                executeWrapper2(sFilePath.path,local_repo.replaceFirst('/home/'+props['app.user']+'/','/'))
+                transferUseSSHAgent(sFilePath.path,local_repo.replaceFirst('/home/'+props['app.user']+'/','/'))
             }else{
                 //method 2
                 String cmd = "s3 cp s3://$s3_bucket/$s3repo${sFilePath.path} $local_repo${sFilePath.path}  --no-progress "
@@ -164,39 +164,19 @@ int existsInLocal(props,installerFullName){
     }
     return flag
 }
-private def executeWrapper2(filePath,local_repo){
+private def transferUseSSHAgent(filePath,local_repo){
     def envLabel='test-172.20.31.7'
     def selectedEnv=envVars.get(envLabel)
     def app_hostuser=selectedEnv.host
     def localPath=selectedEnv.homeDir+local_repo
     def filePathWithoutName=helper.getFilePath(filePath)
-    
+
     sshagent(credentials: [selectedEnv.credentials]) {
         sh( returnStatus: true, script: "ssh -o StrictHostKeyChecking=no $app_hostuser  'mkdir -p $localPath$filePathWithoutName' ")
         sh( returnStatus: true, script: "scp -o StrictHostKeyChecking=no ${env.WORKSPACE}/$filePath $app_hostuser:$localPath$filePath")
     }
 }
 
-private def executeWrapper(s3path,filePath){
-    def envLabel='test-172.20.31.7'
-    def selectedEnv=envVars.get(envLabel)
-    def app_hostuser=selectedEnv.host
-    String cmd = "s3 cp s3://$s3path ${selectedEnv.homeDir}/$filePath  --no-progress "
-    sshagent(credentials: [selectedEnv.credentials]) {
-        withCredentials([usernamePassword(
-                credentialsId: AWS,
-                usernameVariable: 'AWS_ACCESS_KEY_ID',
-                passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-
-            String localBin = "${env.HOME}/.local/bin"
-
-            withEnv(["PATH+LOCAL_BIN=$localBin"]) {
-                //sh "aws $cmd"
-                sh( returnStatus: true, script: "ssh -o StrictHostKeyChecking=no $app_hostuser  'aws $cmd' ")
-            }
-        }
-    }
-}
 private def execute(String cmd) {
     withCredentials([usernamePassword(
             credentialsId: AWS,

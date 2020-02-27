@@ -81,6 +81,21 @@ def addLastSlash(String str){
     }
     return str
 }
+
+/**
+ * if version begin with v, remove it.
+ * @param installVer
+ * @return
+ */
+def removeV(String installVer){
+    if(installVer){
+        installVer=installVer.trim()
+        if(installVer && installVer[0].equalsIgnoreCase('v')){
+            installVer=installVer.substring(1)
+        }
+    }
+    return installVer
+}
 /*
 println getFileName('AgileREPORTER-19.4.2-b162.jar')
 println getFileName('E:\\home\\AgileREPORTER\\19.4.2\\AgileREPORTER-19.4.2-b162.jar')
@@ -94,4 +109,9 @@ println getInstallerMainVersion('19.1.02')
 println getInstallerMainVersion('19.1.02-b23')
 println getInstallerMainVersion('19.1.02-SNAPSHOT')
 println getInstallerMainVersion('19.1.02-SNaPsHOT')
+println removeV(null)
+println removeV('v19.1.02')
+println removeV('v19.1.02-b23')
+println removeV('v19.1.02-SNAPSHOT')
+println removeV('v19.1.02-SNaPsHOT')
 */

@@ -1,5 +1,5 @@
 def call(installer,projectName,propertiesSet){
-    def iVersion=installer.version
+    def iVersion=helper.removeV(installer.version)
     def iPrefix=installer.prefix
     def needInstall=installer.needInstall
     def mainVersion=helper.getInstallerMainVersion(iVersion)

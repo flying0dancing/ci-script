@@ -42,7 +42,10 @@ String searchLatestOcelot(props,productPrefix,productVersion,buildNumber,remoteD
 
     return downloadFileName
 }
-
+String searchOcelotFromLocal(props,installerName){
+    def repo='/home/'+props['app.user']+'/'+props['ar.local.repo']
+    return searchLatestFromLocal(repo,props,installerName)
+}
 /**
  * combine a content for search
  * @param productPrefixAndVersion like CE_DPB_v1.0.0-b9_sign.lrm's CE_DPB_v1.0.0

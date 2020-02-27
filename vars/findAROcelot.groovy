@@ -23,8 +23,8 @@ def call(installer,projectName,propertiesSet){
                 createHtmlContent('stepline','install ocelot: '+downloadFileName)
                 def downloadFileFullName1
                 if(!readProperty.downloadFromLocal(propertiesSet) && searchInstaller.existsInLocal(propertiesSet,downloadFileFullName)!=0){
-                    downloadFileFullName1=helper.removeBuildFolder(downloadFileFullName)
-                    if(searchInstaller.existsInLocal(propertiesSet,downloadFileFullName1)==0){
+                    downloadFileFullName1=searchInstaller.searchOcelotFromLocal(propertiesSet,downloadFileName)
+                    if(downloadFileFullName1){
                         downloadFileFullName=downloadFileFullName1
                         echo 'new downloadFileFullName:'+downloadFileFullName
                     }else{

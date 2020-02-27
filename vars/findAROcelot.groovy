@@ -21,8 +21,15 @@ def call(installer,projectName,propertiesSet){
             def flag=searchInstaller.checkNeedInstallOrNot(propertiesSet,downloadFileName)
             if(flag==0){
                 createHtmlContent('stepline','install ocelot: '+downloadFileName)
+                def downloadFileFullName1
                 if(!readProperty.downloadFromLocal(propertiesSet) && searchInstaller.existsInLocal(propertiesSet,downloadFileFullName)!=0){
-                    downloadFileFullName=searchInstaller.searchLatestOcelot(propertiesSet,iPrefix,mainVersion,buildNumber,true)
+                    downloadFileFullName1=helper.removeBuildFolder(downloadFileFullName)
+                    if(searchInstaller.existsInLocal(propertiesSet,downloadFileFullName1)==0){
+                        downloadFileFullName=downloadFileFullName1
+                        echo 'new downloadFileFullName:'+downloadFileFullName
+                    }else{
+                        downloadFileFullName=searchInstaller.searchLatestOcelot(propertiesSet,iPrefix,mainVersion,buildNumber,true)
+                    }
                 }
                 def props=installer.props
                 if(props){

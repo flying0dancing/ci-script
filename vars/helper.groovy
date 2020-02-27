@@ -106,6 +106,17 @@ def removeV(String installVer){
     }
     return installVer
 }
+
+/**
+ * remove parent folder, specially, only use in findAROcelot
+ * @param downloadFileFullName
+ * @return
+ */
+def removeBuildFolder(String downloadFileFullName){
+    def path=getFilePath(removeLastSlash(getFilePath(downloadFileFullName)))
+    def name=getFileName(downloadFileFullName)
+    return path+name
+}
 /*
 println getFileName('AgileREPORTER-19.4.2-b162.jar')
 println getFileName('E:\\home\\AgileREPORTER\\19.4.2\\AgileREPORTER-19.4.2-b162.jar')
@@ -128,4 +139,5 @@ println getFilePath('AgileREPORTER-19.4.2-b162.jar')
 println getFilePath('E:\\home\\AgileREPORTER\\19.4.2\\AgileREPORTER-19.4.2-b162.jar')
 println getFilePath('/home/test/repository/AgileREPORTER/19.4.2/AgileREPORTER-19.4.2-b162.jar')
 println getFilePath('/home/test/repository/ARProduct/hkma/candidate-release/5.32.0/b70/HKMA_v5.32.0-b70.zip')
+println removeBuildFolder('/home/test/repository/AgileREPORTER/1.16.2.2/b123/AgileREPORTER-1.16.2.2-b123.jar')
 */

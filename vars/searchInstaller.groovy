@@ -1,6 +1,6 @@
 import static com.lombardrisk.pipeline.Credentials.AWS
 
-String searchLatestProduct(projectName,props,productPrefix,productVersion,buildNumber,remoteDownload=false){
+String searchLatestProduct(props,productPrefix,productVersion,buildNumber,remoteDownload=false){
     def downloadFileName
     def repo
     def nameSuffix='.lrm'
@@ -9,6 +9,13 @@ String searchLatestProduct(projectName,props,productPrefix,productVersion,buildN
         repo='/home/'+props['app.user']+'/'+props['product.local.repo']
         downloadFileName=searchLatestFromLocal(repo,props,content)
     }else{
+        repo='arproduct/'
+        def local_repo='/home/'+props['app.user']+'/'+props['product.local.repo']
+        def downloadFileNameTmp=searchLatestFromS3(repo,props,content,local_repo,remoteDownload)
+        if(downloadFileNameTmp){
+            downloadFileName=downloadFileNameTmp.replace('/CandidateReleases/','/candidate-release/')
+        }
+        /*
         repo='arproduct/'+projectName+'/CandidateReleases/'
         def homePath='/home/'+props['app.user']+'/'+props['product.local.repo']
         def local_repo=homePath+projectName+'/candidate-release/'
@@ -19,7 +26,7 @@ String searchLatestProduct(projectName,props,productPrefix,productVersion,buildN
             repo='arproduct/'+productPrefix+'/CandidateReleases/'
             local_repo=homePath+productPrefix+'/candidate-release/'
             downloadFileName=searchLatestFromS3(repo,props,content,local_repo,remoteDownload)
-        }
+        }*/
     }
     return downloadFileName
 }

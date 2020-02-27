@@ -7,7 +7,7 @@ def call(installer,projectName,propertiesSet){
     def downloadFileFullName
     def downloadFileName
     echo '=============================== install '+iPrefix+' =================================='
-    downloadFileFullName=searchInstaller.searchLatestProduct(projectName,propertiesSet,iPrefix.toUpperCase(),mainVersion,buildNumber)
+    downloadFileFullName=searchInstaller.searchLatestProduct(propertiesSet,iPrefix.toUpperCase(),mainVersion,buildNumber)
     downloadFileName=helper.getFileName(downloadFileFullName)
     echo 'buildNumber:'+buildNumber
     echo 'downloadFileFullName:'+downloadFileFullName
@@ -30,7 +30,7 @@ def call(installer,projectName,propertiesSet){
                         downloadFileFullName=downloadFileFullName1
                         echo 'new downloadFileFullName:'+downloadFileFullName
                     }else{
-                        downloadFileFullName=searchInstaller.searchLatestProduct(projectName,propertiesSet,iPrefix.toUpperCase(),mainVersion,buildNumber,true)
+                        downloadFileFullName=searchInstaller.searchLatestProduct(propertiesSet,iPrefix.toUpperCase(),mainVersion,buildNumber,true)
                     }
                 }
                 installARProduct(propertiesSet,downloadFileFullName)

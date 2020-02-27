@@ -80,14 +80,14 @@ String searchLatestFromS3(s3repo,props,searchContent,local_repo,downloadFlag=tru
         //sfiles.each{print "${it.name},${it.path},${it.length},${it.lastModified}"}
         def newestLastModified=sfiles.collect{return it.lastModified}.max()
         sFilePath=sfiles.find{return it.lastModified==newestLastModified}
-        echo "Latest installer path in s3: "+sFilePath
+        //echo "Latest installer path in s3: "+sFilePath
         echo "Latest installer path in s3: $sFilePath.path"
         if(downloadFlag){
             //method 1
             withAWS(credentials: 'aws') {
-                s3Download(bucket:s3_bucket, path:s3repo+sFilePath,file:sFilePath,force:true)
+                s3Download(bucket:s3_bucket, path:s3repo+sFilePath.path,file:sFilePath.path,force:true)
             }
-            executeWrapper2(sFilePath)
+            executeWrapper2(sFilePath.path)
             //method 2
             //String cmd = "s3 cp s3://$s3_bucket/$s3repo$sFilePath $local_repo$sFilePath  --no-progress "
             //execute(cmd)

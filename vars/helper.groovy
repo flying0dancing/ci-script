@@ -14,7 +14,17 @@ def getFileName(downloadFileFullName){
     }
     return downloadFileName
 }
-
+def getFilePath(downloadFileFullName){
+    def downloadFileName
+    if(downloadFileFullName){
+        if(downloadFileFullName.contains('/')){
+            downloadFileName=downloadFileFullName[0..downloadFileFullName.lastIndexOf('/')]
+        }else if(downloadFileFullName.contains('\\')){
+            downloadFileName=downloadFileFullName[0..downloadFileFullName.lastIndexOf('\\')]
+        }
+    }
+    return downloadFileName
+}
 /**
  * get main version by user provided deployment.json->installer's version
  * @param installVer
@@ -114,4 +124,8 @@ println removeV('v19.1.02')
 println removeV('v19.1.02-b23')
 println removeV('v19.1.02-SNAPSHOT')
 println removeV('v19.1.02-SNaPsHOT')
+println getFilePath('AgileREPORTER-19.4.2-b162.jar')
+println getFilePath('E:\\home\\AgileREPORTER\\19.4.2\\AgileREPORTER-19.4.2-b162.jar')
+println getFilePath('/home/test/repository/AgileREPORTER/19.4.2/AgileREPORTER-19.4.2-b162.jar')
+println getFilePath('/home/test/repository/ARProduct/hkma/candidate-release/5.32.0/b70/HKMA_v5.32.0-b70.zip')
 */

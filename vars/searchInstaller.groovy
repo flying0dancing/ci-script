@@ -87,15 +87,15 @@ String searchLatestFromS3(s3repo,props,searchContent,local_repo,downloadFlag=tru
             withAWS(credentials: 'aws') {
                 s3Download(bucket:s3_bucket, path:s3repo+sFilePath.path,file:sFilePath.path,force:true)
             }
-            executeWrapper2(sFilePath.path)
+            executeWrapper2(sFilePath.path,local_repo,props['app.user'])
             //method 2
-            //String cmd = "s3 cp s3://$s3_bucket/$s3repo$sFilePath $local_repo$sFilePath  --no-progress "
+            //String cmd = "s3 cp s3://$s3_bucket/$s3repo${sFilePath.path} $local_repo${sFilePath.path}  --no-progress "
             //execute(cmd)
             //method 3 fail
             //executeWrapper("$s3_bucket/$s3repo$sFilePath",sFilePath)
             echo "download installer completely."
         }
-        return local_repo+sFilePath
+        return local_repo+sFilePath.path
     }else{
         echo "there is no packages existed in bucket server, name like "+searchContent
     }
@@ -161,12 +161,16 @@ int existsInLocal(props,installerFullName){
     }
     return flag
 }
-private def executeWrapper2(filePath){
+private def executeWrapper2(filePath,local_repo,user){
     def envLabel='test-172.20.31.7'
     def selectedEnv=envVars.get(envLabel)
     def app_hostuser=selectedEnv.host
+    def localPath=local_repo.replaceFirst('/home/'+user+'/','')
+    def filePathWithoutName=helper.getFilePath(filePath)
+    echo "executeWrapper2 localPath:$localPath"
+    echo "executeWrapper2 filePathWithoutName:$filePathWithoutName"
     sshagent(credentials: [selectedEnv.credentials]) {
-        sh( returnStatus: true, script: "scp -o StrictHostKeyChecking=no ${env.WORKSPACE}/$filePath $app_hostuser:${selectedEnv.homeDir}/$filePath")
+        sh( returnStatus: true, script: "scp -o StrictHostKeyChecking=no ${env.WORKSPACE}/$filePath $app_hostuser:${selectedEnv.homeDir}/$localPath/$filePathWithoutName")
     }
 }
 

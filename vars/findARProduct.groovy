@@ -23,8 +23,15 @@ def call(installer,projectName,propertiesSet){
             def flag=searchInstaller.checkNeedInstallOrNot(propertiesSet,downloadFileName)
             if(flag==0){
                 createHtmlContent('stepline','install product: '+downloadFileName)
+                def downloadFileFullName1
                 if(!readProperty.downloadFromLocal(propertiesSet) && searchInstaller.existsInLocal(propertiesSet,downloadFileFullName)!=0){
-                    downloadFileFullName=searchInstaller.searchLatestProduct(projectName,propertiesSet,iPrefix.toUpperCase(),mainVersion,buildNumber,true)
+                    downloadFileFullName1=searchInstaller.searchProductFromLocal(propertiesSet,downloadFileName)
+                    if(downloadFileFullName1){
+                        downloadFileFullName=downloadFileFullName1
+                        echo 'new downloadFileFullName:'+downloadFileFullName
+                    }else{
+                        downloadFileFullName=searchInstaller.searchLatestProduct(projectName,propertiesSet,iPrefix.toUpperCase(),mainVersion,buildNumber,true)
+                    }
                 }
                 installARProduct(propertiesSet,downloadFileFullName)
             }else{

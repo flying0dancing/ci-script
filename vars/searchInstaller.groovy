@@ -73,7 +73,7 @@ String searchLatestFromS3(s3repo,props,searchContent,local_repo,downloadFlag=tru
     def sFilePath
     def sfiles
     def s3_bucket=props['s3.bucket']
-    withAWS(credentials: 'aws') {
+    withAWS(credentials: AWS) {
         sfiles=s3FindFiles(bucket:s3_bucket, path:s3repo, glob:"**/${searchContent}")
     }
     if(sfiles){
@@ -83,14 +83,17 @@ String searchLatestFromS3(s3repo,props,searchContent,local_repo,downloadFlag=tru
         //echo "Latest installer path in s3: "+sFilePath
         echo "Latest installer path in s3: $sFilePath.path"
         if(downloadFlag){
-            //method 1
-            withAWS(credentials: 'aws') {
-                s3Download(bucket:s3_bucket, path:s3repo+sFilePath.path,file:sFilePath.path,force:true)
+            if(env.NODE_NAME.equalsIgnoreCase('PRODUCT-CI-TEST')){
+                //method 1
+                withAWS(credentials: AWS) {
+                    s3Download(bucket:s3_bucket, path:s3repo+sFilePath.path,file:sFilePath.path,force:true)
+                }
+                executeWrapper2(sFilePath.path,local_repo.replaceFirst('/home/'+props['app.user']+'/','/'))
+            }else{
+                //method 2
+                String cmd = "s3 cp s3://$s3_bucket/$s3repo${sFilePath.path} $local_repo${sFilePath.path}  --no-progress "
+                execute(cmd)
             }
-            executeWrapper2(sFilePath.path,local_repo,props['app.user'])
-            //method 2
-            //String cmd = "s3 cp s3://$s3_bucket/$s3repo${sFilePath.path} $local_repo${sFilePath.path}  --no-progress "
-            //execute(cmd)
             //method 3 fail
             //executeWrapper("$s3_bucket/$s3repo$sFilePath",sFilePath)
             echo "download installer completely."
@@ -161,17 +164,16 @@ int existsInLocal(props,installerFullName){
     }
     return flag
 }
-private def executeWrapper2(filePath,local_repo,user){
+private def executeWrapper2(filePath,local_repo){
     def envLabel='test-172.20.31.7'
     def selectedEnv=envVars.get(envLabel)
     def app_hostuser=selectedEnv.host
-    def localPath=local_repo.replaceFirst('/home/'+user+'/','')
-    def filePathWithoutName=helper.removeLastSlash(helper.getFilePath(filePath))
-    echo "executeWrapper2 localPath:$localPath"
-    echo "$env.NODE_NAME"
-    echo "executeWrapper2 filePathWithoutName:$filePathWithoutName"
+    def localPath=selectedEnv.homeDir+local_repo
+    def filePathWithoutName=helper.getFilePath(filePath)
+    
     sshagent(credentials: [selectedEnv.credentials]) {
-        sh( returnStatus: true, script: "scp -o StrictHostKeyChecking=no ${env.WORKSPACE}/$filePath $app_hostuser:${selectedEnv.homeDir}/$localPath$filePathWithoutName")
+        sh( returnStatus: true, script: "ssh -o StrictHostKeyChecking=no $app_hostuser  'mkdir -p $localPath$filePathWithoutName' ")
+        sh( returnStatus: true, script: "scp -o StrictHostKeyChecking=no ${env.WORKSPACE}/$filePath $app_hostuser:$localPath$filePath")
     }
 }
 

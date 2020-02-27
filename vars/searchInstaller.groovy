@@ -81,9 +81,17 @@ String searchLatestFromS3(s3repo,props,searchContent,local_repo,downloadFlag=tru
         def newestLastModified=sfiles.collect{return it.lastModified}.max()
         sFilePath=sfiles.find{return it.lastModified==newestLastModified}
         echo "Latest installer path in s3: "+sFilePath
+        echo "Latest installer path in s3: $sFilePath.path"
         if(downloadFlag){
-            String cmd = "s3 cp s3://$s3_bucket/$s3repo$sFilePath $local_repo$sFilePath  --no-progress "
-            execute(cmd)
+            //method 1
+            withAWS(credentials: 'aws') {
+                s3Download(bucket:s3_bucket, path:s3repo+sFilePath,file:sFilePath,force:true)
+            }
+            executeWrapper2(sFilePath)
+            //method 2
+            //String cmd = "s3 cp s3://$s3_bucket/$s3repo$sFilePath $local_repo$sFilePath  --no-progress "
+            //execute(cmd)
+            //method 3 fail
             //executeWrapper("$s3_bucket/$s3repo$sFilePath",sFilePath)
             echo "download installer completely."
         }
@@ -153,6 +161,14 @@ int existsInLocal(props,installerFullName){
     }
     return flag
 }
+private def executeWrapper2(filePath){
+    def envLabel='test-172.20.31.7'
+    def selectedEnv=envVars.get(envLabel)
+    def app_hostuser=selectedEnv.host
+    sshagent(credentials: [selectedEnv.credentials]) {
+        sh( returnStatus: true, script: "scp -o StrictHostKeyChecking=no ${env.WORKSPACE}/$filePath $app_hostuser:${selectedEnv.homeDir}/$filePath")
+    }
+}
 
 private def executeWrapper(s3path,filePath){
     def envLabel='test-172.20.31.7'
@@ -174,7 +190,6 @@ private def executeWrapper(s3path,filePath){
         }
     }
 }
-
 private def execute(String cmd) {
     withCredentials([usernamePassword(
             credentialsId: AWS,

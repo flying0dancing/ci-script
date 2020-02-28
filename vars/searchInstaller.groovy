@@ -3,7 +3,7 @@ import static com.lombardrisk.pipeline.Credentials.AWS
 String searchLatestProduct(props,productPrefix,productVersion,buildNumber,remoteDownload=false){
     def downloadFileName
     def repo
-    def nameSuffix='.lrm'
+    def nameSuffix='.zip'
     def content=searchContent(productPrefix+'_v'+productVersion,buildNumber,nameSuffix)
     if(readProperty.downloadFromLocal(props)){
         repo='/home/'+props['app.user']+'/'+props['product.local.repo']
@@ -52,9 +52,9 @@ String searchProductFromLocal(props,installerName){
 String searchContent(productPrefixAndVersion,buildNumber,productSuffix){
     def searchContent
     if(buildNumber){
-        searchContent=productPrefixAndVersion+'*'+buildNumber+'*'+productSuffix //like cd_dbp_v1.0.0*b9*.lrm
+        searchContent=productPrefixAndVersion+'*'+buildNumber+productSuffix //like cd_dbp_v1.0.0*b9.zip
     }else{
-        searchContent=productPrefixAndVersion+'*'+productSuffix //like CE_DPB_v*.lrm
+        searchContent=productPrefixAndVersion+'*'+productSuffix //like CE_DPB_v*.zip
     }
     return searchContent
 }

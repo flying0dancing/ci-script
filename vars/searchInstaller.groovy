@@ -81,8 +81,8 @@ String searchLatestFromS3(s3repo,props,searchContent,local_repo,downloadFlag=tru
         sFilePath=sfiles.find{return it.lastModified==newestLastModified}
         //echo "Latest installer path in s3: "+sFilePath
         echo "Latest installer path in s3: $sFilePath.path"
+        def localPath=sFilePath.path
         if(downloadFlag){
-            def localPath=sFilePath.path
             if(localPath && localPath.contains('/CandidateReleases/')){
                 localPath=localPath.replace('/CandidateReleases/','/candidate-release/')
             }
@@ -101,7 +101,7 @@ String searchLatestFromS3(s3repo,props,searchContent,local_repo,downloadFlag=tru
             //executeWrapper("$s3_bucket/$s3repo$sFilePath",sFilePath)
             echo "download installer completely."
         }
-        return local_repo+sFilePath.path
+        return local_repo+localPath
     }else{
         echo "there is no packages existed in bucket server, name like "+searchContent
     }

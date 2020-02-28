@@ -18,12 +18,12 @@ private void loadLocalSteps(){
 
 pipeline{
     //agent { label 'PRODUCT-CI-SHA-LOCAL1' }
-    agent { label 'PRODUCT-CI-TEST' }
+    //agent { label 'PRODUCT-CI-TEST' }
+    agent { label 'master' }
     stages{
         stage('checkout') {
             steps {
                 script {
-                    shallowCheckout('sshTest')
                     testSourceCheckout('hkma','test-hkma','feature/ci')
                 }
             }
@@ -31,7 +31,7 @@ pipeline{
         stage("parallel test"){
             steps{
                 script{
-                    deployParallel('hkma')
+                    deploy('test_deploy_a','hkma','test-hkma','feature/ci')
                 }
             }
         }

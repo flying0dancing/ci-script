@@ -1,5 +1,5 @@
 
-def call(qaRepoName,projectFolder,branch='master'){
+def call(projectFolder,qaRepoName,branch='master'){
     checkout([$class: 'GitSCM',
               branches: [[name: "*/${branch}"]],
               doGenerateSubmoduleConfigurations: false,

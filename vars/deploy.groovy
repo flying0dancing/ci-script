@@ -1,4 +1,4 @@
-def call(String projectFolder){
+def call(String jobName, String projectFolder, String repoName, String repoBranch){
     def branches=[:]
     def MAX_CONCURRENT = 2
     //create a fifo
@@ -22,7 +22,8 @@ def call(String projectFolder){
                 //build(job: name, propagate: false)
                 helper.echoName(name)
                 //TODO backup environment and database
-                installersJson(projectFolder,name)
+                jobB = build job:jobName , parameters: [string(name: 'REPO_NAME', value:"$repoName"), string(name: 'REPO_BRANCH', value:"$repoBranch"), string(name: 'PROJECT_FOLDER', value: "$projectFolder"), string(name: 'DEPLOY_FOLDER', value: "$name")]
+                println jobB.getResult()
                 //TODO clean downloadPath
             }finally {
                 //release a resource
@@ -32,5 +33,3 @@ def call(String projectFolder){
     }
     parallel branches
 }
-
-

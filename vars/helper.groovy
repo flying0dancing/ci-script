@@ -1,3 +1,29 @@
+def echoName(String name){
+    echo "execute: ${name}......."
+}
+
+def getSubFolders(projectFolder){
+    def allFolders=[]
+    dir(projectFolder+'/src/main/resources'){
+        allFolders=sh(returnStdout: true, script: '''ls -l|grep "^d"|awk '{ print $NF }' ''').trim().split()
+        echo "all subfolders: ${allFolders}"
+    }
+    allFolders=getValidFolders(allFolders)
+
+    return allFolders
+}
+
+def getValidFolders(folders){
+    def allFolders=[]
+    for(int i=0;i<folders.size();i++){
+        if(findFiles(glob: '**/'+folders[i]+'/deployment.json')){
+            allFolders+=folders[i]
+        }
+    }
+    echo "valid folders: ${allFolders}"
+    return allFolders
+}
+
 /**
  * get file name,if downloadFileFullName is empty, return null.
  * @param downloadFileFullName

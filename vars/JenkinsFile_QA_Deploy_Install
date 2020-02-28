@@ -19,19 +19,38 @@ private void loadLocalSteps(){
 pipeline{
     //agent { label 'PRODUCT-CI-SHA-LOCAL1' }
     agent { label 'PRODUCT-CI-TEST' }
+    options { skipDefaultCheckout true }
+    parameters {
+
+        string name: 'REPO_NAME',
+                description: 'repo name in bitbucket'
+
+        string name: 'REPO_BRANCH',
+                description: 'repo branch in bitbucket',
+                defaultValue: 'feature/ci'
+
+        string name: 'PROJECT_FOLDER',
+                description: 'any name like hkma, mas, ...'
+
+        string name: 'DEPLOY_FOLDER',
+                description: 'Deploy folder contains env.properties and deployment.json'
+
+
+
+    }
     stages{
         stage('checkout') {
             steps {
                 script {
                     shallowCheckout('sshTest')
-                    testSourceCheckout('hkma','test-hkma','feature/ci')
+                    testSourceCheckout(params.PROJECT_FOLDER,params.REPO_NAME,params.REPO_BRANCH)
                 }
             }
         }
-        stage("parallel test"){
+        stage("deploy installers"){
             steps{
                 script{
-                    deployParallel('hkma')
+                    installersJson(params.PROJECT_FOLDER,params.DEPLOY_FOLDER)
                 }
             }
         }

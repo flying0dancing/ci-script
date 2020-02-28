@@ -11,22 +11,7 @@ String searchLatestProduct(props,productPrefix,productVersion,buildNumber,remote
     }else{
         repo='arproduct/'
         def local_repo='/home/'+props['app.user']+'/'+props['product.local.repo']
-        def downloadFileNameTmp=searchLatestFromS3(repo,props,content,local_repo,remoteDownload)
-        if(downloadFileNameTmp){
-            downloadFileName=downloadFileNameTmp.replace('/CandidateReleases/','/candidate-release/')
-        }
-        /*
-        repo='arproduct/'+projectName+'/CandidateReleases/'
-        def homePath='/home/'+props['app.user']+'/'+props['product.local.repo']
-        def local_repo=homePath+projectName+'/candidate-release/'
         downloadFileName=searchLatestFromS3(repo,props,content,local_repo,remoteDownload)
-
-        if(!downloadFileName){
-            productPrefix=productPrefix.toLowerCase()
-            repo='arproduct/'+productPrefix+'/CandidateReleases/'
-            local_repo=homePath+productPrefix+'/candidate-release/'
-            downloadFileName=searchLatestFromS3(repo,props,content,local_repo,remoteDownload)
-        }*/
     }
     return downloadFileName
 }
@@ -97,15 +82,19 @@ String searchLatestFromS3(s3repo,props,searchContent,local_repo,downloadFlag=tru
         //echo "Latest installer path in s3: "+sFilePath
         echo "Latest installer path in s3: $sFilePath.path"
         if(downloadFlag){
+            def localPath=sFilePath.path
+            if(localPath && localPath.contains('/CandidateReleases/')){
+                localPath=localPath.replace('/CandidateReleases/','/candidate-release/')
+            }
             if(env.NODE_NAME.equalsIgnoreCase('PRODUCT-CI-TEST')){
                 //method 1
                 withAWS(credentials: AWS) {
                     s3Download(bucket:s3_bucket, path:s3repo+sFilePath.path,file:sFilePath.path,force:true)
                 }
-                transferUseSSHAgent(sFilePath.path,local_repo.replaceFirst('/home/'+props['app.user']+'/','/'))
+                transferUseSSHAgent(sFilePath.path,local_repo.replaceFirst('/home/'+props['app.user']+'/','/'),localPath)
             }else{
                 //method 2
-                String cmd = "s3 cp s3://$s3_bucket/$s3repo${sFilePath.path} $local_repo${sFilePath.path}  --no-progress "
+                String cmd = "s3 cp s3://$s3_bucket/$s3repo${sFilePath.path} $local_repo$localPath  --no-progress "
                 execute(cmd)
             }
             //method 3 fail
@@ -178,16 +167,16 @@ int existsInLocal(props,installerFullName){
     }
     return flag
 }
-private def transferUseSSHAgent(filePath,local_repo){
+private def transferUseSSHAgent(filePath,local_repo,local_path){
     def envLabel='test-172.20.31.7'
     def selectedEnv=envVars.get(envLabel)
     def app_hostuser=selectedEnv.host
     def localPath=selectedEnv.homeDir+local_repo
-    def filePathWithoutName=helper.getFilePath(filePath)
+    def filePathWithoutName=helper.getFilePath(local_path)
 
     sshagent(credentials: [selectedEnv.credentials]) {
         sh( returnStatus: true, script: "ssh -o StrictHostKeyChecking=no $app_hostuser  'mkdir -p $localPath$filePathWithoutName' ")
-        sh( returnStatus: true, script: "scp -o StrictHostKeyChecking=no ${env.WORKSPACE}/$filePath $app_hostuser:$localPath$filePath")
+        sh( returnStatus: true, script: "scp -o StrictHostKeyChecking=no ${env.WORKSPACE}/$filePath $app_hostuser:$localPath${local_path}")
     }
 }
 

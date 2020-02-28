@@ -22,21 +22,8 @@ def call(projectName,propertiesSet,installerFullName,ocelotPropFileName){
     if(ocleot_user_password){
         createHtmlContent('stepline','new install')
         echo "new install agile reporter platform"
-        def dbLabel=propertiesSet['database.user']+'-'+propertiesSet['database.host']
-        def selectedDB=envVars.get(dbLabel)
-        envVars.check(dbLabel,selectedDB)
-        def dbserver_hostuser=selectedDB.host
-        def local_dbname=ocelotProps['ocelot.jdbc.username']
-        def local_dbinstance=ocelotProps['ocelot.jdbc.url']
-        def jdbcurlarr=local_dbinstance.split(':')
-        local_dbinstance=jdbcurlarr[-1]
-        echo "create oracle database"
-        createHtmlContent('stepline','create oracle database')
-        sshagent(credentials: [selectedDB.credentials]) {
-            sh( returnStatus: true, script: "scp -o StrictHostKeyChecking=no -r ${env.WORKSPACE}/scripts/${selectedDB.configDir} $dbserver_hostuser:${selectedDB.homeDir}")
-            sh(returnStatus: true, script: "ssh -o StrictHostKeyChecking=no $dbserver_hostuser 'chmod u+x ${selectedDB.configDir}*.sh ' ")
-            sh( returnStatus: true, script: "ssh -o StrictHostKeyChecking=no $dbserver_hostuser  'sh ${selectedDB.configDir}opSchema.sh $local_dbinstance $local_dbname'")
-        }
+        String dbLabel=propertiesSet['database.user']+'-'+propertiesSet['database.host']
+        createDatabase(dbLabel,ocelotProps)
         createHtmlContent('stepline','create ocelot install path')
         echo "create ocelot install path"
         sshagent(credentials: [selectedEnv.credentials]) {
@@ -55,9 +42,9 @@ def call(projectName,propertiesSet,installerFullName,ocelotPropFileName){
         if(flag==0){
             createHtmlContent('stepline',stepInfo+' pass.')
 
-            def allstatus=sh( returnStatus: true, script: "ssh -o StrictHostKeyChecking=no $app_hostuser  'sh RemoteInstall.sh -help' ")
+            //def allstatus=sh( returnStatus: true, script: "ssh -o StrictHostKeyChecking=no $app_hostuser  'sh RemoteInstall.sh -help' ")
             echo "sh RemoteInstall.sh $ocelotPath 0 $installerFullName $downloadPath$ocelotPropFileName"
-            //sh( returnStatus: true, script: "ssh -o StrictHostKeyChecking=no $app_hostuser  'sh RemoteInstall.sh $ocelotPath 0 $installerFullName $downloadPath$ocelotPropFileName ' ")
+            def allstatus=sh( returnStatus: true, script: "ssh -o StrictHostKeyChecking=no $app_hostuser  'sh RemoteInstall.sh $ocelotPath 0 $installerFullName $downloadPath$ocelotPropFileName ' ")
             stepInfo='install or upgrade ocelot '
             if(allstatus==0){
                 createHtmlContent('stepline',stepInfo+'pass.')
@@ -72,5 +59,45 @@ def call(projectName,propertiesSet,installerFullName,ocelotPropFileName){
             createHtmlContent('stepEndFlag')
             error "fail to copy properties file from slave"
         }
+    }
+}
+
+//just write here, not test it, because database cannot create use ssh-agent way
+private void createDatabase(dbLabel,ocelotProps){
+
+    def selectedDB=envVars.get(dbLabel)
+    envVars.check(dbLabel,selectedDB)
+    def dbserver_hostuser=selectedDB.host
+    def local_dbname=ocelotProps['ocelot.jdbc.username']
+    def local_dbinstance=ocelotProps['ocelot.jdbc.url']
+    def jdbcurlarr=local_dbinstance.split(':')
+    local_dbinstance=jdbcurlarr[-1]
+    echo "create oracle database"
+    createHtmlContent('stepline','create oracle database')
+    /*
+    sshagent(credentials: [selectedDB.credentials]) {
+        sh( returnStatus: true, script: "scp -o StrictHostKeyChecking=no -r ${env.WORKSPACE}/scripts/${selectedDB.configDir} $dbserver_hostuser:${selectedDB.homeDir}")
+        sh(returnStatus: true, script: "ssh -o StrictHostKeyChecking=no $dbserver_hostuser 'chmod u+x ${selectedDB.configDir}*.sh ' ")
+        sh( returnStatus: true, script: "ssh -o StrictHostKeyChecking=no $dbserver_hostuser  'sh ${selectedDB.configDir}opSchema.sh $local_dbinstance $local_dbname'")
+    }
+    */
+    echo "sh ${selectedDB.configDir}opSchema.sh $local_dbinstance $local_dbname"
+    showConfirmation(local_dbinstance,local_dbname)
+}
+
+//just write here, not test it, because database cannot create use ssh-agent way
+private void showConfirmation(
+        String databaseInstance,
+        String databaseName) {
+
+    timeout(time: 10, unit: 'MINUTES') {
+        input([
+                message: """
+create new database before continue deploy?
+    instance   : ${databaseInstance}
+    database : ${databaseName}
+""",
+                ok     : 'create',
+        ])
     }
 }

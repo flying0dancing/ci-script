@@ -13,9 +13,9 @@ def call(propertiesSet,installerFullName){
     def ocelotPath=propertiesSet['app.install.path']
 
     sshagent(credentials: [selectedEnv.credentials]) {
-        def allstatus=sh( returnStatus: true, script: "ssh -o StrictHostKeyChecking=no $app_hostuser  'sh RemoteInstall.sh -help' ")
+        //def allstatus=sh( returnStatus: true, script: "ssh -o StrictHostKeyChecking=no $app_hostuser  'sh RemoteInstall.sh -help' ")
         echo 'sh RemoteInstall.sh '+ocelotPath+' 1 '+installerFullName
-        //sh( returnStatus: true, script: "ssh -o StrictHostKeyChecking=no $app_hostuser  'sh RemoteInstall.sh $ocelotPath 1 $installerFullName ' ")
+        def allstatus=sh( returnStatus: true, script: "ssh -o StrictHostKeyChecking=no $app_hostuser  'sh RemoteInstall.sh $ocelotPath 1 $installerFullName ' ")
         def stepInfo='install or upgrade product '
         if(allstatus==0){
             createHtmlContent('stepline',stepInfo+'pass.')

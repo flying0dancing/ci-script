@@ -23,9 +23,8 @@ def call(installer,projectName,propertiesSet){
             def flag=searchInstaller.checkNeedInstallOrNot(propertiesSet,downloadFileName)
             if(flag==0){
                 createHtmlContent('stepline','install product: '+downloadFileName)
-                def downloadFileFullName1
                 if(!readProperty.downloadFromLocal(propertiesSet) && searchInstaller.existsInLocal(propertiesSet,downloadFileFullName)!=0){
-                    downloadFileFullName1=searchInstaller.searchProductFromLocal(propertiesSet,downloadFileName)
+                    def downloadFileFullName1=searchInstaller.searchProductFromLocal(propertiesSet,downloadFileName)
                     if(downloadFileFullName1){
                         downloadFileFullName=downloadFileFullName1
                         echo 'new downloadFileFullName:'+downloadFileFullName
@@ -35,8 +34,8 @@ def call(installer,projectName,propertiesSet){
                 }
                 installARProduct(propertiesSet,downloadFileFullName)
             }else{
-                echo "no need to install product ["+iPrefix+", "+iVersion+" ]"
-                createHtmlContent('stepline','install product: no need, skip')
+                echo "no need to install ["+iPrefix+", "+iVersion+" ], installed or provided version lower"
+                createHtmlContent('stepline','install product: installed or provided version lower, skip')
             }
         }else{
             echo "cannot find install product ["+iPrefix+", "+iVersion+" ]"

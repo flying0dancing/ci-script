@@ -21,9 +21,8 @@ def call(installer,projectName,propertiesSet){
             def flag=searchInstaller.checkNeedInstallOrNot(propertiesSet,downloadFileName)
             if(flag==0){
                 createHtmlContent('stepline','install ocelot: '+downloadFileName)
-                def downloadFileFullName1
                 if(!readProperty.downloadFromLocal(propertiesSet) && searchInstaller.existsInLocal(propertiesSet,downloadFileFullName)!=0){
-                    downloadFileFullName1=searchInstaller.searchOcelotFromLocal(propertiesSet,downloadFileName)
+                    def downloadFileFullName1=searchInstaller.searchOcelotFromLocal(propertiesSet,downloadFileName)
                     if(downloadFileFullName1){
                         downloadFileFullName=downloadFileFullName1
                         echo 'new downloadFileFullName:'+downloadFileFullName
@@ -37,8 +36,8 @@ def call(installer,projectName,propertiesSet){
                     opAROcelot(projectName,propertiesSet,downloadFileFullName,props[0].filename)
                 }
             }else{
-                echo "no need to install ["+iPrefix+", "+iVersion+" ]"
-                createHtmlContent('stepline','install ocelot: no need, skip')
+                echo "no need to install ["+iPrefix+", "+iVersion+" ], installed or provided version lower"
+                createHtmlContent('stepline','install ocelot: installed or provided version lower, skip')
             }
         }else{
             echo "cannot find install ocelot["+iPrefix+", "+iVersion+" ]"

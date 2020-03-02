@@ -34,8 +34,8 @@ def call(installer,projectName,propertiesSet){
                 }
                 installARProduct(propertiesSet,downloadFileFullName)
             }else{
-                echo "no need to install ["+iPrefix+", "+iVersion+" ], installed or provided version lower"
-                createHtmlContent('stepline','install product: installed or provided version lower, skip')
+                echo "no need to install ["+iPrefix+", "+iVersion+"], provided version lower"
+                createHtmlContent('stepline','install product: provided version lower, skip')
             }
         }else{
             echo "cannot find install product ["+iPrefix+", "+iVersion+" ]"

@@ -82,10 +82,10 @@ String searchLatestFromS3(s3repo,props,searchContent,local_repo,downloadFlag=tru
         //echo "Latest installer path in s3: "+sFilePath
         echo "Latest installer path in s3: $sFilePath.path"
         def localPath=sFilePath.path
+        if(localPath && localPath.contains('/CandidateReleases/')){
+            localPath=localPath.replace('/CandidateReleases/','/candidate-release/')
+        }
         if(downloadFlag){
-            if(localPath && localPath.contains('/CandidateReleases/')){
-                localPath=localPath.replace('/CandidateReleases/','/candidate-release/')
-            }
             if(env.NODE_NAME.equalsIgnoreCase('PRODUCT-CI-TEST')){
                 //method 1
                 withAWS(credentials: AWS) {
@@ -119,7 +119,6 @@ String searchLatestFromLocal(localRepo,props,searchContent){
     def envLabel=props['app.user']+'-'+props['app.host']
     def selectedEnv=envVars.get(envLabel)
     def app_hostuser=selectedEnv.host
-    //def app_hostuser=props['app.user']+'@'+props['app.host']
     def path
     sshagent(credentials: [selectedEnv.credentials]) {
         path=sh( returnStdout: true, script: "ssh -o StrictHostKeyChecking=no $app_hostuser  'find $localRepo -iname $searchContent -print0|xargs -0 stat -c'%Y:%n'|sort -nr|cut -d ':' -f 2|head -n 1' ")
@@ -140,7 +139,6 @@ String searchLatestFromLocal(localRepo,props,searchContent){
  */
 int checkNeedInstallOrNot(props,installerName){
     def ocelotPath=props['app.install.path']
-    //def app_hostuser=props['app.user']+'@'+props['app.host']
     def envLabel=props['app.user']+'-'+props['app.host']
     def selectedEnv=envVars.get(envLabel)
     def app_hostuser=selectedEnv.host
@@ -160,7 +158,6 @@ int existsInLocal(props,installerFullName){
     def envLabel=props['app.user']+'-'+props['app.host']
     def selectedEnv=envVars.get(envLabel)
     def app_hostuser=selectedEnv.host
-    //def app_hostuser=props['app.user']+'@'+props['app.host']
     def flag
     sshagent(credentials: [selectedEnv.credentials]) {
         flag=sh( returnStatus: true, script: "ssh -o StrictHostKeyChecking=no $app_hostuser  '[ -f \"$installerFullName\" ]' ")

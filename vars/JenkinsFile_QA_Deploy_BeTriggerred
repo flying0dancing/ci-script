@@ -15,7 +15,7 @@ private void loadLocalSteps(){
                     remote: 'ssh://git@bitbucket.lombardrisk.com:7999/cprod/ci-script.git',
                     traits: [[$class: 'BranchDiscoveryTrait']]])
 }
-
+def propsSet
 pipeline{
     //agent { label 'PRODUCT-CI-SHA-LOCAL1' }
     agent { label 'PRODUCT-CI-TEST' }
@@ -50,9 +50,15 @@ pipeline{
         stage("deploy installers"){
             steps{
                 script{
+                    propsSet=getProps(params.PROJECT_FOLDER,params.DEPLOY_FOLDER)
                     installersJson(params.PROJECT_FOLDER,params.DEPLOY_FOLDER)
                 }
             }
+        }
+    }
+    post {
+        always {
+            email(propsSet)
         }
     }
 }

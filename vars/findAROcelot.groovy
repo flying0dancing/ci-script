@@ -36,8 +36,8 @@ def call(installer,projectName,propertiesSet){
                     opAROcelot(projectName,propertiesSet,downloadFileFullName,props[0].filename)
                 }
             }else{
-                echo "no need to install ["+iPrefix+", "+iVersion+" ], installed or provided version lower"
-                createHtmlContent('stepline','install ocelot: installed or provided version lower, skip')
+                echo "no need to install ["+iPrefix+", "+iVersion+"], provided version lower"
+                createHtmlContent('stepline','install ocelot: provided version lower, skip')
             }
         }else{
             echo "cannot find install ocelot["+iPrefix+", "+iVersion+" ]"

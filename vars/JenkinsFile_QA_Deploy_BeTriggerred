@@ -50,7 +50,7 @@ pipeline{
         stage("deploy installers"){
             steps{
                 script{
-                    propsSet=getProps(params.PROJECT_FOLDER,params.DEPLOY_FOLDER)
+                    propsSet=readProperty.get(params.PROJECT_FOLDER,params.DEPLOY_FOLDER)
                     installersJson(params.PROJECT_FOLDER,params.DEPLOY_FOLDER)
                 }
             }

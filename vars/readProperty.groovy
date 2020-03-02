@@ -8,7 +8,7 @@ Boolean downloadFromLocal(props){
     return flag
 }
 
-def getProps(projectFolder,deployFolder){
+def get(projectFolder,deployFolder){
     def propertiesFileName='env.properties'
     def propertiesFiles=findFiles(glob: '**/'+projectFolder+'/**/'+deployFolder+'/'+propertiesFileName)
     def propertiesSet=readProperties file: propertiesFiles[0].path

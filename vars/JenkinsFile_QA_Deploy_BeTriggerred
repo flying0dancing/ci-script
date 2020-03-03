@@ -58,7 +58,8 @@ pipeline{
     }
     post {
         always {
-            email(propsSet)
+            echo "this is always run"
+            officeConnector(propsSet)
         }
     }
 }

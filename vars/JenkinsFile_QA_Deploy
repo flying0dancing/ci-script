@@ -15,7 +15,7 @@ private void loadLocalSteps(){
                     remote: 'ssh://git@bitbucket.lombardrisk.com:7999/cprod/ci-script.git',
                     traits: [[$class: 'BranchDiscoveryTrait']]])
 }
-
+def propsSet
 pipeline{
     //agent { label 'PRODUCT-CI-SHA-LOCAL1' }
     agent { label 'PRODUCT-CI-TEST' }
@@ -23,7 +23,7 @@ pipeline{
         stage('checkout') {
             steps {
                 script {
-                    shallowCheckout('sshTest')
+                    shallowCheckout('ci-script','sshTest')
                     testSourceCheckout('hkma','test-hkma','feature/ci')
                 }
             }
@@ -31,9 +31,16 @@ pipeline{
         stage("parallel test"){
             steps{
                 script{
+                    propsSet=readProperty.get(params.PROJECT_FOLDER,params.DEPLOY_FOLDER)
                     deployParallel('hkma')
                 }
             }
+        }
+    }
+    post {
+        always {
+            echo "this is always run"
+            officeConnector(propsSet)
         }
     }
 }

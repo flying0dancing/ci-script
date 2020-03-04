@@ -3,18 +3,10 @@
 
 stage('setup'){
     node{
-        loadLocalSteps()
+        loadLocalSteps('ci-script','sshTest')
     }
 }
-private void loadLocalSteps(){
-    library identifier: 'ci-script@sshTest',
-            retriever: modernSCM([
-                    $class: 'GitSCMSource',
-                    credentialsId: '46afdff1-cdd3-4098-b8af-d904b4d298aa',
-                    id: 'a58b1061-f557-46f6-ba36-b53cfdb77d43',
-                    remote: 'ssh://git@bitbucket.lombardrisk.com:7999/cprod/ci-script.git',
-                    traits: [[$class: 'BranchDiscoveryTrait']]])
-}
+
 def propsSet
 pipeline{
     //agent { label 'PRODUCT-CI-SHA-LOCAL1' }
@@ -42,7 +34,7 @@ pipeline{
         stage('checkout') {
             steps {
                 script {
-                    shallowCheckout('sshTest')
+                    shallowCheckout('ci-script','sshTest')
                     testSourceCheckout(params.PROJECT_FOLDER,params.REPO_NAME,params.REPO_BRANCH)
                 }
             }

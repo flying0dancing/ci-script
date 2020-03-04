@@ -23,6 +23,8 @@ def call(String projectFolder){
                 helper.echoName(name)
                 //TODO backup environment and database
                 installersJson(projectFolder,name)
+                def propsSet=readProperty.get(projectFolder,name)
+                officeConnector(propsSet)
                 //TODO clean downloadPath
             }finally {
                 //release a resource

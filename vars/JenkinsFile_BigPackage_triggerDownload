@@ -23,6 +23,7 @@ pipeline {
 	agent { label 'PRODUCT-CI-TEST' }
 	options {
 		timeout(time: 200, unit: 'MINUTES')
+		skipDefaultCheckout true
 	}
 
 	stages {

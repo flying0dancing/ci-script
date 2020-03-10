@@ -1,7 +1,7 @@
 /**
  * install agile reporter product package, if result in RemoteInstall_1.tmp contains fail, it will terminate.
  * @param projectName: like hkma, mas...
- * @param propertiesSet: get value from deploy folder's env.properties
+ * @param propertiesSet: get value from deploy folder's deployment.properties
  * @param installerFullName: full name in local server
  * @return
  */

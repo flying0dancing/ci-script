@@ -1,7 +1,7 @@
 Boolean downloadFromLocal(props){
     Boolean flag=false
     def defaultUseRepo=props['default.use.repo']
-    //echo "env.properties==>default.use.repo=${defaultUseRepo}"
+    //echo "deployment.properties==>default.use.repo=${defaultUseRepo}"
     if(defaultUseRepo && defaultUseRepo.equalsIgnoreCase('local')){
         flag=true
     }
@@ -9,7 +9,7 @@ Boolean downloadFromLocal(props){
 }
 
 def get(projectFolder,deployFolder){
-    def propertiesFileName='env.properties'
+    def propertiesFileName='deployment.properties'
     def propertiesFiles=findFiles(glob: '**/'+projectFolder+'/**/'+deployFolder+'/'+propertiesFileName)
     def propertiesSet=readProperties file: propertiesFiles[0].path
     propertiesSet=helper.resetProps(propertiesSet)

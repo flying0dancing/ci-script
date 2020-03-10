@@ -1,7 +1,7 @@
 def call(projectFolder,deployFolder){
 
     def jsonFileName='deployment.json'
-    def propertiesFileName='env.properties'
+    def propertiesFileName='deployment.properties'
     def files=findFiles(glob: '**/'+projectFolder+'/**/'+deployFolder+'/'+jsonFileName)
     def propertiesFiles=findFiles(glob: '**/'+projectFolder+'/**/'+deployFolder+'/'+propertiesFileName)
     def propertiesSet=readProperties file: propertiesFiles[0].path

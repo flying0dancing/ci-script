@@ -1,7 +1,7 @@
 /**
  * new install or upgrade agile reporter, use ocelot.user.password set to null to new install, others upgrade
  * @param projectName: like hkma, mas...
- * @param propertiesSet: get value from deploy folder's env.properties
+ * @param propertiesSet: get value from deploy folder's deployment.properties
  * @param installerFullName: full name in local server
  * @param ocelotPropFileName: ocelot properties's name like 'hkma_upgrade_ocelot.properties' 'hkma_new_ocelot.properties'
  * @return

@@ -60,7 +60,7 @@ def getInstallerMainVersion(installVer){
     if(installVer==null || installVer.trim().equals('') || installVer.equalsIgnoreCase('LATEST')){
         installVer=''
     }else{
-        installVer=installVer.replaceAll('-(b\\d+|[a-zA-Z]+)','')
+        installVer=installVer.replaceAll('-([bB]\\d+|[a-zA-Z]+)','')
     }
     return installVer
 }

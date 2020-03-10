@@ -1,7 +1,7 @@
 /**
  *
  * @param projectName: like hkma, mas...
- * @param propertiesSet: get value from deploy folder's env.properties
+ * @param propertiesSet: get value from deploy folder's deployment.properties
  * @param productPrefix：if in hkma project, it should be ce_hkma or ce_dpb or hkma or dpb
  * @param productVersion：like CE_DPB_v1.0.0-b9_sign.lrm's 1.0.0-b9
  * @param productProp: get value like config:HKMAoracleSystemaliasinfo.properties and aliases:"STB Work:STB System:STB System HKMA"

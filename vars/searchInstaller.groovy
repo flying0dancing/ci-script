@@ -62,7 +62,7 @@ String searchContent(productPrefixAndVersion,buildNumber,productSuffix){
 /**
  * search installer name from s3
  * @param s3repo: like arproduct/hkma/CandidateReleases/ or AgileREPORTER/Releases/CandidateReleases/
- * @param props: get value from deploy folder's env.properties
+ * @param props: get value from deploy folder's deployment.properties
  * @param searchContent: like cd_dbp_v1.0.0*b9*.lrm, CE_DPB_v*.lrm
  * @param local_repo: local server's path
  * @param downloadFlag: default is true, download; false is no need download
@@ -110,8 +110,8 @@ String searchLatestFromS3(s3repo,props,searchContent,local_repo,downloadFlag=tru
 
 /**
  * get latest file full name in local server, like repository/ARProduct/hkma/candidate-release/5.32.0/b96/CE_DPB_v5.32.0-b96_sign.lrm
- * @param localRepo: get value of ar.local.repo or product.local.repo in env.properties, like repository/ARProduct
- * @param props: get value from deploy folder's env.properties
+ * @param localRepo: get value of ar.local.repo or product.local.repo in deployment.properties, like repository/ARProduct
+ * @param props: get value from deploy folder's deployment.properties
  * @param searchContent: like cd_dbp_v1.0.0*b9*.lrm, CE_DPB_v*.lrm
  * @return
  */

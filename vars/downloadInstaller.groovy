@@ -2,7 +2,7 @@ import static com.lombardrisk.pipeline.Credentials.AWS
 
 /**
  * download agile reporter from S3 to local
- * @param props: get value from deploy folder's env.properties
+ * @param props: get value from deploy folder's deployment.properties
  * @param downloadFileName
  * @return full name of download installer in local server
  */
@@ -15,7 +15,7 @@ String downloadOcelot(props,downloadFileName){
 /**
  * download agile reporter product from S3 to local
  * @param projectName
- * @param props: get value from deploy folder's env.properties
+ * @param props: get value from deploy folder's deployment.properties
  * @param downloadFileName
  * @return full name of download installer in local server
  */
@@ -28,7 +28,7 @@ String downloadARProduct(projectName,props,downloadFileName){
 /**
  * download installer from s3
  * @param s3repo: s3 path
- * @param props: get value from deploy folder's env.properties
+ * @param props: get value from deploy folder's deployment.properties
  * @param downloadFileName: like CE_DPB_v1.0.0-b9_sign.lrm under <projectName>/candidate-release/<productVersionFolder>/
  * @param local_repo: local server's path
  * @return full name of download installer in local server

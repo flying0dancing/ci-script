@@ -204,13 +204,12 @@ def getFileNames(projectFolder){
             def files = findFiles(glob: productPath+'/*'+version_APRroduct_Pacakge+'*')
 
             files.each{returnAllFiles=returnAllFiles+it.name+':'}
-
-            println returnAllFiles
         }
     }else{
         error "there is no packages, generated with failures."
     }
     returnAllFiles=returnAllFiles[0..returnAllFiles.length()-2]
+    println returnAllFiles
     return returnAllFiles
 }
 

@@ -55,7 +55,7 @@ void put2LocalRepo(projectFolder,packageBuildNumber){
 void put2LocalRepoInmost(projectFolder,packageBuildNumber,local_linux,arproduct_repo_linux,local_credentials){
     def arProduct_Manifest='/src/manifest.xml'
     def productVersionFolder=productPackage.getProductVersionFolder(projectFolder)
-
+    def installerNames=''
     def manifestFiles = findFiles(glob: '**/'+projectFolder+'/*/target/**'+arProduct_Manifest)
     productVersionFolder=productVersionFolder+'/'+packageBuildNumber
     def installerParent=arproduct_repo_linux+productVersionFolder
@@ -69,6 +69,7 @@ void put2LocalRepoInmost(projectFolder,packageBuildNumber,local_linux,arproduct_
                     def files = findFiles(glob: productPath+'/*'+version_ARProduct_Package+'*')
                     sh( returnStatus: true, script: "ssh -o StrictHostKeyChecking=no $local_linux  'mkdir -p ${installerParent}' ")
                     for(int index=0;index<files.size();index++){
+                        installerNames=installerNames+files[index].name+':'
                         echo "transfer ${files[index].name} to folder $productVersionFolder"
                         def installerFullName=installerParent+'/'+files[index].name
                         def fileExisted=sh(returnStatus: true, script: "ssh -o StrictHostKeyChecking=no $local_linux '[ -e \"$installerFullName\" ]' ")
@@ -79,6 +80,8 @@ void put2LocalRepoInmost(projectFolder,packageBuildNumber,local_linux,arproduct_
                         }
                     }
                 }
+                installerNames=installerNames[0..installerNames.length()-2]
+                println installerNames
             }else{
                 error "there is no packages, generated with failures."
             }

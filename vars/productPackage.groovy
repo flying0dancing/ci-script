@@ -138,32 +138,57 @@ void updateBuild(projectFolder, buildnumber){
 		$packageSection
     """
 }
-
-def createPackagesSection(projectFolder, productVersion, buildNumber) {
+def createPackagesSectionOld(projectFolder, productVersion, buildNumber) {
     def propertiesSet=getProps(projectFolder)
     def bucketName=propertiesSet['s3.bucket']
     def s3repo='arproduct/'+projectFolder+'/CandidateReleases/'+productVersion
-    def downloadlink
+    def downloadLink
     def packageLinksRows=''
-    def displaylink=''
+    def displayLink=''
     def downfiles
     withAWS(credentials: 'aws') {
         downfiles=s3FindFiles(bucket:bucketName, path:s3repo, glob:"**/*$buildNumber*")
     }
     downfiles.each{print "${it.name},${it.path},${it.length},${it.lastModified}"}
     for(int index=0;index<downfiles.size();index++){
-        downloadlink=createLink(bucketName,s3repo,downfiles[index].path,downfiles[index].name)
+        downloadLink=createLink(bucketName,s3repo,downfiles[index].path,downfiles[index].name)
         if(downfiles[index].name.toLowerCase().startsWith(projectFolder.toLowerCase())){
-            displaylink=displaylink+"""<h4 style='margin: 3px 0'>$downloadlink</h4>&#x000A;&#x000D;"""
+            displayLink=displayLink+"""<h4 style='margin: 3px 0'>$downloadLink</h4>&#x000A;&#x000D;"""
         }
         packageLinksRows=packageLinksRows+
                 """<tr>
                 <td>${downfiles[index].name}</td>
-                <td>$downloadlink</td>
+                <td>$downloadLink</td>
             </tr>"""
     }
 
-    return displaylink+convertToTable(
+    return displayLink+convertToTable(
+            description: 'Packages',
+            firstColumn: 'Package Name', secondColumn: 'Download Link',
+            rows: packageLinksRows
+    )
+}
+def createPackagesSection(projectFolder, productVersion, buildNumber) {
+    def propertiesSet=getProps(projectFolder)
+    def bucketName=propertiesSet['s3.bucket']
+    def s3repo='arproduct/'+projectFolder+'/CandidateReleases/'+productVersion
+    def downloadLink
+    def packageLinksRows=''
+    def displayLink=''
+    def installerNames=getFileNames(projectFolder)
+    String[] installerNameArr=installerNames.split(':')
+    for(String installerName in installerNameArr){
+        downloadLink=createLink(bucketName,s3repo,"/$buildNumber/",installerName)
+        if(installerName.toLowerCase().startsWith(projectFolder.toLowerCase())){
+            displayLink=displayLink+"""<h4 style='margin: 3px 0'>$downloadLink</h4>&#x000A;&#x000D;"""
+        }
+        packageLinksRows=packageLinksRows+
+                """<tr>
+                <td>$installerName</td>
+                <td>$downloadLink</td>
+            </tr>"""
+    }
+    return displayLink+convertToTable(
             description: 'Packages',
             firstColumn: 'Package Name', secondColumn: 'Download Link',
             rows: packageLinksRows

@@ -55,7 +55,7 @@ pipeline {
 			steps{
 				script{
 					echo "upload all packages"
-					//productPackage.uploadARProduct(ARProject_Prefix,'b'+env.BUILD_NUMBER)
+					//uploadProduct.upload(ARProject_Prefix,'b'+env.BUILD_NUMBER)
 					uploadProduct.put2LocalRepoBySHLocal1(ARProject_Prefix,'b'+env.BUILD_NUMBER)
 				}
 			}

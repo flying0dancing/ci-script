@@ -9,21 +9,23 @@ void upload(projectFolder,packageBuildNumber){
     def arproduct_repo_linux=props['arproduct.repo.linux']+projectFolder+'/candidate-release/'
     def manifestFiles = findFiles(glob: '**/'+projectFolder+'/*/target/**'+arProduct_Manifest)
     productVersionFolder=productVersionFolder+'/'+packageBuildNumber
+    def installerParent=arproduct_repo_linux+productVersionFolder
     if(manifestFiles){
         for(int festIndex=0;festIndex<manifestFiles.size();festIndex++){
             def productPath=manifestFiles[festIndex].path.replaceAll(arProduct_Manifest,'')
-            echo "product package path: "+productPath.replaceAll('/src','')
+            //echo "product package path: "+productPath.replaceAll('/src','')
             def version_ARProduct_Package=productPackage.getVersionOfARProductFromManifest(manifestFiles[festIndex].path)
             def files = findFiles(glob: productPath+'/*'+version_ARProduct_Package+'*')
             if(local_linux){
-                sh( returnStatus: true, script: '''ssh '''+local_linux+'''  'mkdir -p '''+arproduct_repo_linux+productVersionFolder+'''' ''')
+                sh( returnStatus: true, script: "ssh $local_linux  'mkdir -p $installerParent' ")
                 for(int index=0;index<files.size();index++){
-                    echo "transfer ${files[index].name} to folder $productVersionFolder"
-                    def fileExisted=sh(returnStdout: true, script: '''ssh '''+local_linux+''' '[ -e '''+arproduct_repo_linux+productVersionFolder+'/'+files[index].name+''' ]; echo $?' ''').trim()
-                    if(fileExisted=='0'){
+                    def installerFullName=installerParent+'/'+files[index].name
+                    def fileExisted=sh(returnStatus: true, script: "ssh $local_linux '[ -e \"$installerFullName\" ]' " )
+                    if(fileExisted==0){
                         echo "Agile Reporter Product Package already exists.No need to download again."
                     }else{
-                        sh( returnStatus: true, script: 'scp '+files[index].path+' '+local_linux+':'+arproduct_repo_linux+productVersionFolder+'/'+files[index].name)
+                        echo "transfer ${files[index].name}"
+                        sh( returnStatus: true, script: 'scp '+files[index].path+' '+local_linux+':'+installerFullName)
                     }
                 }
             }
@@ -65,17 +67,17 @@ void put2LocalRepoInmost(projectFolder,packageBuildNumber,local_linux,arproduct_
                 sh( returnStatus: true, script: "ssh -o StrictHostKeyChecking=no $local_linux  'mkdir -p ${installerParent}' ")
                 for(int festIndex=0;festIndex<manifestFiles.size();festIndex++){
                     def productPath=manifestFiles[festIndex].path.replaceAll(arProduct_Manifest,'')
-                    echo "product package path: "+productPath.replaceAll('/src','')
+                    //echo "product package path: "+productPath.replaceAll('/src','')
                     def version_ARProduct_Package=productPackage.getVersionOfARProductFromManifest(manifestFiles[festIndex].path)
                     def files = findFiles(glob: productPath+'/*'+version_ARProduct_Package+'*')
                     for(int index=0;index<files.size();index++){
                         installerNames=installerNames+files[index].name+':'
-                        echo "transfer ${files[index].name} to folder $productVersionFolder"
                         def installerFullName=installerParent+'/'+files[index].name
                         def fileExisted=sh(returnStatus: true, script: "ssh -o StrictHostKeyChecking=no $local_linux '[ -e \"$installerFullName\" ]' ")
                         if(fileExisted==0){
                             echo "Agile Reporter Product Package already exists.No need to download again."
                         }else{
+                            echo "transfer ${files[index].name}"
                             sh( returnStatus: true, script: 'scp -o StrictHostKeyChecking=no '+files[index].path+' '+local_linux+':'+installerFullName)
                         }
                     }

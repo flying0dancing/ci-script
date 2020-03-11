@@ -52,6 +52,7 @@ pipeline {
 			}
 		}
 		stage('upload package'){
+			options { retry(3) }
 			steps{
 				script{
 					echo "upload all packages"

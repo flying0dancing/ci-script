@@ -178,7 +178,7 @@ def createPackagesSection(projectFolder, productVersion, buildNumber) {
     def installerNames=getFileNames(projectFolder)
     String[] installerNameArr=installerNames.split(':')
     for(String installerName in installerNameArr){
-        downloadLink=createLink(bucketName,s3repo,"/$buildNumber/",installerName)
+        downloadLink=createLink(bucketName,s3repo,"$buildNumber/$installerName",installerName)
         if(installerName.toLowerCase().startsWith(projectFolder.toLowerCase())){
             displayLink=displayLink+"""<h4 style='margin: 3px 0'>$downloadLink</h4>&#x000A;&#x000D;"""
         }

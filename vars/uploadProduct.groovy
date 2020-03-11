@@ -62,12 +62,12 @@ void put2LocalRepoInmost(projectFolder,packageBuildNumber,local_linux,arproduct_
     if(local_linux){
         sshagent(credentials: [local_credentials]){
             if(manifestFiles){
+                sh( returnStatus: true, script: "ssh -o StrictHostKeyChecking=no $local_linux  'mkdir -p ${installerParent}' ")
                 for(int festIndex=0;festIndex<manifestFiles.size();festIndex++){
                     def productPath=manifestFiles[festIndex].path.replaceAll(arProduct_Manifest,'')
                     echo "product package path: "+productPath.replaceAll('/src','')
                     def version_ARProduct_Package=productPackage.getVersionOfARProductFromManifest(manifestFiles[festIndex].path)
                     def files = findFiles(glob: productPath+'/*'+version_ARProduct_Package+'*')
-                    sh( returnStatus: true, script: "ssh -o StrictHostKeyChecking=no $local_linux  'mkdir -p ${installerParent}' ")
                     for(int index=0;index<files.size();index++){
                         installerNames=installerNames+files[index].name+':'
                         echo "transfer ${files[index].name} to folder $productVersionFolder"

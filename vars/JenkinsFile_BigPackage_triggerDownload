@@ -74,6 +74,7 @@ pipeline {
 		}
 		failure {
 			echo 'This will run only if failed'
+			uploadProduct.put2LocalRepoBySHLocal1(ARProject_Prefix,'b'+env.BUILD_NUMBER)
 		}
 		unstable {
 			echo 'This will run only if the run was marked as unstable'

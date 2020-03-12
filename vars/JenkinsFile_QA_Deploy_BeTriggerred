@@ -42,7 +42,7 @@ pipeline{
         stage('checkout') {
             steps {
                 script {
-                    shallowCheckout()
+                    shallowCheckout('ci-script','sshTest')
                     testSourceCheckout(params.PROJECT_FOLDER,params.REPO_NAME,params.REPO_BRANCH)
                 }
             }

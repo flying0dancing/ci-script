@@ -32,7 +32,7 @@ pipeline{
         stage("parallel test"){
             steps{
                 script{
-                    deploy('test_deploy_a','hkma','test-hkma','feature/ci')
+                    deploy.triggerOtherJob('test_deploy_a','hkma','test-hkma','feature/ci')
                 }
             }
         }

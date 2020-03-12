@@ -23,8 +23,8 @@ pipeline {
 	agent { label 'PRODUCT-CI-TEST' }
 	options {
 		timeout(time: 60, unit: 'MINUTES')
-        skipDefaultCheckout true
-    }
+		skipDefaultCheckout true
+	}
 
 	stages {
 		stage('checkout'){
@@ -52,11 +52,11 @@ pipeline {
 			}
 		}
 		stage('upload package'){
-			options { retry(3) }
 			steps{
 				script{
 					echo "upload all packages"
-					uploadProduct.upload(ARProject_Prefix,'b'+env.BUILD_NUMBER)
+					//uploadProduct.upload(ARProject_Prefix,'b'+env.BUILD_NUMBER)
+					uploadProduct.put2LocalRepoBySHLocal1(ARProject_Prefix,'b'+env.BUILD_NUMBER)
 				}
 			}
 		}
@@ -70,14 +70,11 @@ pipeline {
 			script{
 				echo 'This will run only if successful'
 				productPackage.updateBuild(ARProject_Prefix,'b'+env.BUILD_NUMBER)
-				productPackage.triggerOtherJobWithJobName(ARProject_Prefix,'b'+env.BUILD_NUMBER,'download_from_s3')
+				//productPackage.triggerOtherJobWithJobName(ARProject_Prefix,'b'+env.BUILD_NUMBER,'download_from_s3')
 			}
 		}
 		failure {
-			script{
-				echo 'This will run only if failed'
-				uploadProduct.put2LocalRepoBySHLocal1(ARProject_Prefix,'b'+env.BUILD_NUMBER)
-			}
+			echo 'This will run only if failed'
 		}
 		unstable {
 			echo 'This will run only if the run was marked as unstable'

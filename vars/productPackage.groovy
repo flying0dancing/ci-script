@@ -92,43 +92,6 @@ String getVersionOfARProductFromManifest(manifestFullPath){
     return version_ARProduct_Package
 }
 
-void uploadARProduct(projectFolder,packageBuildNumber){
-    def arProduct_Manifest='/src/manifest.xml'
-    def productVersionFolder=getProductVersionFolder(projectFolder)
-    def props=getProps(projectFolder)
-    def s3_bucket=props['s3.bucket']
-    def local_linux=props['local.linux']
-    def arproduct_repo_linux=props['arproduct.repo.linux']+projectFolder+'/candidate-release/'
-    def manifestFiles = findFiles(glob: '**/'+projectFolder+'/*/target/**'+arProduct_Manifest)
-    productVersionFolder=productVersionFolder+'/'+packageBuildNumber
-    if(manifestFiles){
-        for(int festIndex=0;festIndex<manifestFiles.size();festIndex++){
-            def productPath=manifestFiles[festIndex].path.replaceAll(arProduct_Manifest,'')
-            echo "product package path: "+productPath.replaceAll('/src','')
-            def version_ARProduct_Package=getVersionOfARProductFromManifest(manifestFiles[festIndex].path)
-            def files = findFiles(glob: productPath+'/*'+version_ARProduct_Package+'*')
-            if(local_linux){
-                sh( returnStatus: true, script: '''ssh '''+local_linux+'''  'mkdir -p '''+arproduct_repo_linux+productVersionFolder+'''' ''')
-                for(int index=0;index<files.size();index++){
-                    echo "transfer ${files[index].name} to folder $productVersionFolder"
-                    def fileExisted=sh(returnStdout: true, script: '''ssh '''+local_linux+''' '[ -e '''+arproduct_repo_linux+productVersionFolder+'/'+files[index].name+''' ]; echo $?' ''').trim()
-                    if(fileExisted=='0'){
-                        echo "Agile Reporter Product Package already exists.No need to download again."
-                    }else{
-                        sh( returnStatus: true, script: 'scp '+files[index].path+' '+local_linux+':'+arproduct_repo_linux+productVersionFolder+'/'+files[index].name)
-                    }
-                }
-            }
-            withAWS(credentials: 'aws') {
-                files.each{s3Upload( bucket:s3_bucket, path:"arproduct/${projectFolder}/CandidateReleases/${productVersionFolder}/${it.name}",includePathPattern:"${it.path}")}
-            }
-        }
-    }else{
-        error "there is no packages, generated with failures."
-    }
-}
-
-
 
 void updateBuild(projectFolder, buildnumber){
     def productVersion=getProductVersionFolder(projectFolder)
@@ -138,32 +101,57 @@ void updateBuild(projectFolder, buildnumber){
 		$packageSection
     """
 }
-
-def createPackagesSection(projectFolder, productVersion, buildNumber) {
+def createPackagesSectionOld(projectFolder, productVersion, buildNumber) {
     def propertiesSet=getProps(projectFolder)
     def bucketName=propertiesSet['s3.bucket']
     def s3repo='arproduct/'+projectFolder+'/CandidateReleases/'+productVersion
-    def downloadlink
+    def downloadLink
     def packageLinksRows=''
-    def displaylink=''
+    def displayLink=''
     def downfiles
     withAWS(credentials: 'aws') {
         downfiles=s3FindFiles(bucket:bucketName, path:s3repo, glob:"**/*$buildNumber*")
     }
     downfiles.each{print "${it.name},${it.path},${it.length},${it.lastModified}"}
     for(int index=0;index<downfiles.size();index++){
-        downloadlink=createLink(bucketName,s3repo,downfiles[index].path,downfiles[index].name)
+        downloadLink=createLink(bucketName,s3repo,downfiles[index].path,downfiles[index].name)
         if(downfiles[index].name.toLowerCase().startsWith(projectFolder.toLowerCase())){
-            displaylink=displaylink+"""<h4 style='margin: 3px 0'>$downloadlink</h4>&#x000A;&#x000D;"""
+            displayLink=displayLink+"""<h4 style='margin: 3px 0'>$downloadLink</h4>&#x000A;&#x000D;"""
         }
         packageLinksRows=packageLinksRows+
                 """<tr>
                 <td>${downfiles[index].name}</td>
-                <td>$downloadlink</td>
+                <td>$downloadLink</td>
             </tr>"""
     }
 
-    return displaylink+convertToTable(
+    return displayLink+convertToTable(
+            description: 'Packages',
+            firstColumn: 'Package Name', secondColumn: 'Download Link',
+            rows: packageLinksRows
+    )
+}
+def createPackagesSection(projectFolder, productVersion, buildNumber) {
+    def propertiesSet=getProps(projectFolder)
+    def bucketName=propertiesSet['s3.bucket']
+    def s3repo='arproduct/'+projectFolder+'/CandidateReleases/'+productVersion
+    def downloadLink
+    def packageLinksRows=''
+    def displayLink=''
+    def installerNames=getFileNames(projectFolder)
+    String[] installerNameArr=installerNames.split(':')
+    for(String installerName in installerNameArr){
+        downloadLink=createLink(bucketName,s3repo,"$buildNumber/$installerName",installerName)
+        if(installerName.toLowerCase().startsWith(projectFolder.toLowerCase())){
+            displayLink=displayLink+"""<h4 style='margin: 3px 0'>$downloadLink</h4>&#x000A;&#x000D;"""
+        }
+        packageLinksRows=packageLinksRows+
+                """<tr>
+                <td>$installerName</td>
+                <td>$downloadLink</td>
+            </tr>"""
+    }
+    return displayLink+convertToTable(
             description: 'Packages',
             firstColumn: 'Package Name', secondColumn: 'Download Link',
             rows: packageLinksRows
@@ -204,13 +192,12 @@ def getFileNames(projectFolder){
             def files = findFiles(glob: productPath+'/*'+version_APRroduct_Pacakge+'*')
 
             files.each{returnAllFiles=returnAllFiles+it.name+':'}
-
-            println returnAllFiles
         }
     }else{
         error "there is no packages, generated with failures."
     }
     returnAllFiles=returnAllFiles[0..returnAllFiles.length()-2]
+    println returnAllFiles
     return returnAllFiles
 }
 

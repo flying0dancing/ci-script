@@ -91,7 +91,7 @@ String searchLatestFromS3(s3repo,props,searchContent,local_repo,downloadFlag=tru
                 withAWS(credentials: AWS) {
                     s3Download(bucket:s3_bucket, path:s3repo+sFilePath.path,file:sFilePath.path,force:true)
                 }
-                transferUseSSHAgent(sFilePath.path,local_repo.replaceFirst('/home/'+props['app.user']+'/','/'),localPath)
+                transferUseSSHAgent2(envVars.get(props),sFilePath.path,local_repo.replaceFirst('/home/'+props['app.user']+'/','/'),localPath)
             }else{
                 //method 2
                 String cmd = "s3 cp s3://$s3_bucket/$s3repo${sFilePath.path} $local_repo$localPath  --no-progress "
@@ -116,8 +116,7 @@ String searchLatestFromS3(s3repo,props,searchContent,local_repo,downloadFlag=tru
  * @return
  */
 String searchLatestFromLocal(localRepo,props,searchContent){
-    def envLabel=props['app.user']+'-'+props['app.host']
-    def selectedEnv=envVars.get(envLabel)
+    def selectedEnv=envVars.get(props)
     def app_hostuser=selectedEnv.host
     def path
     sshagent(credentials: [selectedEnv.credentials]) {
@@ -139,8 +138,7 @@ String searchLatestFromLocal(localRepo,props,searchContent){
  */
 int checkNeedInstallOrNot(props,installerName){
     def ocelotPath=props['app.install.path']
-    def envLabel=props['app.user']+'-'+props['app.host']
-    def selectedEnv=envVars.get(envLabel)
+    def selectedEnv=envVars.get(props)
     def app_hostuser=selectedEnv.host
     def flag
     sshagent(credentials: [selectedEnv.credentials]) {
@@ -155,8 +153,7 @@ int checkNeedInstallOrNot(props,installerName){
  * @return
  */
 int existsInLocal(props,installerFullName){
-    def envLabel=props['app.user']+'-'+props['app.host']
-    def selectedEnv=envVars.get(envLabel)
+    def selectedEnv=envVars.get(props)
     def app_hostuser=selectedEnv.host
     def flag
     sshagent(credentials: [selectedEnv.credentials]) {
@@ -164,16 +161,21 @@ int existsInLocal(props,installerFullName){
     }
     return flag
 }
-private def transferUseSSHAgent(filePath,local_repo,local_path){
+
+private def transferUseSSHAgent(remotePartialPath,localRepo,localPartialPath){
     def envLabel='test-172.20.31.7'
     def selectedEnv=envVars.get(envLabel)
-    def app_hostuser=selectedEnv.host
-    def localPath=selectedEnv.homeDir+local_repo
-    def filePathWithoutName=helper.getFilePath(local_path)
+    transferUseSSHAgent2(selectedEnv,remotePartialPath,localRepo,localPartialPath)
+}
 
+private def transferUseSSHAgent2(selectedEnv,remotePartialPath,localRepo,localPartialPath){
+    def app_hostuser=selectedEnv.host
+    def localDir=selectedEnv.homeDir+localRepo
+    def installerLocalPath=localDir+helper.getFilePath(localPartialPath)
+    def installerFullName=localDir+localPartialPath
     sshagent(credentials: [selectedEnv.credentials]) {
-        sh( returnStatus: true, script: "ssh -o StrictHostKeyChecking=no $app_hostuser  'mkdir -p $localPath$filePathWithoutName' ")
-        sh( returnStatus: true, script: "scp -o StrictHostKeyChecking=no ${env.WORKSPACE}/$filePath $app_hostuser:$localPath${local_path}")
+        sh( returnStatus: true, script: "ssh -o StrictHostKeyChecking=no $app_hostuser  'mkdir -p $installerLocalPath' ")
+        sh( returnStatus: true, script: "scp -o StrictHostKeyChecking=no ${env.WORKSPACE}/$remotePartialPath $app_hostuser:$installerFullName")
     }
 }
 

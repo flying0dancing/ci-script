@@ -7,9 +7,8 @@
  * @return
  */
 def call(projectName,propertiesSet,installerFullName,ocelotPropFileName){
-
-    def envLabel=propertiesSet['app.user']+'-'+propertiesSet['app.host']
-    def selectedEnv=envVars.get(envLabel)
+    //def envLabel=propertiesSet['app.user']+'-'+propertiesSet['app.host']
+    def selectedEnv=envVars.get(propertiesSet)
     def app_hostuser=selectedEnv.host
     def ocelotPath=propertiesSet['app.install.path']
     def downloadPath=ocelotPath+'/deploys/'

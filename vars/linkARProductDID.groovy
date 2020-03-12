@@ -9,9 +9,8 @@
  * @return
  */
 def call(projectName,propertiesSet,productPrefix,productVersion,productProp,eaFlag){
-
-    def envLabel=propertiesSet['app.user']+'-'+propertiesSet['app.host']
-    def selectedEnv=envVars.get(envLabel)
+    //def envLabel=propertiesSet['app.user']+'-'+propertiesSet['app.host']
+    def selectedEnv=envVars.get(propertiesSet)
     def app_hostuser=selectedEnv.host
 
     def ocelotPath=propertiesSet['app.install.path']

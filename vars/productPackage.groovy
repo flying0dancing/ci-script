@@ -226,7 +226,13 @@ def triggerOtherJob(projectFolder,packageBuildNumber){
     def props=getProps(projectFolder)
     def S3_BUCKET=props['s3.bucket']
     def DOWNLOADFILENAMES=getFileNames(projectFolder)
-    jobB = build job: 'download_from_s3', parameters: [string(name: 'S3BUCKET', value: "$S3_BUCKET"), string(name: 'S3DOWNPATH', value: "$S3_DOWNPATH"), string(name: 'ARCHIVEDPATH', value: "$LOCAL_ARCHIVED_PATH"), string(name: 'DOWNLOADFILENAMES', value: "$DOWNLOADFILENAMES")]
+    //jobB = build job: 'download_from_s3', parameters: [string(name: 'S3BUCKET', value: "$S3_BUCKET"), string(name: 'S3DOWNPATH', value: "$S3_DOWNPATH"), string(name: 'ARCHIVEDPATH', value: "$LOCAL_ARCHIVED_PATH"), string(name: 'DOWNLOADFILENAMES', value: "$DOWNLOADFILENAMES")]
+    jobB = build job:'download_from_s3' , parameters: [string(name: 'S3BUCKET', value: "$S3_BUCKET"),
+                                                    string(name: 'REMOTEPATH', value: "$S3_DOWNPATH"),
+                                                    string(name: 'LOCALPATH', value: "$LOCAL_ARCHIVED_PATH"),
+                                                    booleanParam(name: 'RECURSIVE', value: true),
+                                                    string(name: 'INSTALLERNAMES', value: '*'),
+                                                    string(name: 'FILEOPERATOR', value: 'download2local')]
     println jobB.getResult()
 }
 
@@ -237,7 +243,12 @@ def triggerOtherJobWithJobName(projectFolder,packageBuildNumber,downloadJobName)
     def LOCAL_ARCHIVED_PATH=S3_DOWNPATH.replace('arproduct/','ARProduct/').replace('CandidateReleases/','candidate-release/')
     def props=getProps(projectFolder)
     def S3_BUCKET=props['s3.bucket']
-    def DOWNLOADFILENAMES=getFileNames(projectFolder)
-    jobB = build job:downloadJobName , parameters: [string(name: 'S3BUCKET', value: "$S3_BUCKET"), string(name: 'S3DOWNPATH', value: "$S3_DOWNPATH"), string(name: 'ARCHIVEDPATH', value: "$LOCAL_ARCHIVED_PATH"), string(name: 'DOWNLOADFILENAMES', value: "$DOWNLOADFILENAMES")]
+    //def DOWNLOADFILENAMES=getFileNames(projectFolder)
+    jobB = build job:downloadJobName , parameters: [string(name: 'S3BUCKET', value: "$S3_BUCKET"),
+                                                    string(name: 'REMOTEPATH', value: "$S3_DOWNPATH"),
+                                                    string(name: 'LOCALPATH', value: "$LOCAL_ARCHIVED_PATH"),
+                                                    booleanParam(name: 'RECURSIVE', value: true),
+                                                    string(name: 'INSTALLERNAMES', value: '*'),
+                                                    string(name: 'FILEOPERATOR', value: 'download2local')]
     println jobB.getResult()
 }

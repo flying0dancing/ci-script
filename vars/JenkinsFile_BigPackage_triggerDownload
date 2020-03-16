@@ -13,7 +13,11 @@ private void loadLocalSteps(){
 					credentialsId: '46afdff1-cdd3-4098-b8af-d904b4d298aa',
 					id: 'a58b1061-f557-46f6-ba36-b53cfdb77d43',
 					remote: 'ssh://git@bitbucket.lombardrisk.com:7999/cprod/ci-script.git',
-					traits: [[$class: 'BranchDiscoveryTrait']]])
+					traits: [
+							[$class: 'BranchDiscoveryTrait'],
+							[$class: 'CloneOptionTrait', extension: [depth: 0, noTags: true, shallow: true]]
+					]])
+
 }
 
 ARProject_Prefix=getprojectFolder(env.JOB_NAME)

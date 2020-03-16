@@ -84,6 +84,9 @@ pipeline {
 }
 
 def selectOperator(String fileOperator,String bucket, String remotePath, String localPath, boolean recursive=false, String packageNames=null){
+    if(!localPath.startsWith('/home/test/repository')){
+        localPath='/home/test/repository/'+localPath
+    }
     switch(fileOperator){
         case 'upload2remote':
             upload2Remote( bucket, remotePath, localPath, recursive, packageNames)

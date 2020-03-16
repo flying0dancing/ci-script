@@ -54,17 +54,34 @@ def getExternalProjsFromJson(projectFolder){
 }
 
 void checkoutARProduct(projectFolder){
-    checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CleanBeforeCheckout'], [$class: 'RelativeTargetDirectory', relativeTargetDir: "${projectFolder}"]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '46afdff1-cdd3-4098-b8af-d904b4d298aa', url: "ssh://git@bitbucket.lombardrisk.com:7999/cprod/${projectFolder}.git"]]])
-
+    //checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CleanBeforeCheckout'], [$class: 'RelativeTargetDirectory', relativeTargetDir: "${projectFolder}"]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '46afdff1-cdd3-4098-b8af-d904b4d298aa', url: "ssh://git@bitbucket.lombardrisk.com:7999/cprod/${projectFolder}.git"]]])
+    shallowCheckout(projectFolder,projectFolder)
     def externalProjs=getExternalProjsFromJson(projectFolder)
     if(externalProjs){
         for(int i=0;i<externalProjs.size();i++){
-            //checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CleanBeforeCheckout'], [$class: 'RelativeTargetDirectory', relativeTargetDir: "${projectFolder}xbrl"]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '46afdff1-cdd3-4098-b8af-d904b4d298aa', url: "ssh://git@bitbucket.lombardrisk.com:7999/cprod/${externalProjs[i]}.git"]]])
-            checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CleanBeforeCheckout'], [$class: 'RelativeTargetDirectory', relativeTargetDir: "${externalProjs[i]}"]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '46afdff1-cdd3-4098-b8af-d904b4d298aa', url: "ssh://git@bitbucket.lombardrisk.com:7999/cprod/${externalProjs[i]}.git"]]])
+            //checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CleanBeforeCheckout'], [$class: 'RelativeTargetDirectory', relativeTargetDir: "${externalProjs[i]}"]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '46afdff1-cdd3-4098-b8af-d904b4d298aa', url: "ssh://git@bitbucket.lombardrisk.com:7999/cprod/${externalProjs[i]}.git"]]])
+            shallowCheckout(externalProjs[i],externalProjs[i])
         }
     }
 }
 
+void shallowCheckout(targetDir, repoName, branch = 'master'){
+    checkout changelog: false, poll: false, scm: [
+            $class: 'GitSCM',
+            branches: [[name: "*/${branch}"]],
+            doGenerateSubmoduleConfigurations: false,
+            extensions: [
+                    [$class: 'RelativeTargetDirectory', relativeTargetDir: "${targetDir}"],
+                    [$class: 'CleanBeforeCheckout'],
+                    [$class: 'CloneOption', depth: 0, honorRefspec: true, noTags: true, reference: '', shallow: true]
+            ],
+            submoduleCfg: [],
+            userRemoteConfigs: [
+                    [credentialsId: '4775e132-d845-4896-971d-f2a210ccdb02',
+                     url: "ssh://git@bitbucket.lombardrisk.com:7999/cprod/${repoName}.git"]
+            ]
+    ]
+}
 
 
 

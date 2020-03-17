@@ -26,7 +26,7 @@ ARProject_Prefix=getprojectFolder(env.JOB_NAME)
 pipeline {
 	agent { label 'PRODUCT-CI-TEST' }
 	options {
-		timeout(time: 60, unit: 'MINUTES')
+		timeout(time: 200, unit: 'MINUTES')
 		skipDefaultCheckout true
 	}
 
@@ -55,12 +55,20 @@ pipeline {
 				
 			}
 		}
+		stage('transfer package to SH local'){
+			steps{
+				script{
+					echo "transfer package to sha local repo"
+					uploadProduct.put2LocalRepoBySHLocal1(ARProject_Prefix,'b'+env.BUILD_NUMBER)
+				}
+			}
+		}
 		stage('upload package'){
+			options { retry(3) }
 			steps{
 				script{
 					echo "upload all packages"
-					//uploadProduct.upload(ARProject_Prefix,'b'+env.BUILD_NUMBER)
-					uploadProduct.put2LocalRepoBySHLocal1(ARProject_Prefix,'b'+env.BUILD_NUMBER)
+					uploadProduct.upload(ARProject_Prefix,'b'+env.BUILD_NUMBER)
 				}
 			}
 		}

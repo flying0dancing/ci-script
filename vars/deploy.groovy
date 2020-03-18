@@ -61,6 +61,7 @@ def inOneJob(String projectFolder){
                 //TODO backup environment and database
                 installersJson(projectFolder,name)
                 def propsSet=readProperty.get(projectFolder,name)
+                //TODO start service
                 officeConnector(propsSet)
                 //TODO clean downloadPath
             }finally {
@@ -98,7 +99,8 @@ def inOneJob(String projectFolder, String officeHook){
                 //TODO backup environment and database
                 installersJson(projectFolder,name)
                 def propsSet=readProperty.get(projectFolder,name)
-                officeConnector.connectNewHook(propsSet,officeHook)
+                //TODO start service
+                officeConnector.connectNewHook(propsSet,officeHook)//different with inOneJob
                 //TODO clean downloadPath
             }finally {
                 //release a resource

@@ -7,7 +7,7 @@ def triggerOtherJob(String jobName, String projectFolder, String repoName, Strin
     for(int i=0; i<MAX_CONCURRENT; i++)
     {latch.offer("$i")}
     //def job_list = ["test1","test2","test3","test4","test5","test6"]
-    def job_list=helper.getSubFolders(projectFolder)
+    def job_list=helper.getDeployFolders(projectFolder)
 
     for(int i=0; i<job_list.size(); i++) {
         def name = job_list[i]
@@ -44,7 +44,7 @@ def inOneJob(String projectFolder){
     for(int i=0; i<MAX_CONCURRENT; i++)
     {latch.offer("$i")}
     //def job_list = ["test1","test2","test3","test4","test5","test6"]
-    def job_list=helper.getSubFolders(projectFolder)
+    def job_list=helper.getDeployFolders(projectFolder)
 
     for(int i=0; i<job_list.size(); i++) {
         def name = job_list[i]
@@ -81,7 +81,7 @@ def inOneJob(String projectFolder, String officeHook){
     for(int i=0; i<MAX_CONCURRENT; i++)
     {latch.offer("$i")}
     //def job_list = ["test1","test2","test3","test4","test5","test6"]
-    def job_list=helper.getSubFolders(projectFolder)
+    def job_list=helper.getDeployFolders(projectFolder)
 
     for(int i=0; i<job_list.size(); i++) {
         def name = job_list[i]

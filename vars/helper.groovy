@@ -2,24 +2,38 @@ def echoName(String name){
     echo "execute: ${name}......."
 }
 
+def getDeployFolders(projectFolder){
+    def deployFolders
+    def subFolders=getSubFolders(projectFolder)
+    subFolders=getValidFolders(projectFolder,subFolders)
+    def deployerFullName=projectFolder+'/src/main/resources/deployer.json'
+    if(fileExists(deployerFullName)){
+        def deployNames=readJSON file: deployerFullName
+        deployFolders=subFolders.findAll {def folderName -> deployNames.findAll{it && it.equalsIgnoreCase(folderName)}}
+    }else{
+        deployFolders=subFolders
+    }
+    echo "all deploy folders: ${deployFolders}"
+    return deployFolders
+}
+
 def getSubFolders(projectFolder){
     def allFolders=[]
     dir(projectFolder+'/src/main/resources'){
         allFolders=sh(returnStdout: true, script: '''ls -l|grep "^d"|awk '{ print $NF }' ''').trim().split()
-        echo "all subfolders: ${allFolders}"
+        //echo "all subfolders: ${allFolders}"
     }
-    allFolders=getValidFolders(allFolders)
-
     return allFolders
 }
-
-def getValidFolders(folders){
+def getValidFolders(projectFolder,folders){
     def allFolders=[]
+    def parentPath=projectFolder+'/src/main/resources/'
     for(int i=0;i<folders.size();i++){
-        if(findFiles(glob: '**/'+folders[i]+'/deployment.json')){
+        if(fileExists(parentPath+folders[i]+'/deployment.json') && fileExists(parentPath+folders[i]+'/deployment.properties')){
             allFolders+=folders[i]
         }
     }
+
     echo "valid folders: ${allFolders}"
     return allFolders
 }

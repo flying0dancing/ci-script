@@ -181,7 +181,3 @@ println getFilePath('/home/test/repository/AgileREPORTER/19.4.2/AgileREPORTER-19
 println getFilePath('/home/test/repository/ARProduct/hkma/candidate-release/5.32.0/b70/HKMA_v5.32.0-b70.zip')
 println removeBuildFolder('/home/test/repository/AgileREPORTER/1.16.2.2/b123/AgileREPORTER-1.16.2.2-b123.jar')
 */
-def app_hostuser='test@123.34.45.2'
-def ocelotProperties='aaaaaaa.properties'
-def str="ssh -o StrictHostKeyChecking=no $app_hostuser  'awk -F '=' /^host.port[^.]/'{print \$"+"2}' \"${ocelotProperties}\"' "
-println str

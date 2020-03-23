@@ -9,7 +9,7 @@ def getDeployFolders(projectFolder){
     def deployerFullName=projectFolder+'/src/main/resources/deployer.json'
     if(fileExists(deployerFullName)){
         def deployNames=readJSON file: deployerFullName
-        deployFolders=subFolders.findAll {def folderName -> deployNames.findAll{it && it.equalsIgnoreCase(folderName)}}
+        deployFolders=subFolders.findAll {def folderName -> deployNames.findAll{it && folderName.equalsIgnoreCase(it.trim())}}
     }else{
         deployFolders=subFolders
     }

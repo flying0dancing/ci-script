@@ -33,8 +33,7 @@ def getValidFolders(projectFolder,folders){
             allFolders+=folders[i]
         }
     }
-
-    echo "valid folders: ${allFolders}"
+    //echo "valid folders: ${allFolders}"
     return allFolders
 }
 

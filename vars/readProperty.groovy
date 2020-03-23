@@ -27,8 +27,10 @@ int getAppURL(props){
     def http="http://"
     def appUrl
     sshagent(credentials: [selectedEnv.credentials]) {
-        hostIp=sh( returnStdout: true, script: '''ssh -o StrictHostKeyChecking=no $app_hostuser  'awk -F '=' /^main.host.name/'{print $"+"2}' \"${ocelotProperties}\"' ''').trim()
-        hostPort=sh( returnStdout: true, script: "ssh -o StrictHostKeyChecking=no $app_hostuser  'awk -F '=' /^host.port[^.]/'{print \$"+"2}' \"${ocelotProperties}\"' ").trim()
+        def commandStr="ssh -o StrictHostKeyChecking=no $app_hostuser  'awk -F '=' /^main.host.name[^.]/'{print \$"+"2}' \"${ocelotProperties}\"' "
+        hostIp=sh( returnStdout: true, script: commandStr).trim()
+        commandStr="ssh -o StrictHostKeyChecking=no $app_hostuser  'awk -F '=' /^host.port[^.]/'{print \$"+"2}' \"${ocelotProperties}\"' "
+        hostPort=sh( returnStdout: true, script: commandStr).trim()
         hostPortOffset=sh( returnStdout: true, script: "ssh -o StrictHostKeyChecking=no $app_hostuser  'awk -F '=' /^host.port.offset/'{print \$"+"2}' \"${ocelotProperties}\"' ").trim()
         httpsMode=sh( returnStdout: true, script: "ssh -o StrictHostKeyChecking=no $app_hostuser  'awk -F '=' /^httpsMode/'{print \$"+"2}' \"${ocelotProperties}\"' ").trim()
         if(httpsMode.equalsIgnoreCase('true')){

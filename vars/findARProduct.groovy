@@ -50,6 +50,7 @@ def call(installer,projectName,propertiesSet){
             handleConfigProps(installer.props,projectName,propertiesSet,iPrefix,downloadFileName)
         }
     }else{
+        echo "no need to config product ["+iPrefix+", "+iVersion+" ]"
         createHtmlContent('stepline','config product: no need, skip')
     }
 

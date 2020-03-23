@@ -23,7 +23,7 @@ def call(String projectFolder, String repoName, String repoBranch, String jobNam
                     try {
                         //execute job
                         //build(job: name, propagate: false)
-                        dTriggerOtherJob(name, projectFolder, repoName, repoBranch, jobName)
+                        dTriggerOtherJob(name, projectFolder, repoName, repoBranch, jobName, officeHook)
                     }finally {
                         //release a resource
                         latch.offer(thing)
@@ -36,7 +36,7 @@ def call(String projectFolder, String repoName, String repoBranch, String jobNam
 }
 
 
-def triggerOtherJob(String projectFolder, String repoName, String repoBranch, String jobName='test_deploy_a'){
+def triggerOtherJob(String projectFolder, String repoName, String repoBranch, String jobName='test_deploy_a', String officeHook='https://outlook.office.com/webhook/faaeef7d-d836-45a5-9b07-0f1f13d0c25b@4a78f2c0-297f-426d-b09f-5986924d38e7/IncomingWebhook/a33daad345b74ad29ecc77c000f42df3/ab2c9d48-0305-4d56-9959-8c7215573a5a'){
     def branches=[:]
     def MAX_CONCURRENT = 2
     //create a fifo
@@ -56,7 +56,7 @@ def triggerOtherJob(String projectFolder, String repoName, String repoBranch, St
                 return thing != null;
             }
             try {
-                dTriggerOtherJob(name, projectFolder, repoName, repoBranch, jobName)
+                dTriggerOtherJob(name, projectFolder, repoName, repoBranch, jobName, officeHook)
             }finally {
                 //release a resource
                 latch.offer(thing)
@@ -99,11 +99,15 @@ def inOneJob(String projectFolder, String officeHook='https://outlook.office.com
 
 
 
-private def dTriggerOtherJob(String deployFolder, String projectFolder, String repoName, String repoBranch, String jobName='test_deploy_a'){
+private def dTriggerOtherJob(String deployFolder, String projectFolder, String repoName, String repoBranch, String jobName='test_deploy_a', String officeHook='https://outlook.office.com/webhook/faaeef7d-d836-45a5-9b07-0f1f13d0c25b@4a78f2c0-297f-426d-b09f-5986924d38e7/IncomingWebhook/a33daad345b74ad29ecc77c000f42df3/ab2c9d48-0305-4d56-9959-8c7215573a5a'){
     helper.echoName(deployFolder)
     //TODO backup environment and database
     jobB = build job:jobName , parameters: [string(name: 'REPO_NAME', value:"$repoName"), string(name: 'REPO_BRANCH', value:"$repoBranch"), string(name: 'PROJECT_FOLDER', value: "$projectFolder"), string(name: 'DEPLOY_FOLDER', value: "$deployFolder")]
-    println jobB.getResult()
+    def propsSet=readProperty.get(projectFolder,deployFolder)
+    if(jobB.getResult().equalsIgnoreCase('SUCCESS')){
+        startService(propsSet)
+    }
+    officeConnector(propsSet,officeHook)
     //TODO clean downloadPath
 }
 private def dInOneJob(String deployFolder, String projectFolder, String officeHook='https://outlook.office.com/webhook/faaeef7d-d836-45a5-9b07-0f1f13d0c25b@4a78f2c0-297f-426d-b09f-5986924d38e7/IncomingWebhook/a33daad345b74ad29ecc77c000f42df3/ab2c9d48-0305-4d56-9959-8c7215573a5a'){
@@ -111,7 +115,7 @@ private def dInOneJob(String deployFolder, String projectFolder, String officeHo
     //TODO backup environment and database
     installersJson(projectFolder,deployFolder)
     def propsSet=readProperty.get(projectFolder,deployFolder)
-    //TODO start service
+    startService(propsSet)
     officeConnector(propsSet,officeHook)
     //TODO clean downloadPath
 }

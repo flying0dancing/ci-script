@@ -23,7 +23,7 @@ private void loadLocalSteps(){
 pipeline{
     //agent { label 'PRODUCT-CI-SHA-LOCAL1' }
     //agent { label 'PRODUCT-CI-TEST' }
-    agent { label 'master' }
+    agent { label 'sha-arproduct-linux' }
     options { skipDefaultCheckout true }
     stages{
         stage('checkout') {

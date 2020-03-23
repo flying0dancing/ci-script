@@ -16,7 +16,7 @@ def get(projectFolder,deployFolder){
     return propertiesSet
 }
 
-int getAppURL(props){
+def getAppURL(props){
     def ocelotProperties=props['app.install.path']+'/ocelot.properties'
     def selectedEnv=envVars.get(props)
     def app_hostuser=selectedEnv.host

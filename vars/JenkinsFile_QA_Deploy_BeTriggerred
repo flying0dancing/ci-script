@@ -19,10 +19,10 @@ private void loadLocalSteps(){
                     ]
             ])
 }
-def propsSet
 pipeline{
     //agent { label 'PRODUCT-CI-SHA-LOCAL1' }
-    agent { label 'PRODUCT-CI-TEST' }
+    //agent { label 'PRODUCT-CI-TEST' }
+    agent { label 'sha-arproduct-linux' }
     options { skipDefaultCheckout true }
     parameters {
 
@@ -54,7 +54,6 @@ pipeline{
         stage("deploy installers"){
             steps{
                 script{
-                    propsSet=readProperty.get(params.PROJECT_FOLDER,params.DEPLOY_FOLDER)
                     installersJson(params.PROJECT_FOLDER,params.DEPLOY_FOLDER)
                 }
             }
@@ -63,7 +62,6 @@ pipeline{
     post{
         always {
             echo 'This will always run'
-            officeConnector(propsSet)
         }
     }
 

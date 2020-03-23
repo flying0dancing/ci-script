@@ -99,14 +99,14 @@ def inOneJob(String projectFolder, String officeHook='https://outlook.office.com
 
 
 
-def dTriggerOtherJob(String deployFolder, String projectFolder, String repoName, String repoBranch, String jobName='test_deploy_a'){
+private def dTriggerOtherJob(String deployFolder, String projectFolder, String repoName, String repoBranch, String jobName='test_deploy_a'){
     helper.echoName(deployFolder)
     //TODO backup environment and database
     jobB = build job:jobName , parameters: [string(name: 'REPO_NAME', value:"$repoName"), string(name: 'REPO_BRANCH', value:"$repoBranch"), string(name: 'PROJECT_FOLDER', value: "$projectFolder"), string(name: 'DEPLOY_FOLDER', value: "$deployFolder")]
     println jobB.getResult()
     //TODO clean downloadPath
 }
-def dInOneJob(String deployFolder, String projectFolder, String officeHook='https://outlook.office.com/webhook/faaeef7d-d836-45a5-9b07-0f1f13d0c25b@4a78f2c0-297f-426d-b09f-5986924d38e7/IncomingWebhook/a33daad345b74ad29ecc77c000f42df3/ab2c9d48-0305-4d56-9959-8c7215573a5a'){
+private def dInOneJob(String deployFolder, String projectFolder, String officeHook='https://outlook.office.com/webhook/faaeef7d-d836-45a5-9b07-0f1f13d0c25b@4a78f2c0-297f-426d-b09f-5986924d38e7/IncomingWebhook/a33daad345b74ad29ecc77c000f42df3/ab2c9d48-0305-4d56-9959-8c7215573a5a'){
     helper.echoName(deployFolder)
     //TODO backup environment and database
     installersJson(projectFolder,deployFolder)

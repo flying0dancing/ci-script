@@ -36,7 +36,7 @@ pipeline{
         stage("parallel test"){
             steps{
                 script{
-                    deploy.triggerOtherJob('test_deploy_a','hkma','test-hkma','feature/ci')
+                    deploy.triggerOtherJob('hkma','test-hkma','feature/ci','test_deploy_a')
                 }
             }
         }

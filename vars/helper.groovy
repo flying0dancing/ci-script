@@ -1,5 +1,5 @@
 def echoName(String name){
-    echo "deploy: ${name}......."
+    echo "deploy: ${name}......"
 }
 
 def getDeployFolders(projectFolder){

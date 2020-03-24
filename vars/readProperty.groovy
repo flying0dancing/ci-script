@@ -20,9 +20,11 @@ def getAppURL(props){
     def ocelotProperties=props['app.install.path']+'/ocelot.properties'
     def selectedEnv=envVars.get(props)
     def app_hostuser=selectedEnv.host
+    def hostIp=app_hostuser[app_hostuser.indexOf('@')+1..-1]
     def appUrl
     sshagent(credentials: [selectedEnv.credentials]) {
         appUrl=sh( returnStdout: true, script: "ssh -o StrictHostKeyChecking=no $app_hostuser 'sh RemoteGetUrl.sh ${ocelotProperties}' ").trim()
+        appUrl=appUrl.replaceAll('#',hostIp)
         echo "url:$appUrl"
     }
     return appUrl

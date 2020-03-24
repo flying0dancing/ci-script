@@ -22,7 +22,8 @@ properties=$1
 http_head="http://"
 port=None
 if [ -f "${properties}" ];then
-  host_name=$(awk -F '=' /^main.host.name[^.]/'{print $2}' "${properties}")
+  #host_ip=$(awk -F '=' /^main.host.name[^.]/'{print $2}' "${properties}")
+  host_ip=$(ifconfig | grep 'inet addr:'|grep -v 127.0.0.1 | awk -F'[: ]+' '{print $4}')
   port_base=`awk -F '=' /^host.port[^.]/'{print $2}' "${properties}"`
   port_offset=`awk -F '=' /^host.port.offset/'{print $2}' "${properties}"`
   https_mode=`awk -F '=' /^httpsMode/'{print $2}' "${properties}"`
@@ -34,7 +35,7 @@ if [ -f "${properties}" ];then
   if [ "${https_mode}" = "true" ];then
     http_head="https://"
   fi
-  echo "$http_head$host_name:$port"
+  echo "$http_head$host_ip:$port"
 else
   exit 1
 fi

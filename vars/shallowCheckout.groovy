@@ -1,5 +1,5 @@
 
-def call(repoName='ci-script',branch='sshTest'){
+def call(repoName='ci-script',branch='deployLib'){
     checkout changelog: false, poll: false, scm: [
             $class                           : 'GitSCM',
             branches                         : [[name: "*/$branch"]],

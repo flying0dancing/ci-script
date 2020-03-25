@@ -7,7 +7,7 @@ stage('setup'){
     }
 }
 private void loadLocalSteps(){
-    library identifier: 'ci-script@sshTest',
+    library identifier: 'ci-script@deployLib',
             retriever: modernSCM([
                     $class: 'GitSCMSource',
                     credentialsId: '46afdff1-cdd3-4098-b8af-d904b4d298aa',
@@ -28,7 +28,7 @@ pipeline{
         stage('checkout') {
             steps {
                 script {
-                    shallowCheckout('ci-script','sshTest')
+                    shallowCheckout('ci-script','deployLib')
                     testSourceCheckout('hkma','test-hkma','feature/ci')
                 }
             }

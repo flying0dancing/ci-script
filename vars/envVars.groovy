@@ -28,11 +28,6 @@ import groovy.transform.Field
                 host: 'test@172.20.30.89',
                 credentials: 'product-ci-sha-local2-user-test'
         ],
-        'test-sha-prod-001' : [
-                homeDir :   '/home/test',
-                host: 'test@172.20.30.89',
-                credentials: 'product-ci-sha-local2-user-test'
-        ],
         'test-172.20.30.71' : [
                 homeDir  : '/home/test',
                 host: 'test@172.20.30.71',

@@ -6,7 +6,7 @@ def call(props){
     echo "start service......"
     sshagent(credentials: [selectedEnv.credentials]) {
         flag=sh( returnStatus: true, script: "ssh -o StrictHostKeyChecking=no $app_hostuser 'nohup ${startSh} --force >> ${selectedEnv.homeDir}/nohup.out 2>&1 &' ")
-        echo "start result:$flag"
+        echo "start service result:$flag"
     }
     return flag
 }

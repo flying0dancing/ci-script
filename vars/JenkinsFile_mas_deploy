@@ -29,15 +29,14 @@ pipeline{
             steps {
                 script {
                     shallowCheckout('ci-script','deployLib')
-                    testSourceCheckout('hkma','test-hkma','feature/ci')
+                    testSourceCheckout('mas','test-mas','master')
                 }
             }
         }
         stage("parallel test"){
             steps{
                 script{
-                    deploy('hkma','test-hkma','feature/ci')
-                    //deploy.triggerOtherJob('hkma','test-hkma','feature/ci','test_deploy_a')
+                    deploy('mas','test-mas','master')
                 }
             }
         }

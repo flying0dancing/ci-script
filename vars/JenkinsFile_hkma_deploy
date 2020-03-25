@@ -24,21 +24,26 @@ pipeline{
     //agent { label 'PRODUCT-CI-SHA-LOCAL1' }
     //agent { label 'PRODUCT-CI-TEST' }
     agent { label 'sha-arproduct-linux' }
-    options { skipDefaultCheckout true }
     stages{
         stage('checkout') {
             steps {
                 script {
-                    testSourceCheckout('hkma','test-hkma','feature/ci')
+                    shallowCheckout('ci-script','deployLib')
+                    testSourceCheckout('hkma','test-hkma','master')
                 }
             }
         }
         stage("parallel test"){
             steps{
                 script{
-                    deploy.triggerOtherJob('hkma','test-hkma','feature/ci','test_deploy_a')
+                    deploy('hkma','test-hkma','master')
                 }
             }
+        }
+    }
+    post {
+        always {
+            echo "this is always run"
         }
     }
 }

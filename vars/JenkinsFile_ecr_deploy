@@ -29,14 +29,14 @@ pipeline{
             steps {
                 script {
                     shallowCheckout('ci-script','deployLib')
-                    testSourceCheckout('ecr','test-ecr','master')
+                    testSourceCheckout('ecr','test-ecr','deploy')
                 }
             }
         }
         stage("parallel test"){
             steps{
                 script{
-                    deploy('ecr','test-ecr','master')
+                    deploy('ecr','test-ecr','deploy')
                 }
             }
         }

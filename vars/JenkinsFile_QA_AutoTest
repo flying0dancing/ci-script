@@ -1,0 +1,59 @@
+#!groovy
+@Library('pipeline-libs') _
+
+stage('setup'){
+    node{
+        loadLocalSteps()
+    }
+}
+private void loadLocalSteps(){
+    library identifier: 'ci-script@autoTest',
+            retriever: modernSCM([
+                    $class: 'GitSCMSource',
+                    credentialsId: '46afdff1-cdd3-4098-b8af-d904b4d298aa',
+                    id: 'a58b1061-f557-46f6-ba36-b53cfdb77d43',
+                    remote: 'ssh://git@bitbucket.lombardrisk.com:7999/cprod/ci-script.git',
+                    traits: [
+                            [$class: 'BranchDiscoveryTrait'],
+                            [$class: 'CloneOptionTrait', extension: [depth: 0, noTags: true, shallow: true]]
+                    ]
+            ])
+}
+
+pipeline{
+    agent { label 'PRODUCT-CI-SHA-LOCAL-WIN' }
+    //agent { label 'PRODUCT-CI-SHA-LOCAL1' }
+    //agent { label 'sha-arproduct-linux'}
+    stages{
+        stage('checkout') {
+            steps {
+                script {
+                    autCheckout('trump','trump','branch_v1.2.1')
+                    autCheckout('trump/public','public','arproduct')
+                    shallowCheckout('ci-script','autoTest')
+                    autCheckout('hkma','test-hkma','feature/ci')
+                }
+            }
+        }
+        stage("copy file to trump"){
+            steps{
+                script{
+                    def aWorkspace = env.WORKSPACE
+                    def trumpSrc="$aWorkspace\\trump"
+                    def trumpDest="c:\\ar_auto\\trump"
+                    echo "copy trump to c:/ar_auto"
+                    bat returnStatus: true, script: "robocopy $trumpSrc $trumpDest *.* /E"
+                    echo "copy test.json to trump"
+                    echo "clean target folder"
+                }
+            }
+        }
+
+    }
+    post {
+        always {
+            echo "this is always run"
+        }
+    }
+}
+

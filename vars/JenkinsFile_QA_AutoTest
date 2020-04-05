@@ -38,12 +38,18 @@ pipeline{
         stage("copy file to trump"){
             steps{
                 script{
+                    def projectFolder='hkma'
+                    def deployFolder='autotest'
                     def aWorkspace = env.WORKSPACE
                     def trumpSrc="$aWorkspace\\trump"
                     def trumpDest="c:\\ar_auto\\trump"
                     echo "copy trump to c:/ar_auto"
-                    bat returnStatus: true, script: "robocopy $trumpSrc $trumpDest *.* /E"
+                    bat returnStatus: true, script: "robocopy $trumpSrc $trumpDest *.* /E /NP"
                     echo "copy test.json to trump"
+                    def dest="C:\\ar_auto\\trump\\trump-sel\\src\\test\\resources"
+                    def src="$aWorkspace\\$projectFolder\\src\\main\\resources\\$deployFolder"
+                    def files="test.json test.properties"
+                    bat returnStatus: true, script: "robocopy $src $dest $files /E /NP"
                     echo "clean target folder"
                 }
             }

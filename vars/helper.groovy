@@ -156,6 +156,10 @@ def removeBuildFolder(String downloadFileFullName){
     def name=getFileName(downloadFileFullName)
     return path+name
 }
+def today(){
+    def date=new Date().format("YYYYMMdd")
+    return date
+}
 /*
 println getFileName('AgileREPORTER-19.4.2-b162.jar')
 println getFileName('E:\\home\\AgileREPORTER\\19.4.2\\AgileREPORTER-19.4.2-b162.jar')

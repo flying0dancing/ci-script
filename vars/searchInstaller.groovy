@@ -86,7 +86,7 @@ String searchLatestFromS3(s3repo,props,searchContent,local_repo,downloadFlag=tru
             localPath=localPath.replace('/CandidateReleases/','/candidate-release/')
         }
         if(downloadFlag){
-            if(env.NODE_NAME.equalsIgnoreCase('PRODUCT-CI-TEST')){
+            if(env.NODE_NAME.contains('PRODUCT-CI-TEST')){
                 //method 1
                 withAWS(credentials: AWS) {
                     s3Download(bucket:s3_bucket, path:s3repo+sFilePath.path,file:sFilePath.path,force:true)

@@ -14,10 +14,10 @@ def call(workspace, projectFolder, deployFolder, destFolder="c:\\ar_auto\\trump"
     //echo "copy public to $destFolder"
     //flag=bat(returnStatus: true, script: "robocopy $src $dest $files /E /NP 1>nul")
     src="$workspace\\$projectFolder\\src\\main\\resources\\$deployFolder"
-    dest="$destFolder\\trump-sel\\src\\test\\resources"
+    def dest="$destFolder\\trump-sel\\src\\test\\resources"
     files="test.json test.properties"
     echo "update test.json and test.properties in trump-sel"
-    bat(returnStatus: true, script: "@robocopy $src $destFolder $files /NP")
+    bat(returnStatus: true, script: "@robocopy $src $dest $files /NP")
 
     //copy scripts like RunTest.bat getNewFullName.bat
     src="$workspace\\scripts"

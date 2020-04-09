@@ -4,6 +4,9 @@ def call(targetDir,repoName='trump',branch='branch_v1.2.1'){
     if(repoName.equalsIgnoreCase('trump') || repoName.equalsIgnoreCase('public')){
         proj='aut'
     }
+    if(!targetDir){
+        targetDir=''
+    }
     checkout changelog: false, poll: false, scm: [
             $class: 'GitSCM',
             branches: [[name: "*/${branch}"]],

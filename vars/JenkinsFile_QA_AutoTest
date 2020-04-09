@@ -30,7 +30,7 @@ pipeline{
                 script {
                     autCheckout('trump','trump','branch_v1.2.1')
                     //autCheckout('trump/public','public','arproduct')
-                    autCheckout('','ci-script','autoTest')
+                    autCheckout(null,'ci-script','autoTest')
                     autCheckout('hkma','test-hkma','feature/ci')
                 }
             }

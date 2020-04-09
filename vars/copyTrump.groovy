@@ -9,6 +9,7 @@ def call(workspace, projectFolder, deployFolder, destParentDir="c:\\ar_auto"){
     def files="*.*"
     echo "copy trump-sel to $destParentDir"
     def flag=bat(returnStatus: true, script: "robocopy $src $dest $files /E /NP 1>nul")
+    echo "$flag"
     if(flag==0){
         //src="$workspace\\trump\\public"
         //dest="$destParentDir"

@@ -23,7 +23,7 @@ def call(workspace, projectFolder, deployFolder, destParentDir="c:\\ar_auto"){
     //copy scripts like RunTest.bat getNewFullName.bat
     src="$workspace\\scripts"
     dest="$destParentDir\\trump-sel"
-    files="RunTest.bat RunTest1.bat"
+    files="RunTest.bat"
     echo "copy RunTest.bat in trump-sel"
     flag=bat(returnStatus: true, script: "robocopy $src $dest $files /NP")
     //dest="%USERPROFILE%"

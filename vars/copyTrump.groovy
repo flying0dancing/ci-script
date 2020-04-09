@@ -3,30 +3,26 @@
  * @param propertiesSet
  * @return
  */
-def call(workspace, projectFolder, deployFolder, destParentDir="c:\\ar_auto"){
-    def src="$workspace\\trump\\trump-sel"
-    def dest="$destParentDir\\trump-sel"
+def call(workspace, projectFolder, deployFolder, destFolder="c:\\ar_auto\\trump"){
+    def src="$workspace\\trump"
     def files="*.*"
-    echo "copy trump-sel to $destParentDir"
-    def flag=bat(returnStatus: true, script: "robocopy $src $dest $files /E /NP 1>nul")
+    echo "copy trump"
+    bat(returnStatus: true, script: "robocopy $src $destFolder $files /E /NP 1>nul")
     //src="$workspace\\trump\\public"
-    //dest="$destParentDir"
+    //dest="$destFolder"
     //files="*.*"
-    //echo "copy public to $destParentDir"
+    //echo "copy public to $destFolder"
     //flag=bat(returnStatus: true, script: "robocopy $src $dest $files /E /NP 1>nul")
     src="$workspace\\$projectFolder\\src\\main\\resources\\$deployFolder"
-    dest="$destParentDir\\trump-sel\\src\\test\\resources"
+    dest="$destFolder\\trump-sel\\src\\test\\resources"
     files="test.json test.properties"
     echo "update test.json and test.properties in trump-sel"
-    flag=bat(returnStatus: true, script: "robocopy $src $dest $files /NP")
+    bat(returnStatus: true, script: "robocopy $src $destFolder $files /NP")
 
     //copy scripts like RunTest.bat getNewFullName.bat
     src="$workspace\\scripts"
-    dest="$destParentDir\\trump-sel"
     files="RunTest.bat"
-    echo "copy RunTest.bat in trump-sel"
-    flag=bat(returnStatus: true, script: "robocopy $src $dest $files /NP")
-    //dest="%USERPROFILE%"
-    //files="getNewFullName.bat"
-    //bat(returnStatus: true, script: "robocopy $src $dest $files /NP")
+    echo "copy RunTest.bat in trump"
+    bat(returnStatus: true, script: "robocopy $src $destFolder $files /NP")
+
 }

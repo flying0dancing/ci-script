@@ -1,5 +1,5 @@
-def call(workspace,projectFolder,deployFolder, destParentDir="c:\\ar_auto"){
-    copyTrump(workspace,projectFolder,deployFolder,destParentDir)
+def call(workspace,projectFolder,deployFolder, destFolder="c:\\ar_auto\\trump"){
+    copyTrump(workspace,projectFolder,deployFolder,destFolder)
     def jsonFileName='autotest.json'
     def files=findFiles(glob: '**/'+projectFolder+'/**/'+deployFolder+'/'+jsonFileName)
     def gado
@@ -25,7 +25,7 @@ def call(workspace,projectFolder,deployFolder, destParentDir="c:\\ar_auto"){
             }
             echo "resultFolder:$resultFolder"
             echo "mvn test -DxmlFileName=$xmlFileName -DsrcFolder=$srcFolder -DresultFolder=$resultFolder"
-            autoTest(projectFolder, xmlFileName,srcFolder,resultFolder, destParentDir+'\\trump-sel')
+            autoTest(projectFolder, xmlFileName,srcFolder,resultFolder, destFolder)
 
         }
     }else{
@@ -34,15 +34,7 @@ def call(workspace,projectFolder,deployFolder, destParentDir="c:\\ar_auto"){
 
 }
 
-void autoTest(projectFolder, xmlFileName, srcFolder, resultFolder, destDir="c:\\ar_auto\\trump-sel"){
-    /*def mvn = maven.initialiseMvn()
-    def build_info = maven.newBuildInfo()
-    mvn.deployer.deployArtifacts = false // Disable artifacts deployment during Maven run
-
-    dir(projectFolder){
-        mvn.run pom: 'pom.xml', goals: 'clean test -DxmlFileName='+xmlFileName+' -DsrcFolder='+srcFolder+' -DresultFolder='+resultFolder, buildInfo: build_info
-    }
-    */
+void autoTest(projectFolder, xmlFileName, srcFolder, resultFolder, destFolder="c:\\ar_auto\\trump"){
     def regulator
     switch(projectFolder){
         case ['dpb','hkma']:
@@ -63,7 +55,7 @@ void autoTest(projectFolder, xmlFileName, srcFolder, resultFolder, destDir="c:\\
         default:
             regulator='autotest'
     }
-    dir(destDir){
+    dir(destFolder){
         bat(returnStatus: true, script: "@RunTest.bat $xmlFileName $srcFolder $resultFolder $regulator")
     }
 

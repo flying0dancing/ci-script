@@ -21,7 +21,7 @@ def call(workspace,projectFolder,deployFolder, destParentDir="c:\\ar_auto"){
             resultParent=helper.getFilePath(testers[i].resultFolder)
             resultName=helper.getFileName(testers[i].resultFolder)
             dir("$workspace\\scripts"){
-                resultFolder=bat(returnStdout: true, script: "getNewFullName.bat $resultParent $resultName $suffix").trim()
+                resultFolder=bat(returnStatus: true, script: "getNewFullName.bat $resultParent $resultName $suffix")
                 echo "resultFolder:$resultFolder"
             }
 

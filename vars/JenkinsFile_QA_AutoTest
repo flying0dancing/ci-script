@@ -22,14 +22,11 @@ private void loadLocalSteps(){
 
 pipeline{
     agent { label 'PRODUCT-CI-SHA-LOCAL-WIN' }
-    //agent { label 'PRODUCT-CI-SHA-LOCAL1' }
-    //agent { label 'sha-arproduct-linux'}
     stages{
         stage('checkout') {
             steps {
                 script {
                     autCheckout('trump','trump','branch_v1.2.1')
-                    //autCheckout('trump/public','public','arproduct')
                     autCheckout(null,'ci-script','autoTest')
                     autCheckout('hkma','test-hkma','feature/ci')
                 }

@@ -20,7 +20,7 @@ def call(workspace,projectFolder,deployFolder, destParentDir="c:\\ar_auto"){
             //get result folder, if exists, generate a new folder name with YYYYmmdd like this
             resultParent=helper.getFilePath(testers[i].resultFolder)
             resultName=helper.getFileName(testers[i].resultFolder)
-            resultFolder=bat(returnStdout: true, script: "getNewFullName.bat $resultParent $resultName $suffix").trim()
+            resultFolder=bat(returnStdout: true, script: "$workspace\\scripts\\getNewFullName.bat $resultParent $resultName $suffix").trim()
 
             echo "mvn test -DxmlFileName=$xmlFileName -DsrcFolder=$srcFolder -DresultFolder=$resultFolder"
             autoTest(xmlFileName,srcFolder,resultFolder, destParentDir)

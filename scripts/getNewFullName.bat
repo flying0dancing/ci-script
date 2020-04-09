@@ -1,4 +1,4 @@
-@Echo off
+@echo OFF
 
 IF "%~1"=="" GOTO Help
 IF "%~1"=="/?" GOTO Help
@@ -19,7 +19,7 @@ IF EXIST "%dest%" (
     set dest=%destPath%%resultFolder%%today%%acc%
     goto getNewName
 ) ELSE (
-    echo %dest%
+    @echo %dest%
 )
 goto END
 

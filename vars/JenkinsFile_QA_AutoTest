@@ -29,8 +29,8 @@ pipeline{
             steps {
                 script {
                     autCheckout('trump','trump','branch_v1.2.1')
-                    autCheckout('trump/public','public','arproduct')
-                    shallowCheckout('ci-script','autoTest')
+                    //autCheckout('trump/public','public','arproduct')
+                    autCheckout(null,'ci-script','autoTest')
                     autCheckout('hkma','test-hkma','feature/ci')
                 }
             }
@@ -40,16 +40,9 @@ pipeline{
                 script{
                     def projectFolder='hkma'
                     def deployFolder='autotest'
-                    def aWorkspace = env.WORKSPACE
-                    def trumpSrc="$aWorkspace\\trump"
-                    def trumpDest="c:\\ar_auto\\trump"
-                    echo "copy trump to c:/ar_auto"
-                    bat returnStatus: true, script: "robocopy $trumpSrc $trumpDest *.* /E /NP"
-                    echo "copy test.json to trump"
-                    def dest="C:\\ar_auto\\trump\\trump-sel\\src\\test\\resources"
-                    def src="$aWorkspace\\$projectFolder\\src\\main\\resources\\$deployFolder"
-                    def files="test.json test.properties"
-                    bat returnStatus: true, script: "robocopy $src $dest $files /E /NP"
+                    def destParentDir="c:\\ar_auto"
+                    testersJson(env.WORKSPACE,projectFolder,deployFolder,destParentDir)
+
                     echo "clean target folder"
                 }
             }

@@ -21,9 +21,9 @@ def call(workspace,projectFolder,deployFolder, destParentDir="c:\\ar_auto"){
             resultParent=helper.getFilePath(testers[i].resultFolder)
             resultName=helper.getFileName(testers[i].resultFolder)
             resultFolder=bat(returnStdout: true, script: "$workspace\\scripts\\getNewFullName.bat $resultParent $resultName $suffix").trim()
-
+            echo "resultFolder:$resultFolder"
             echo "mvn test -DxmlFileName=$xmlFileName -DsrcFolder=$srcFolder -DresultFolder=$resultFolder"
-            autoTest(xmlFileName,srcFolder,resultFolder, destParentDir)
+            autoTest(xmlFileName,srcFolder,resultFolder, destParentDir+'\\trump-sel')
 
         }
     }else{
@@ -32,7 +32,7 @@ def call(workspace,projectFolder,deployFolder, destParentDir="c:\\ar_auto"){
 
 }
 
-void autoTest(xmlFileName, srcFolder, resultFolder, destParentDir="c:\\ar_auto"){
+void autoTest(xmlFileName, srcFolder, resultFolder, destDir="c:\\ar_auto\\trump-sel"){
     /*def mvn = maven.initialiseMvn()
     def build_info = maven.newBuildInfo()
     mvn.deployer.deployArtifacts = false // Disable artifacts deployment during Maven run
@@ -41,7 +41,7 @@ void autoTest(xmlFileName, srcFolder, resultFolder, destParentDir="c:\\ar_auto")
         mvn.run pom: 'pom.xml', goals: 'clean test -DxmlFileName='+xmlFileName+' -DsrcFolder='+srcFolder+' -DresultFolder='+resultFolder, buildInfo: build_info
     }
     */
-    dir(destParentDir){
+    dir(destDir){
         //bat(returnStatus: true, script: "RunTest.bat $xmlFileName $srcFolder $resultFolder")
         bat(returnStatus: true, script: "RunTest1.bat $xmlFileName $srcFolder $resultFolder")
     }
